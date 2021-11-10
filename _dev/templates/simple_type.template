@@ -1,0 +1,28 @@
+// File generated ${timestamp} by (c) TYPO ${typo_version}
+// Do not update its content out of marked places
+
+${copyright}
+
+#pragma once
+
+// user defined includes - manual changes allowed here
+${user_code}
+// generated code
+
+class ${class_name.UppecaseCamel}
+{
+    public:
+        ${simple_type_constructor}
+        
+        ${simple_type_setter_and_getter}
+        
+        // user defined code - manual changes allowed here
+        ${user_code}
+        // generated code
+    private:
+        ${simple_type_value}
+};
+
+// manual changes allowed here
+${user_code}
+// end of manual changes
