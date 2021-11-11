@@ -1,4 +1,20 @@
-Typo.py is a simple program generating source files with data carrying classes.
+<html>
+  <head>
+  </head>
+  
+  <body>
+    <h1>TYPO</h1>
+    (c) WGan 2021 [licence: MIT
+    <h2>Overview</h2>]
+Typo.py is a simple program generating source files which can be used in your
+own projects. 
+<ul>
+  <li>easy to use</li>
+  <li>extendable</li>
+  <li>allow to place user code in generated files</li>
+</li>  
+  
+
 It is build as an easy-to-extend system which can be customized by the end user
 by adding its own classes and template files. 
 
@@ -42,3 +58,6 @@ Running TYPO
 Typo can be run as ordinary python script. It does not need any additinal 
 packages. When command line parameter is provided - its content is interpreted
 as list of TYPO commands. 
+
+  </body>
+</html>

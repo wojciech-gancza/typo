@@ -2,71 +2,35 @@
 
 
 import re
+import os.path
 
 from typo_outputs       import  indented_output, console_output, string_output, \
                                 file_output
 from typo_inputs        import  file_lines
 from typo_core          import  typo_context, template_line, \
-                                typo_error, typo_generator                         
-from typo_interpreter   import  output_file_generator
+                                typo_error, typo_generator, \
+                                context_reader
+from typo_interpreter   import  typo_processor
 from typo_tools         import  identifier_formatter       
     
-    
-
-class gen_simple_type_constructor(typo_generator):
-
-    def generate(self, context, output):
-        class_name = context.get_value("class_name")
-        base_type = context.get_value("class_name")
-        identifier = identifier_formatter(class_name)
-        output.write(identifier.UppercaseCamel() + "(" + base_type + " " + identifier.lowercaseCamel("", "_param") + ")\n")
-        output.write("{\n")
-        output.increase_indent()
-        output.write(identifier.lowercaseCamel() + " = " + identifier.lowercaseCamel("","_param") + "\n")
-        output.decrease_indent()
-        output.write("}\n")
+from _dev               import  gen_simple_type_constructor
 
 
 
 try:
-    typo = output_file_generator(typo_context())
-    typo.context.set_value("copyright", "WGan softerware")
-    typo.context.set_value("class_name", "some strange name of a class")
-    typo.context.set_value("base_type", "long")
-    typo.build_source_code("_dev/templates/simple_type.template", "_dev/tests/outputs/default_output.txt")
+    typo = typo_processor()
+    typo.set_value("template_path", "_dev/templates")
+    typo.set_value("path", "_dev/tests/outputs")
+    typo.set_value("file_name", "${class_name}.hpp")
+    typo.set_value("copyright", "WGan softerware")
+    typo.set_value("class_name", "default_output")
+    typo.set_value("simple_type_value", "m_default_output")
+    typo.import_generator("_dev")
+    typo.generate("simple_type")
 except typo_error as err:
     print("ERROR: " + str(err))
 
 
-
-#test of context
-ctx = typo_context()
-ctx.set_value("x", [ "${a}", "${b}"])
-ctx.set_value("a", [ 1, 2, 3])
-ctx.set_value("b", {"a":1, "b":2})
-val = ctx.get_value("x")
-print(val)
-print(type(val).__name__)
-
-ctx.set_value("y", [ "${a}", "${z}"])
-ctx.set_value("z", [ "${a}", "${d}"])
-try:
-    val = ctx.get_value("y")
-    print(val)
-except typo_error as err:
-    print("ERROR: " + str(err))
-    
-ctx.set_value("f", "A${b${c}d}E")
-ctx.set_value("c", "x")
-ctx.set_value("bxd", "BCD")
-print(ctx.get_value("f"))
-
-ctx.set_value("a", "${b}")
-ctx.set_value("b", "${a}")
-try:
-   print(ctx.get_value("a"))
-except typo_error as err:
-    print("ERROR: " + str(err))
 
 #out = indented_output(console_output())
 #

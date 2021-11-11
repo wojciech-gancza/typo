@@ -9,7 +9,7 @@ ${copyright}
 ${user_code}
 // generated code
 
-class ${class_name.UppecaseCamel}
+class ${class_name}
 {
     public:
         ${simple_type_constructor}

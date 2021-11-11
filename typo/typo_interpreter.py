@@ -4,11 +4,12 @@
 
 import datetime
 import re
+import imp
 
 from typo_outputs        import  string_output, file_output, indented_output
 from typo_inputs         import  file_lines
 from typo_core           import  typo_context, template_line, \
-                                 typo_error, typo_generator                         
+                                 typo_error, typo_generator, context_reader                        
 
 
 
@@ -90,14 +91,25 @@ class cannot_translate(typo_error):
     def __init__(self, name):
         typo_error.__init__(self, "Placeholder '" + name + "' is not known.")
         
-        
+""" error - desired module was not loaded """
+class module_not_loaded(typo_error):
+
+    def __init__(self, module_name):
+        typo_error.__init__(self, "Module '" + module_name + "' cannot be loaded.")        
 
 """ output file generator - creates file based on template """
 class output_file_generator:
 
     def __init__(self, context):
         self.context = context
-    
+        self.generator_modules = [ ]
+        
+    def import_generator(self, generators_module_name):
+        try:
+            self.generator_modules.append(__import__(generators_module_name))
+        except:
+            raise module_not_loaded(generators_module_name)
+                
     def build_source_code(self, template_file_name, source_code_file_name):
         template = file_lines(template_file_name).lines
         self.context.user_code = user_code(template, source_code_file_name).user_code
@@ -114,14 +126,18 @@ class output_file_generator:
                 line_number = line_number + 1
         except typo_error as err:
             if err.source == "":
-                err.source = source_code_file_name
+                err.source = template_file_name
                 err.line = line_number
                 raise err
                 
     def get_generator(self, name):
         try:
-            generator = eval("gen_" + name + "()")
-            return generator
+            return eval("gen_" + name + "()")
+        except:
+            pass
+        try:
+            for generator in self.generator_modules:
+                return eval("generator.gen_" + name + "()")
         except:
             return None
       
@@ -153,6 +169,28 @@ class output_file_generator:
         output.write_already_formatted(line)
         
         
+        
+""" processor - main class of TYPO programm - contain everything which is needed """
+class typo_processor:
+
+    def __init__(self):
+        self.context = typo_context()
+        self.generator = output_file_generator(self.context)
+        self.context_reader = context_reader(self.context)
+        
+    def set_value(self, name, value):
+        self.context.set_value(name, value)
+        
+    def import_generator(self, generators_module_name):
+        self.generator.import_generator(generators_module_name)
+        
+    def generate(self, template):
+        template_path = self.context_reader.get_path("template_path")
+        output_path = self.context_reader.get_path("path")
+        file_name = self.context_reader.get_file_name("file_name")
+        self.generator.build_source_code(template_path + template + ".template", output_path + file_name)
+
+                
         
 """ generator returning timestamp """
 class gen_timestamp(typo_generator):

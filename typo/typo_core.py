@@ -4,6 +4,8 @@
 
 import datetime
 import re
+import os.path
+
 
 from typo_outputs  import  string_output, file_output, indented_output
 from typo_inputs   import  file_lines
@@ -159,3 +161,55 @@ class typo_context:
         if before != "" or after != "":
             value = before + str(value) + after
         return self._translate_value(value)
+
+
+
+""" error - variable which need to contain path - is not defined """
+class path_not_secified_error(typo_error):
+
+    def __init__(self, path_name):
+        typo_error.__init__(self, "Variable '" + path_name + "' is not defined but it should point to the directory.")
+    
+""" error - path is defined, but such path do not exist on disc """
+class path_not_found(typo_error):
+    
+    def __init__(self, path_name, path):
+        typo_error.__init__(self, "Path '" + path + "' in variable '" + path_name + "' does not exist.")
+        
+""" error - file name is not defined """
+class file_name_is_not_defined(typo_error):
+
+    def __init__(self, variable_name):
+        typo_error.__init__(self, "Variable '" + variable_name + "' is not defined byt should contain valid file name.")
+
+""" error - file name is malformed """
+class malformed_file_name(typo_error):
+
+    def __init(self, variable_name, file_name):
+        typo_error.__init__(self, "Value '" + file_name + "' or variable '" + variable_name + "' is wrong as a file name.")
+
+""" context reader contain few methods helping to read the context variables """
+class context_reader:
+
+    def __init__(self, context):
+        self.context = context
+
+    def get_path(self, path_name):
+        value = str(self.context.get_value(path_name))
+        if value is None:
+            raise path_not_specified(path_name)
+        if not os.path.isdir(value):
+            raise path_not_found(path_name, value)
+        if value[-1] != "/":
+            value += "/"
+        return value
+
+    def get_file_name(self, file_name_variable_name):
+        value = str(self.context.get_value(file_name_variable_name))
+        if value is None:
+            raise file_name_is_not_defined(file_name_variable_name)
+        if not re.match("[_a-zA-Z][0-9_a-zA-Z.]*", value):
+            raise malformed_file_name(file_name_variable_name, value)
+        return value
+
+

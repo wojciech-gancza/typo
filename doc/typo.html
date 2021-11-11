@@ -1,0 +1,89 @@
+<html>
+
+  <head>
+    <link rel="stylesheet" href="wgan.css">
+  </head>
+  
+  <body>
+    <h1>TYPO</h1>
+      (c) WGan 2021 <a href="https://en.wikipedia.org/wiki/MIT_License">[licence: MIT]</a>
+    <h2>Overview</h2>
+      TYPO.py is a simple program generating source files which can be used in your
+      own projects. 
+    <p>
+      Source files are created from templates. Templates can contain placeholders 
+      in a form of <i>${placeholder_name}</i>. When file is generated, 
+      placeholders are filled by program written in Python. Python code can read and 
+      interpret values set by TYPO interpreter.
+    <p>
+      Typo is:
+    <ul>
+      <li><a href="#easy_to_use">easy to use</a>,</li>
+      <li><a href="#extendable">extendable</a>,</li>
+      <li>allow to <a href="#keep_user_code">keep user code</a> in generated files</li>
+    </ul>  
+  
+    <h2><a name="easy_to_use">Easy to use</a></h2>
+      To use TYPO, you need to create template containing set of placeholders.
+      Tou can take any of your typical file, and change some of its content
+      to placeholders. Then you need to run TYPO and generate subsequent
+      files by setting placeholder values and running generation by typing 
+      template name. So you have two types of orders:
+      <ul>
+        <li>
+          <b>assignment</b> - order is in the form <i>name=value</i>, where name 
+          is any string identifier and value can contain placeholders which will 
+          be evaluated at the moment of using this value. 
+        </li>
+        <li>
+          <b>generator</b> - order is in the form <i>generator</i>, and runs 
+          generation of the output file based on template named 
+          <i>generator.template</i>. When generation is started, some values 
+          need to be defined:
+          <ul>
+            <li><i>path</i> - path where the output file will be located</li>
+            <li><i>file_name</i> - full name of the file</li>
+            <li><i>template_path</i> - path to the folder with templates</li>
+          </ul>
+        </li>
+      </ul>
+    <p>
+      You can also store list of TYPO commands in the file and use it as 
+      a parameter when starting TYPO.
+    <p>
+      Placeholders can be filled by the assigned values, but more powerfull is
+      runnging python code instead. When placeholder is found in the template, 
+      TYPO checks if Python class named <i>gen_placeholder_name</i>. If it exist,
+      it is created and its method <i>generate</i> is called. TYPO passes
+      to the function repository of all assigned values and the output object
+      allowing writing into the file. This writing object also keeps proper 
+      indentation og generated code.
+    
+    <h2><a name="extendable">Extendable</a></h2>
+      Programmer using TYPO can crate not only its own templates, but also 
+      your own code generators. It is even possible to build your own sowtware
+      which will use TYPO as its output. More detais you can find in TYPO
+      <a href="programmer_reference.html">user reference</a>
+    <p>
+      You can not only run TYPO as standalone program, but also as a library
+      for your metaprograms. Just take alook at TYPO 
+      <a href="programmer_reference.html">programmer reference.</a>
+    
+    <h2><a name="keep_user_code">Keep user code</a></h2>
+      It is not recommended to mix generated code with code written by the 
+      programmer, however sometimes it might be handy. 
+    <p>
+      User code can be placed in generated files in places specified by the 
+      template. When creating templates, you can locate placeholder 
+      <i>${user_code}</i> in any place of the template. It will be 
+      replaced by the code read from the modified code. User code placeholder 
+      muse be the only one element in the line of template file. Its indentation
+      have no result in copied code, which is moved 'as it is'.
+    <p>
+      User code placeholder must be surrounded by constant lines easy to 
+      distinguish from other lines. Usually - such lines should be comments
+      informing about user code placement possibility.
+
+  </body>
+  
+</html>
