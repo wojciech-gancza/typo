@@ -13,10 +13,17 @@ from typo_core          import  typo_context, template_line, \
 from typo_interpreter   import  typo_processor
 from typo_tools         import  identifier_formatter       
     
-from _dev               import  gen_simple_type_constructor
 
 
+""" transforms command lines into operations on typo_processor """
+class command_processor:
 
+    def __init__(self):
+        pass    
+    
+    def process_command(self, command)
+        pass
+    
 try:
     typo = typo_processor()
     typo.set_value("template_path", "_dev/templates")
@@ -25,7 +32,8 @@ try:
     typo.set_value("copyright", "WGan softerware")
     typo.set_value("class_name", "default_output")
     typo.set_value("simple_type_value", "m_default_output")
-    typo.import_generator("_dev")
+    typo.import_generator("_dev1")
+    typo.import_generator("_dev2")
     typo.generate("simple_type")
 except typo_error as err:
     print("ERROR: " + str(err))

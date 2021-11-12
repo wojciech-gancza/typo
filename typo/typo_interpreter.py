@@ -107,6 +107,7 @@ class output_file_generator:
     def import_generator(self, generators_module_name):
         try:
             self.generator_modules.append(__import__(generators_module_name))
+            print(self.generator_modules)
         except:
             raise module_not_loaded(generators_module_name)
                 
@@ -135,11 +136,12 @@ class output_file_generator:
             return eval("gen_" + name + "()")
         except:
             pass
-        try:
-            for generator in self.generator_modules:
+        for generator in self.generator_modules:
+            try:    
                 return eval("generator.gen_" + name + "()")
-        except:
-            return None
+            except:
+                pass
+        return None
       
     def translate_line(self, line, output):
         line_content = template_line(line)         
