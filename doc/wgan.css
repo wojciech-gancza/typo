@@ -1,7 +1,10 @@
-body {padding: 20px }
-h1 {color: green}
-h2 {color: red}
-a:link {color: blue; text-decoration: none}
-a:visited {color: blue; text-decoration: none}
-a:active {color: blue; text-decoration: none}
-a:hover {color: blue; text-decoration: none}
+body        { padding: 20px }
+h1          { color: green }
+h2          { color: red }
+a:link      { color: blue; text-decoration: none }
+a:visited   { color: blue; text-decoration: none }
+a:active    { color: blue; text-decoration: none }
+a:hover     { color: blue; text-decoration: none }
+p.example   { padding-left: 60px; color: gray; font-family: "Lucida Console", "Courier New", monospace; }
+p.template  { padding-left: 60px; color: darkred; font-family: "Lucida Console", "Courier New", monospace; }
+p.output    { padding-left: 60px; color: darkgreen; font-family: "Lucida Console", "Courier New", monospace; }

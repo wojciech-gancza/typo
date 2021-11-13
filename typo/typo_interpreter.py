@@ -5,6 +5,8 @@
 import datetime
 import re
 import imp
+import os.path
+import sys
 
 from typo_outputs        import  string_output, file_output, indented_output
 from typo_inputs         import  file_lines
@@ -85,6 +87,13 @@ class user_code:
         return None
 
 
+
+""" error - template do not exist """
+class template_does_not_exist(typo_error):
+
+    def __init__(self, template_file_name):
+        typo_error.__init__(self, "Template file '" + template_file_name + "' does not exist.")
+
 """ problem with translating given name """
 class cannot_translate(typo_error):
 
@@ -107,11 +116,12 @@ class output_file_generator:
     def import_generator(self, generators_module_name):
         try:
             self.generator_modules.append(__import__(generators_module_name))
-            print(self.generator_modules)
         except:
             raise module_not_loaded(generators_module_name)
                 
     def build_source_code(self, template_file_name, source_code_file_name):
+        if not os.path.isfile(template_file_name):
+            raise template_does_not_exist(template_file_name)
         template = file_lines(template_file_name).lines
         self.context.user_code = user_code(template, source_code_file_name).user_code
         line_number = 1
@@ -129,8 +139,8 @@ class output_file_generator:
             if err.source == "":
                 err.source = template_file_name
                 err.line = line_number
-                raise err
-                
+            raise err
+                 
     def get_generator(self, name):
         try:
             return eval("gen_" + name + "()")
@@ -217,3 +227,91 @@ class gen_user_code(typo_generator):
         output.write_already_formatted(context.pop_user_code())
         
         
+
+""" exception thrown when program should exit - this exception should be thrown
+    up to level of typo module code (free code in TYPO.py) """
+class exit_typo(Exception):
+
+    def __init__(self, exit_code):
+        self.exit_code = exit_code
+        
+""" error: command passed to processor is malformed """
+class cannot_execute_command(typo_error):
+
+    def __init__(self, command):
+        typo_error.__init__(self, "I do not understand command '" + command + "'")
+
+""" transforms command lines into operations on typo_processor """
+class command_processor:
+
+    def __init__(self, processor):
+        self.processor = processor
+    
+    def process_command(self, command):
+        if command.strip() == "":
+            return
+        if re.match("^\s*[_a-zA-Z][_a-zA-z0-9]*\s*=.*", command):
+            return self._process_assignment(command)
+        elif re.match("^\s*exit\s*$", command):
+            raise exit_typo(0)
+        elif re.match("^\s*list\s*$", command):
+            return self._list_variables();
+        elif re.match("^\s*import\s*.*", command):
+            return self._process_import(command)
+        elif re.match("^\s*[_a-zA-Z][_a-zA-z0-9]*\s*$", command):
+            return self._process_generation(command)
+        elif not re.match("^\s*#.*", command):
+            raise cannot_execute_command(command)
+    
+    def _process_assignment(self, command):
+        pos = command.find("=")
+        variable_name = command[0:pos].strip()
+        value_text = command[pos+1:].strip()
+        try:
+            # allow python constructions in assignments
+            value_text = eval(value_text)
+        except:
+            pass
+        self.processor.set_value(variable_name, value_text)
+        
+    def _process_import(self, command):
+        found_import = re.match("^\s*import\s*", command)
+        module_name = command[found_import.end():].strip()
+        self.processor.import_generator(module_name)
+        
+    def _process_generation(self, command):
+        self.processor.generate(command.strip())
+    
+    def _list_variables(self):
+        result = ""
+        for key, value in self.processor.context.values.items():
+            result += key + " = " + str(value) + "\n"
+        return result[:-1]
+    
+    
+ 
+def typo_main():
+    try:
+        typo = typo_processor()
+        processor = command_processor(typo)
+    
+        init = file_lines("init.typo")
+        line_number = 1
+        for init_line in init.lines:
+            try:
+                result = processor.process_command(init_line)
+            except typo_error as err:
+                print("INIT ERROR: " + str(err) + " (in 'init.typo' line: " + str(line_number) + ")")
+            line_number = line_number + 1
+    
+        while(True):
+            command = raw_input("> ")
+            try:
+                result = processor.process_command(command)
+                if not(result is None):
+                    print(result)
+            except typo_error as err:
+                print("ERROR: " + str(err))
+                
+    except exit_typo as exit_info:
+        sys.exit(exit_info.exit_code)

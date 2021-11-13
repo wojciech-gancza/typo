@@ -165,7 +165,7 @@ class typo_context:
 
 
 """ error - variable which need to contain path - is not defined """
-class path_not_secified_error(typo_error):
+class path_not_secified(typo_error):
 
     def __init__(self, path_name):
         typo_error.__init__(self, "Variable '" + path_name + "' is not defined but it should point to the directory.")
@@ -195,9 +195,10 @@ class context_reader:
         self.context = context
 
     def get_path(self, path_name):
-        value = str(self.context.get_value(path_name))
+        value = self.context.get_value(path_name)
         if value is None:
-            raise path_not_specified(path_name)
+            raise path_not_secified(path_name)
+	    value = str(value)
         if not os.path.isdir(value):
             raise path_not_found(path_name, value)
         if value[-1] != "/":
@@ -205,9 +206,10 @@ class context_reader:
         return value
 
     def get_file_name(self, file_name_variable_name):
-        value = str(self.context.get_value(file_name_variable_name))
+        value = self.context.get_value(file_name_variable_name)
         if value is None:
             raise file_name_is_not_defined(file_name_variable_name)
+	value = str(value)
         if not re.match("[_a-zA-Z][0-9_a-zA-Z.]*", value):
             raise malformed_file_name(file_name_variable_name, value)
         return value

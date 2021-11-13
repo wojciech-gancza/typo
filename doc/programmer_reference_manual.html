@@ -1,0 +1,73 @@
+<html>
+
+  <head>
+    <link rel="stylesheet" href="wgan.css">
+  </head>
+  
+  <body>
+    <h1><a href="typo.html">TYPO</a> programmer reference manual</h1>
+      (c) WGan 2021 <a href="https://en.wikipedia.org/wiki/MIT_License">[licence: MIT]</a>
+    <p>
+      Additionally to typo <a href="typo.html">overview</a>, which is always 
+      good to start with, and <a href="user_reference_manual.html">user 
+      reference manual</a>, which is 'must know-how' (because programmers must 
+      understand user point of view), it is good to know source code (I think 
+      you already take a look) and most wanted part of documentation -  
+      <a href="reference_manual.html">reference manual</a> describing 
+      all functions and classes functionality. 
+      But before, some overview from programmer point of view:
+    
+    <h2>Typo is primitive</h2>
+      Typo is not a well-suited enterprice metaprogramming system. maybe, 
+      some day, it would, but for sure not this version. It is primitive, because
+      it has single responsibility: generation od source code. Reading of source 
+      knowledge about source code files which are automatically generated. All
+      the businnes logic of the metaprogram - is out of its scope. 
+      Use it as primitove output, preparing its data and allowing to select 
+      templates and modules with generators. All the rest - is in your hands.
+      Using typo - you can focus on metalogic of your domain.
+    <p>
+      Typo is as it is, but its license allow you to modify the code. I tried to 
+      write it as clean as I could, so, I hope understanding the code should 
+      not be so painfull, however it is good to read reference manual and use 
+      it as a guide to the code. 
+    <p>
+      I put many classes to only few code files. It might not be handy, when 
+      modifying typo code. But when you want to use it as library in your own
+      metaprogramming project, you need just copy this few files into your
+      python code. This is why all the files have prefix <i>typo_</i> - to 
+      locate them together in a directory list. List which may contain 
+      many more files.
+    
+    <h2>Single interface</h2>
+      In your metaprograms you can use all classes of typo, however, the 
+      interface of typo functionality is located in single class <i>typo_processor</i>
+      located in file typo_interpreter.py. To import it into your project, use:
+    <p class="example">
+      from typo_interpreter import typo_processor
+    <p>
+      Configuration of generation and passing parameters to templates is made be
+      setting values in generator context. It is not handy. Feel free to prepare
+      adapter with interface specific to your domain and your code manners. 
+      Writing adapters to third party code is always good practice.
+    <p>
+      Class <i>typo_processor</i> have only 3 methods:
+      <ul>
+        <li><b>set_value(name, value)</b> - sets the value in typo context. 
+          Value can be any python value or python expression. When it is proper
+          Python expression - it is interpreted by Python interpreter when 
+          it is set. Strings and lists of strings can contain placeholders.
+          Placeholders are replaces by their values when the value us read. 
+          The functionality is directly used when assinging value to context 
+          variable </li>
+        <li><b>import_generator(module_name)</b> - adds module to modules 
+          considered when looking for code generator mentioned in template.</li>
+        <li><b>generate(template_name)</b> - generate output file based on
+          template passed as parameter. Template name should not have suffix 
+          <i>.template</i></li>. This suffix, as well as template path is 
+          added by typo.
+      </ul>
+
+  </body>
+  
+</html>

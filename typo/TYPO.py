@@ -3,6 +3,7 @@
 
 import re
 import os.path
+import sys
 
 from typo_outputs       import  indented_output, console_output, string_output, \
                                 file_output
@@ -10,33 +11,26 @@ from typo_inputs        import  file_lines
 from typo_core          import  typo_context, template_line, \
                                 typo_error, typo_generator, \
                                 context_reader
-from typo_interpreter   import  typo_processor
+from typo_interpreter   import  typo_processor, typo_main
 from typo_tools         import  identifier_formatter       
+        
     
-
-
-""" transforms command lines into operations on typo_processor """
-class command_processor:
-
-    def __init__(self):
-        pass    
     
-    def process_command(self, command)
-        pass
-    
-try:
-    typo = typo_processor()
-    typo.set_value("template_path", "_dev/templates")
-    typo.set_value("path", "_dev/tests/outputs")
-    typo.set_value("file_name", "${class_name}.hpp")
-    typo.set_value("copyright", "WGan softerware")
-    typo.set_value("class_name", "default_output")
-    typo.set_value("simple_type_value", "m_default_output")
-    typo.import_generator("_dev1")
-    typo.import_generator("_dev2")
-    typo.generate("simple_type")
-except typo_error as err:
-    print("ERROR: " + str(err))
+typo_main()
+
+#try:
+#    typo = typo_processor()
+#    typo.set_value("template_path", "_dev/templates")
+#    typo.set_value("path", "_dev/tests/outputs")
+#    typo.set_value("file_name", "${class_name}.hpp")
+#    typo.set_value("copyright", "WGan softerware")
+#    typo.set_value("class_name", "default_output")
+#    typo.set_value("simple_type_value", "m_default_output")
+#    typo.import_generator("_dev1")
+#    typo.import_generator("_dev2")
+#    typo.generate("simple_type")
+#except typo_error as err:
+#    print("ERROR: " + str(err))
 
 
 
