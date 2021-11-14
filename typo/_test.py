@@ -4,7 +4,8 @@
 
 import unittest
 
-from typo_core      import  typo_context,       typo_error
+from typo_core      import  typo_context       
+from typo_tools     import  typo_error
     
     
 
