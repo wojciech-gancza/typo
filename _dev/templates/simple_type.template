@@ -5,6 +5,7 @@ $> import _dev2
 $> simple_type_value = ${type} ${variable}
 $> variable = value
 $> type = "long"
+$> id = some strange class nobody knows what for
 // ${copyright}
 
 #pragma once
@@ -13,7 +14,7 @@ $> type = "long"
 ${user_code}
 // generated code
 
-class ${class_name}
+class ${id.UppercaseCamel}
 {
     public:
         ${simple_type_constructor}

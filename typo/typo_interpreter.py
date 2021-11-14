@@ -226,7 +226,7 @@ class command_processor:
     def process_command(self, command):
         if command.strip() == "":
             return
-        if re.match("^\s*[_a-zA-Z][_a-zA-z0-9]*\s*=.*", command):
+        if re.match("^\s*[_a-zA-Z][_.a-zA-z0-9]*\s*=.*", command):
             return self._process_assignment(command)
         elif re.match("^\s*exit\s*$", command):
             raise exit_typo(0)
@@ -268,10 +268,16 @@ class command_processor:
  
 def typo_main():
     try:
+        init_file_name = "init.typo"
+        if len(sys.argv) > 1:
+            init_file_name = sys.argv[1]
+            if not os.path.isfile(init_file_name):
+                raise typo_error("File '" + init_file_name + "' not found")
+            
         typo = typo_processor()
         processor = command_processor(typo)
     
-        init = file_lines("init.typo")
+        init = file_lines(init_file_name)
         line_number = 1
         for init_line in init.lines:
             try:
@@ -291,3 +297,6 @@ def typo_main():
                 
     except exit_typo as exit_info:
         sys.exit(exit_info.exit_code)
+        
+    except typo_error as err:
+        print("FATAL: " + str(err))

@@ -9,36 +9,11 @@ import os.path
 
 from typo_outputs  import  string_output, file_output, indented_output
 from typo_inputs   import  file_lines
+from typo_tools    import  identifier_formatter, typo_converter, \
+                           typo_generator, typo_error
 
 
 
-""" common error for all typo errors which should be reported to the user """
-class typo_error(Exception):
-
-    def __init__(self, message):
-        self.text = message
-        self.source = ""
-        self.line = 0
-        
-    def __str__(self):
-        text = self.text
-        if self.source != "":
-            text += " Found in '" + self.source + "'"
-            if self.line != 0:
-                text += " in line " + str(self.line)
-            text += "."
-        return text
-    
-
-
-""" base class of generators generating code """
-class typo_generator:
-
-    def generate(self, context, output):
-        pass
-        
-        
-        
 """ generator returning timestamp """
 class gen_timestamp(typo_generator):
 
@@ -70,7 +45,7 @@ class template_line:
         self.line = line_text
 
     def is_just_placeholder(self):
-        if re.match("^\\s*\$\{[a-zA-Z_][0-9a-zA-Z_]*\}\\s*$", self.line):
+        if re.match("^\\s*\$\{[a-zA-Z_][0-9a-zA-Z_.]*\}\\s*$", self.line):
             return True
         else:
             return False
@@ -85,7 +60,7 @@ class template_line:
             return False
 
     def is_constant(self):
-        if re.match("^.*\$\{[a-zA-Z_][0-9a-zA-Z_]*\}.*$", self.line):
+        if re.match("^.*\$\{[a-zA-Z_][0-9a-zA-Z_.]*\}.*$", self.line):
             return False
         else:
             return True
@@ -97,7 +72,7 @@ class template_line:
             return False
         
     def find_first_identifier(self):
-        found = re.search("\$\{[a-zA-z][0-9_a-zA-z]*\}", self.line)
+        found = re.search("\$\{[a-zA-z][0-9_a-zA-z.]*\}", self.line)
         if not found:
             return None
         else:
@@ -184,8 +159,16 @@ class typo_context:
         return None
       
     def _get_value(self, name):
+        converter = None
         value = self.get_not_interpreted_value(name)
+        if value is None:
+            stripped_name, converter = self._strip_and_get_converter(name)
+            value = self.get_not_interpreted_value(stripped_name)
+            if value is None:
+                return None
         translated_value = self._translate_value(value)
+        if not(converter is None):
+            translated_value = converter.convert(translated_value)
         return translated_value    
             
     def _translate_value(self, value):
@@ -195,6 +178,16 @@ class typo_context:
             return [ self._translate_value(text) for text in value]
         else:
             return value
+        
+    def _strip_and_get_converter(self, name):
+        split_on = name.rfind(".")
+        bare_name = name[0:split_on]
+        converter_name = name[split_on+1:]
+        converter = self.create_object("conv_" + converter_name)
+        if converter:
+            return bare_name, converter
+        else:
+            return name, None
         
     def _translate_text(self, text):
         line = template_line(text)
@@ -264,3 +257,27 @@ class context_reader:
         return value
 
 
+""" simple converters for use with identifiers """
+class conv_CAPITALIZE_ALL(typo_converter):
+
+    def convert(self, text):
+        id = identifier_formatter(text)
+        return id.CAPITALIZE_ALL()
+        
+class conv_lowercase_with_underscores(typo_converter):
+
+    def convert(self, text):
+        id = identifier_formatter(text)
+        return id.lowercase_with_underscores()
+        
+class conv_UppercaseCamel(typo_converter):
+
+    def convert(self, text):
+        id = identifier_formatter(text)
+        return id.UppercaseCamel()
+        
+class conv_lowercaseCamel(typo_converter):
+
+    def convert(self, text):
+        id = identifier_formatter(text)
+        return id.lowercaseCamel()

@@ -129,6 +129,22 @@
       I see no use of it. If you think it could be handy - feel free to modify 
       typo code.
     <p>
+      When accessing variable, you can convert its value using converter. 
+      To convert value, add a dot after its name, and then name of converter.
+      You can use one of built-in converter
+    <p>
+      <ul>
+        <li>CAPITALIZE</li>
+        <li>lowercase_with_underscore</li>
+        <li>lowercaseCamel</li>
+        <li>UppercaseCamel</li>
+      </ul>
+      (I think converter names are descriptive) or define uour own.
+    <p class="example">
+      id = some other class<br>
+      identifier = ${id.lowercaseCamel}<br>
+      # get_value("identifier") -> "someOtherClass"
+    <p>
       Placeholders in values are replaced at the time when value is taken, not 
       when it is set. When you list values - you can see placeholders, not 
       calculated values.
@@ -203,6 +219,12 @@
     <p>
       For full reference of avialable objects and their functionality - read 
       <a href="reference_manual.html">reference manual</a>
+    <p>
+      You can also create your own converters which can be called by adding suffix
+      '<i>.coverter</i>' to the value name. Converter is a class with name 
+      'conv_<i>converter_name</i>' having method:
+    <p class+"example">
+      def convert(selg, text):
           
   </body>
   
