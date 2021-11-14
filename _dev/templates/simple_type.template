@@ -1,7 +1,11 @@
 // File generated ${timestamp} by (c) TYPO ${typo_version}
 // Do not update its content out of marked places
-
-${copyright}
+$> import _dev1
+$> import _dev2
+$> simple_type_value = ${type} ${variable}
+$> variable = value
+$> type = "long"
+// ${copyright}
 
 #pragma once
 

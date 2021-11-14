@@ -3,8 +3,5 @@ path = _dev/tests/outputs
 copyright = (c) WGan 2021 [lic:MIT]
 file_name = default_output.hpp
 class_name = SomethingStrange
-import _dev1
-import _dev2
-simple_type_value = "// value will be here"
 simple_type
 exit

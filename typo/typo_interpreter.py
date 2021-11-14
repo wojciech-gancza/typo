@@ -129,7 +129,9 @@ class output_file_generator:
             code_output = indented_output(output_file)
             for line in template:
                 line_content = template_line(line)
-                if line_content.is_constant():
+                if len(line) >= 2 and line[0:2] == '$>':
+                    self.interpret_line(line[2:].strip())
+                elif line_content.is_constant():
                     output_file.write(line)
                 else:
                     self.translate_line(line, code_output)
@@ -139,6 +141,11 @@ class output_file_generator:
                 err.source = template_file_name
                 err.line = line_number
             raise err
+                 
+    def interpret_line(self, line):
+        processor = typo_processor(self.context)
+        cmd = command_processor(processor)
+        cmd.process_command(line)
                  
     def translate_line(self, line, output):
         line_content = template_line(line)         
@@ -178,15 +185,15 @@ class output_file_generator:
 """ processor - main class of TYPO programm - contain everything which is needed """
 class typo_processor:
 
-    def __init__(self):
-        self.context = typo_context()
+    def __init__(self, context = typo_context()):
+        self.context = context
         self.generator = output_file_generator(self.context)
         self.context_reader = context_reader(self.context)
         
     def set_value(self, name, value):
         self.context.set_value(name, value)
         
-    def import_generator(self, generators_module_name):
+    def import_module(self, generators_module_name):
         self.context.import_module(generators_module_name)
         
     def generate(self, template):
@@ -246,7 +253,7 @@ class command_processor:
     def _process_import(self, command):
         found_import = re.match("^\s*import\s*", command)
         module_name = command[found_import.end():].strip()
-        self.processor.import_generator(module_name)
+        self.processor.import_module(module_name)
         
     def _process_generation(self, command):
         self.processor.generate(command.strip())
