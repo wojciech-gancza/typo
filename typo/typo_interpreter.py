@@ -100,25 +100,24 @@ class cannot_translate(typo_error):
     def __init__(self, name):
         typo_error.__init__(self, "Placeholder '" + name + "' is not known.")
         
-""" error - desired module was not loaded """
-class module_not_loaded(typo_error):
+""" error: generator cannot generate inline content """
+class wrong_generator_for_inline(typo_error):
 
-    def __init__(self, module_name):
-        typo_error.__init__(self, "Module '" + module_name + "' cannot be loaded.")        
+    def __init__(self, name):
+        typo_error.__init__(self, "Generator '" + name + "' cannot be used inline.")
+        
+""" error: error in generator - something wrong happened when generating content  """
+class error_in_generator(typo_error):
 
+    def __init__(self, generator_name, error_report):
+        typo_error.__init__(self, "Generator '" + name + "' raises error '" + error_report + "'.")
+        
 """ output file generator - creates file based on template """
 class output_file_generator:
 
     def __init__(self, context):
         self.context = context
-        self.generator_modules = [ ]
         
-    def import_generator(self, generators_module_name):
-        try:
-            self.generator_modules.append(__import__(generators_module_name))
-        except:
-            raise module_not_loaded(generators_module_name)
-                
     def build_source_code(self, template_file_name, source_code_file_name):
         if not os.path.isfile(template_file_name):
             raise template_does_not_exist(template_file_name)
@@ -141,37 +140,31 @@ class output_file_generator:
                 err.line = line_number
             raise err
                  
-    def get_generator(self, name):
-        try:
-            return eval("gen_" + name + "()")
-        except:
-            pass
-        for generator in self.generator_modules:
-            try:    
-                return eval("generator.gen_" + name + "()")
-            except:
-                pass
-        return None
-      
     def translate_line(self, line, output):
         line_content = template_line(line)         
         while not line_content.is_constant():
             start, end = line_content.find_first_identifier()
             identifier = line[start:end]
-            generator = self.get_generator(identifier)
+            generator = self.context.create_object("gen_" + identifier)
             before = line[0:start-2]
             if generator and line_content.is_just_placeholder():
                 indent = len(before)
                 output.set_indent(indent)
-                generator.generate(self.context, output)
-                output.flush()
-                return
+                try:
+                    generator.generate(self.context, output)
+                    output.flush()
+                    return
+                except Exception as err:
+                    raise error_in_generator(identifier, str(err))
             else:
                 after = line[end+1:]
                 if generator:
-                    temporary_output = string_output()
-                    generator.generate(self.context, temporary_output)
-                    line = before + temporary_output.text + after    
+                    try:
+                        temporary_output = string_output()
+                        generator.generate(self.context, temporary_output)
+                        line = before + temporary_output.text + after  
+                    except:
+                        raise wrong_generator_for_inline(identifier)
                 else:
                     value = self.context.get_value(identifier)
                     if value is None:
@@ -194,7 +187,7 @@ class typo_processor:
         self.context.set_value(name, value)
         
     def import_generator(self, generators_module_name):
-        self.generator.import_generator(generators_module_name)
+        self.context.import_module(generators_module_name)
         
     def generate(self, template):
         template_path = self.context_reader.get_path("template_path")
@@ -204,30 +197,6 @@ class typo_processor:
 
                 
         
-""" generator returning timestamp """
-class gen_timestamp(typo_generator):
-
-    def generate(self, context, output):
-        output.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-       
-        
-        
-""" generator returning version of typo translator """
-class gen_typo_version(typo_generator):
-
-    def generate(self, context, output):
-        output.write("0.1 Dev")
-        
-        
-   
-""" genertor of stored user code """
-class gen_user_code(typo_generator):
-
-    def generate(self, context, output):
-        output.write_already_formatted(context.pop_user_code())
-        
-        
-
 """ exception thrown when program should exit - this exception should be thrown
     up to level of typo module code (free code in TYPO.py) """
 class exit_typo(Exception):

@@ -7,4 +7,4 @@ import _dev1
 import _dev2
 simple_type_value = "// value will be here"
 simple_type
-
+exit

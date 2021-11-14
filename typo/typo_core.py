@@ -39,6 +39,30 @@ class typo_generator:
         
         
         
+""" generator returning timestamp """
+class gen_timestamp(typo_generator):
+
+    def generate(self, context, output):
+        output.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+       
+        
+        
+""" generator returning version of typo translator """
+class gen_typo_version(typo_generator):
+
+    def generate(self, context, output):
+        output.write("0.1 Dev")
+        
+        
+   
+""" genertor of stored user code """
+class gen_user_code(typo_generator):
+
+    def generate(self, context, output):
+        output.write_already_formatted(context.pop_user_code())
+        
+        
+
 """ Some function used to analyze template line """
 class template_line:
 
@@ -99,6 +123,12 @@ class loop_error_when_resolving(typo_error):
     def __init__(self, name):
         typo_error.__init__(self, "Cycle found when resolving value of '" + name + "'")
 
+""" error - desired module was not loaded """
+class module_not_loaded(typo_error):
+
+    def __init__(self, module_name):
+        typo_error.__init__(self, "Module '" + module_name + "' cannot be loaded.")        
+
 
 
 """ context - all settings are defined here """
@@ -107,6 +137,7 @@ class typo_context:
     def __init__(self):
         self.values = { }
         self.user_code = [ ]
+        self.modules = [ ]
         
     def set_value(self, name, value):
         self.values[name] = value
@@ -116,11 +147,6 @@ class typo_context:
             return self.values[name]
         else:
             return None
-            
-    def _get_value(self, name):
-        value = self.get_not_interpreted_value(name)
-        translated_value = self._translate_value(value)
-        return translated_value    
             
     def get_value(self, name):
         try:
@@ -139,6 +165,29 @@ class typo_context:
             self.user_code.pop(0)
             return value
     
+    def import_module(self, module_name):
+        try:
+            self.modules.append(__import__(module_name))
+        except:
+            raise module_not_loaded(module_name)        
+          
+    def create_object(self, class_name):
+        try:
+            return eval(class_name + "()")
+        except:
+            pass
+        for loaded_module in self.modules:
+            try:    
+                return eval("loaded_module." + class_name + "()")
+            except:
+                pass
+        return None
+      
+    def _get_value(self, name):
+        value = self.get_not_interpreted_value(name)
+        translated_value = self._translate_value(value)
+        return translated_value    
+            
     def _translate_value(self, value):
         if isinstance(value, str):
             return self._translate_text(value)
