@@ -3,12 +3,13 @@
 
 
 """ file content separated into lines """
-class file_lines:
+class file_lines(list):
 
     def __init__(self, file_name):
         try:
             file = open(file_name)
-            self.lines = file.readlines()
+            for line in file.readlines():
+                self.append(line)
             file.close()
         except:
-            self.lines = [ ]
+            pass

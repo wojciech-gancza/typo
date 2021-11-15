@@ -8,3 +8,5 @@ a:hover     { color: blue; text-decoration: none }
 p.example   { padding-left: 60px; color: gray; font-family: "Lucida Console", "Courier New", monospace; }
 p.template  { padding-left: 60px; color: darkred; font-family: "Lucida Console", "Courier New", monospace; }
 p.output    { padding-left: 60px; color: darkgreen; font-family: "Lucida Console", "Courier New", monospace; }
+span.parent { font-size: 12pt; color: gray }
+span.module { font-size: 12pt; color: green }

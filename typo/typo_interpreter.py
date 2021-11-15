@@ -29,24 +29,24 @@ class user_code:
     def __init__(self, template, source_code_file_name):
         self.user_code = [ ]
         source_file = file_lines(source_code_file_name)
-        source_file_lines_count = len(source_file.lines)
+        source_file_lines_count = len(source_file)
         source_file_line = 0
         for line_number in range(0, len(template)):
             try:
                 if self.is_user_code_placeholder(template[line_number]):
                     before = self.get_line_before(template, line_number)
                     after = self.get_line_after(template, line_number)
-                    line_before = self.find_line(before, source_file.lines, source_file_line)
+                    line_before = self.find_line(before, source_file, source_file_line)
                     if line_before is None:
                         self.user_code.append("\n")
                     else:
-                        line_after = self.find_line(after, source_file.lines, line_before)
+                        line_after = self.find_line(after, source_file, line_before)
                         if line_after is None:
                             raise user_code_placeholder_error("Cannot find ending delimiter of user code")
                         source_file_line = line_after + 1
                         user_code = ""
                         for line_number in range(line_before+1, line_after):
-                            user_code += source_file.lines[line_number]
+                            user_code += source_file[line_number]
                         self.user_code.append(user_code)
             except typo_error as err:
                 err.source = source_code_file_name
@@ -121,7 +121,7 @@ class output_file_generator:
     def build_source_code(self, template_file_name, source_code_file_name):
         if not os.path.isfile(template_file_name):
             raise template_does_not_exist(template_file_name)
-        template = file_lines(template_file_name).lines
+        template = file_lines(template_file_name)
         self.context.user_code = user_code(template, source_code_file_name).user_code
         line_number = 1
         try:
@@ -279,7 +279,7 @@ def typo_main():
     
         init = file_lines(init_file_name)
         line_number = 1
-        for init_line in init.lines:
+        for init_line in init:
             try:
                 result = processor.process_command(init_line)
             except typo_error as err:

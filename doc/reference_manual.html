@@ -5,7 +5,7 @@
   </head>
   
   <body>
-    <h1><a href="typo.html">TYPO</a> reference manual - classes</h1>
+    <h1><a href="typo.html">TYPO</a> class reference manual</h1>
       (c) WGan 2021 <a href="https://en.wikipedia.org/wiki/MIT_License">[licence: MIT]</a>
       
     <p>
@@ -13,7 +13,7 @@
       not be described here.
     <ul>
       <li>typo_inputs module:<ul>
-        <li><a _href="#_">file lines</a></li>
+        <li><a href="#file_lines">file lines</a></li>
         </ul></li>
       <li>typo_outputs module:<ul>
         <li><a _href="#_">output</a></li>
@@ -44,7 +44,7 @@
         <li><a _href="#_">identifier_not_found</a></li>
         <li><a _href="#_">loop_error_when_resolving</a></li>
         <li><a _href="#_">module_not_loaded</a></li>
-        <li><a _href="#_">typo_context</a></li>
+        <li><a href="#typo_context">typo_context</a></li>
         <li><a _href="#_">path_not_secified</a></li>
         <li><a _href="#_">path_not_found</a></li>
         <li><a _href="#_">file_name_is_not_defined</a></li>
@@ -69,6 +69,98 @@
         <li><a _href="#_">typo_main</a></li>
         </ul></li>
       </ul>
+    
+    <h2><a name=file_lines></a>file_lines 
+      <span class="parent">(list)</parent> 
+      <span class="module">typo_input.py</span>
+      </h2>
+      Simple class helping reading from text file. It works as array of strings, 
+      but it is constructed from file name. If file exists - it read whole file 
+      and splits it into lines stored in the object.
+    <ul>
+      <li><b>__init__(file_name)</b> - constructore taking name of the file to 
+        read. If file do not exist, the object is createtes as empty list. No
+        exception are thrown.
+    </ul>
+    
+    <h2><a name=typo_context></a>typo_context 
+      <span class="module">typo_core.py</span>
+      </h2>
+      Typo context is a class of object used for communication between code 
+      generators and the user of the program. Her you can store values accessible 
+      by the output file generator and generators it calls. Context also provides
+      simple processing of values allowng to replace placeholders located in the
+      string values. 
+    <p>
+      Any python values can be stored in context. It does not limit neither type
+      nor the complexity of the values. It also do not provide any check of 
+      values. When you want to use tem in your generator - provide your own check
+      or use <a href="context_reader">context reader</a> 
+      class - simple helper which allow to take values and check them.
+    <p>
+      Context also stores all information needed by the interpreter. It is also 
+      responsigle for loading modules with generators and converters, and storing
+      additional code loaded when re-generating output files. Feel free to 
+      store any values you need to store during a session.
+    <p>
+      Context object is created once when <a href="typo_processor">typo 
+      processor</a> object is created and exists at least till the end of 
+      its existance, so you can keep here values which need to survive between
+      creation of subsequent output files.
+    <p>
+      Context provide set of methods getting and getting data from its content:
+    <ul>
+      <li><b>set_value(name, value)</b> just sets the value. Name should be a 
+        string, value can be of any type which could be stored. No preprocessing
+        is performed - so the placeholders are stored in value without 
+        translation.</li>
+      <li><b>get_not_interpreted_value(name)</b> returns the value from the 
+        values dictionary without interpreting it. When the value do not exist, 
+        None is returned.</li>
+      <li><b>get_value(name)</b> main function for reading values. Returns value
+        from the dictionary. If the value is string or list of strings, 
+        placeholders located inside are interpreted and replaced by values. 
+        Plaholders can represent any value name and can be decorated by converter,
+        but cannot use generators. When value does not exist - function returns 
+        None</li>
+      <li><b>pop_user_code()</b> Returns next user code block to store inside 
+        the generated file. When no more blocks are available - function returns
+        empty string.</li>
+      <li><b>import_module(module_name)</b> - loads python code module and adds
+        it to the collection of modules to search for generators and 
+        converters.</li>
+      <li><b>create_object(class_name)</b> - function creating object of the 
+        class of given name. When the class is not a part of typo, all loaded
+        modules are searched. When class cannot be found, None is returned.
+        </li>
+      <li><b>_get_value(name)</b> provides technical solution for taking and
+        interpreting value</li>
+      <li><b>_translate_value(value)</b> translates value when the value is 
+        string or list of strings</li>
+      <li><b>_strip_and_get_converter(name)</b> - checks if the name contain
+        placeholder written after the dot. If yes - function returns
+        pair of values - stripped anem and already created converter object.
+        If converter is not found - result is the name and None object.
+        </li>
+      <li><b>_translate_text(text)</b> - translates text by looking for 
+        placeholder and replacing it by its value.</li>
+      </ul>
+    <p>
+      You can also directly refer to fields of context:
+    <ul>
+      <li><b>values</b> dictionary containing all values set by <b>set_value</b>
+        functions. Just keeps all values. Feel free to store anything you
+        want here. You can also directly access values or remove them.</li>
+      <li><b>user_code</b> list of blocks of user code. From this list you can 
+        read by function <b>pop_user_code</b>. This list is filled once per 
+        byulding output file. When output file already exist, typo reads
+        it and try to recognize code added by the user. Such code is stored here 
+        before generation of the file.</li>
+      <li><b>modules</b> - list of all modules loaded by <b>import_module</b>.
+        When context is asked for generator or converter object (function
+        <b>create_object</b>)- these modules
+        are searched for definition of needed class.</li>
+    </ul>
     
     <h2>... to be prepared</h2>
     [...]
