@@ -9,11 +9,44 @@
       (c) WGan 2021 <a href="https://en.wikipedia.org/wiki/MIT_License">[licence: MIT]</a>
       
     <p>
-      This manual do not describe all classes. Specifi errors or adapters could
-      not be described here.
+      This manual do not describe all classes. Specific errors or adapters could
+      not be described here or described very brifely. Lets take a look on list
+      of classes. In order of appearance:
     <ul>
+      <li>typo_core module<ul>
+        <li><a href="#gen_timestamp">gen_timestamp</a></li>
+        <li><a href="#gen_typo_version">gen_typo_version</a></li>
+        <li><a href="#gen_user_code">gen_user_code</a></li>
+        <li><a _href="#_">template_line</a></li>
+        <li><a _href="#_">identifier_not_found</a></li>
+        <li><a href="#loop_error_when_resolving">loop_error_when_resolving</a></li>
+        <li><a href="#module_not_loaded">module_not_loaded</a></li>
+        <li><a href="#typo_context">typo_context</a></li>
+        <li><a _href="#_">path_not_secified</a></li>
+        <li><a _href="#_">path_not_found</a></li>
+        <li><a _href="#_">file_name_is_not_defined</a></li>
+        <li><a _href="#_">malformed_file_name</a></li>
+        <li><a _href="#_">context_reader</a></li>
+        <li><a _href="#_">conv_CAPITALIZE_ALL</a></li>
+        <li><a _href="#_">conv_lowercase_with_underscores</a></li>
+        <li><a _href="#_">conv_UppercaseCamel</a></li>
+        <li><a _href="#_">conv_lowercaseCamel</a></li>
+        </ul></li>
       <li>typo_inputs module:<ul>
         <li><a href="#file_lines">file lines</a></li>
+        </ul></li>
+      <li>typo_interpreter module<ul>
+        <li><a _href="#_">user_code_placeholder_error</a></li>
+        <li><a _href="#_">user_code</a></li>
+        <li><a _href="#_">template_does_not_exist</a></li>
+        <li><a _href="#_">cannot_translate</a></li>
+        <li><a _href="#_">wrong_generator_for_inline</a></li>
+        <li><a _href="#_">error_in_generator</a></li>
+        <li><a _href="#_">output_file_generator</a></li>
+        <li><a _href="#_">typo_processor</a></li>
+        <li><a _href="#_">exit_typo</a></li>
+        <li><a _href="#_">command_processor</a></li>
+        <li><a _href="#_">typo_main</a></li>
         </ul></li>
       <li>typo_outputs module:<ul>
         <li><a _href="#_">output</a></li>
@@ -30,45 +63,15 @@
         </ul></li>
       <li>typo_tools module<ul>
         <li><a _href="#_">typo_error</a></li>
-        <li><a _href="#_">typo_generator</a></li>
+        <li><a href="#typo_generator">typo_generator</a></li>
         <li><a _href="#_">typo_converter</a></li>
         <li><a _href="#_">identifier_non_alphanueric_error</a></li>
         <li><a _href="#_">identifier_start_with_digit_error</a></li>
         <li><a _href="#_">identifier_formatter</a></li>
         </ul></li>
-      <li>typo_core module<ul>
-        <li><a _href="#_">gen_timestamp</a></li>
-        <li><a _href="#_">gen_typo_version</a></li>
-        <li><a _href="#_">gen_user_code</a></li>
-        <li><a _href="#_">template_line</a></li>
-        <li><a _href="#_">identifier_not_found</a></li>
-        <li><a _href="#_">loop_error_when_resolving</a></li>
-        <li><a _href="#_">module_not_loaded</a></li>
-        <li><a href="#typo_context">typo_context</a></li>
-        <li><a _href="#_">path_not_secified</a></li>
-        <li><a _href="#_">path_not_found</a></li>
-        <li><a _href="#_">file_name_is_not_defined</a></li>
-        <li><a _href="#_">malformed_file_name</a></li>
-        <li><a _href="#_">context_reader</a></li>
-        <li><a _href="#_">conv_CAPITALIZE_ALL</a></li>
-        <li><a _href="#_">conv_lowercase_with_underscores</a></li>
-        <li><a _href="#_">conv_UppercaseCamel</a></li>
-        <li><a _href="#_">conv_lowercaseCamel</a></li>
-        </ul></li>
-      <li>typo_interpreter module<ul>
-        <li><a _href="#_">user_code_placeholder_error</a></li>
-        <li><a _href="#_">user_code</a></li>
-        <li><a _href="#_">template_does_not_exist</a></li>
-        <li><a _href="#_">cannot_translate</a></li>
-        <li><a _href="#_">wrong_generator_for_inline</a></li>
-        <li><a _href="#_">error_in_generator</a></li>
-        <li><a _href="#_">output_file_generator</a></li>
-        <li><a _href="#_">typo_processor</a></li>
-        <li><a _href="#_">exit_typo</a></li>
-        <li><a _href="#_">command_processor</a></li>
-        <li><a _href="#_">typo_main</a></li>
-        </ul></li>
       </ul>
+    And now, alphabetically:
+     
     
     <h2><a name=file_lines></a>file_lines 
       <span class="parent">(list)</parent> 
@@ -83,7 +86,66 @@
         exception are thrown.
     </ul>
     
-    <h2><a name=typo_context></a>typo_context 
+      
+    <h2><a name=loop_error_when_resolving></a>gen_timestamp 
+      <span class="parent">(typo_generator)</parent> 
+      <span class="module">typo_core.py</span>
+      </h2>
+      Simple code <a href="#typo_generator">generator</a> which generates 
+      current timestamp. Timestamp is taken
+      at the moment when generator is used. So do not be suprised when two 
+      timestamps in the same document are different.
+    <p>
+      This generator could be used as inlined, because it neither use 
+      indentations nor unformatted access to the output.
+      
+      
+    <h2><a name="gen_typo_version"></a>gen_typo_version 
+      <span class="parent">(typo_generator)</parent> 
+      <span class="module">typo_core.py</span>
+      </h2>
+      Simple code <a href="#typo_generator">generator</a> which generates 
+      version number of typo generator. It can be used in generated files
+      to write information about version of typo who create them.
+    <p>
+      This generator could be used as inlined, because it neither use 
+      indentations nor unformatted access to the output.
+      
+      
+    <h2><a name="gen_user_code"></a>gen_user_code 
+      <span class="parent">(typo_generator)</parent> 
+      <span class="module">typo_core.py</span>
+      </h2>      
+      Simple code <a href="#typo_generator">generator</a> which places back code 
+      added manually in output file. When file is generated, typo first 
+      checks if the file exists, and reads parts located in place where
+      template defines as <i>${user_code}</i>. 
+    <p>
+      This generator assumes that the output have possibility to 
+      write unformatted code, but do not check it.
+   
+   
+    <h2><a name="loop_error_when_resolving"></a>loop_error_when_resolving 
+      <span class="parent">(typo_error)</parent> 
+      <span class="module">typo_core.py</span>
+      </h2>
+      Error of resolving value containing <i>${name}</i> which value containg 
+      another value name - and such chunk of the need of resolving - somewhere
+      forms an loop. In such case we have infinite number of steps to obtain 
+      the value. This is not higly welcome situation - so error is raised.
+      </h2>
+      
+      
+    <h2><a name="module_not_loaded"></a>module_not_loaded 
+      <span class="parent">(typo_error)</parent> 
+      <span class="module">typo_core.py</span>
+      </h2>
+      When module is needed, but the module itself cannot be found - this error 
+      is raised. Lack of module could be a problem in the future, so better is 
+      to raise error and leave the problem to the caller.
+      
+      
+    <h2><a name="typo_context"></a>typo_context 
       <span class="module">typo_core.py</span>
       </h2>
       Typo context is a class of object used for communication between code 
@@ -162,9 +224,33 @@
         are searched for definition of needed class.</li>
     </ul>
     
-    <h2>... to be prepared</h2>
-    [...]
-
+    
+    <h2><a name="typo_generator"></a>typo_generator 
+      <span class="module">typo_tools.py</span>
+      </h2>
+      Base class of code generators. When building output file using template, 
+      symbols in a form <i>${name}</i> works as placeholders. Such placeholders 
+      can be filled with the code generated by Python written code. Typo takes 
+      the <i>name</i> from the placeholder and assumes, that it is the name 
+      of the class generating code. Such class should have a form described 
+      here.
+    <p>
+      Generators must have at least one method named <i>generate</i>:
+      <ul>
+        <li><b>generate(context, output)</b> - the method which need to 
+          be written in your own generators. It receives from typo two parameters:
+          <ul>
+            <li><b><a href="#typo_context">context</a></b> - access to configuration and
+              data.</li>
+            <li><b><a href="#ouput">output</a></b> - possibility to write to output.
+              This parameter usually gives more functionality, but better to check 
+              if the methods you want to use are available. Usually it is 
+              enough to check if the output is of type 
+              <a href="#indented_output">indented_output</a>. This output is passed when the
+              generator is called as the only one element in template file line.
+          </ul></li>
+      </ul>
+      
   </body>
   
 </html>

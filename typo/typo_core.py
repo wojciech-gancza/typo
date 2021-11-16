@@ -26,7 +26,7 @@ class gen_timestamp(typo_generator):
 class gen_typo_version(typo_generator):
 
     def generate(self, context, output):
-        output.write("0.1 Dev")
+        output.write("1.00.Dev")
         
         
    
