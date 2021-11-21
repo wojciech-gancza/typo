@@ -1,7 +1,6 @@
 # (c) TYPO by WGan 2021
 
 
-
 """ file content separated into lines """
 class file_lines(list):
 

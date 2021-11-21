@@ -1,18 +1,14 @@
 # (c) TYPO by WGan 2021
 
 
-
-import datetime
+import os
 import re
-import imp
-import os.path
-import sys
 
-from typo_outputs        import  string_output, file_output, indented_output
-from typo_inputs         import  file_lines
-from typo_core           import  typo_context, template_line, \
-                                 typo_error, typo_generator, context_reader                        
-
+from typo_base import typo_error
+from typo_core import typo_context
+from typo_inputs import file_lines
+from typo_outputs import file_output, indented_output, string_output
+from typo_tools import context_reader, placeholders_info
 
 
 """ error when extracting user code """
@@ -21,10 +17,8 @@ class user_code_placeholder_error(typo_error):
     def __init__(self, message):
         typo_error.__init__(self, message)
 
-
-
 """ user code extractor """
-class user_code:
+class user_code_extractor:
 
     def __init__(self, template, source_code_file_name):
         self.user_code = [ ]
@@ -66,7 +60,7 @@ class user_code:
         if index == 0:
             raise user_code_placeholder_error("'user_code' placeholder cannot be in the first line")
         line = lines[index-1]
-        if template_line(line).is_constant():
+        if placeholders_info(line).is_constant():
             return line
         else:
             raise user_code_placeholder_error("Line before 'user_code' placeholder must be constant.")
@@ -75,7 +69,7 @@ class user_code:
         if index == len(lines)-1:
             raise user_code_placeholder_error("'user_code' placeholder cannot be in the last line")
         line = lines[index+1]
-        if template_line(line).is_constant():
+        if placeholders_info(line).is_constant():
             return line
         else:
             raise user_code_placeholder_error("Line after 'user_code' placeholder must be constant.")
@@ -85,7 +79,6 @@ class user_code:
             if lines[line_number] == pattern:
                 return line_number
         return None
-
 
 
 """ error - template do not exist """
@@ -110,7 +103,7 @@ class wrong_generator_for_inline(typo_error):
 class error_in_generator(typo_error):
 
     def __init__(self, generator_name, error_report):
-        typo_error.__init__(self, "Generator '" + name + "' raises error '" + error_report + "'.")
+        typo_error.__init__(self, "Generator '" + generator_name + "' raises error '" + error_report + "'.")
         
 """ output file generator - creates file based on template """
 class output_file_generator:
@@ -122,13 +115,13 @@ class output_file_generator:
         if not os.path.isfile(template_file_name):
             raise template_does_not_exist(template_file_name)
         template = file_lines(template_file_name)
-        self.context.user_code = user_code(template, source_code_file_name).user_code
+        self.context.user_code = user_code_extractor(template, source_code_file_name).user_code
         line_number = 1
         try:
             output_file = file_output(source_code_file_name)
             code_output = indented_output(output_file)
             for line in template:
-                line_content = template_line(line)
+                line_content = placeholders_info(line)
                 if len(line) >= 2 and line[0:2] == '$>':
                     self.interpret_line(line[2:].strip())
                 elif line_content.is_constant():
@@ -148,7 +141,7 @@ class output_file_generator:
         cmd.process_command(line)
                  
     def translate_line(self, line, output):
-        line_content = template_line(line)         
+        line_content = placeholders_info(line)         
         while not line_content.is_constant():
             start, end = line_content.find_first_identifier()
             identifier = line[start:end]
@@ -170,17 +163,17 @@ class output_file_generator:
                         temporary_output = string_output()
                         generator.generate(self.context, temporary_output)
                         line = before + temporary_output.text + after  
-                    except:
+                    except Exception as err:
+                        print(err)
                         raise wrong_generator_for_inline(identifier)
                 else:
                     value = self.context.get_value(identifier)
                     if value is None:
                         raise cannot_translate(identifier)
                     line = before + str(value) + after
-            line_content = template_line(line)
+            line_content = placeholders_info(line)
         output.write_already_formatted(line)
-        
-        
+               
         
 """ processor - main class of TYPO programm - contain everything which is needed """
 class typo_processor:
@@ -201,8 +194,7 @@ class typo_processor:
         output_path = self.context_reader.get_path("path")
         file_name = self.context_reader.get_file_name("file_name")
         self.generator.build_source_code(template_path + template + ".template", output_path + file_name)
-
-                
+               
         
 """ exception thrown when program should exit - this exception should be thrown
     up to level of typo module code (free code in TYPO.py) """
@@ -263,40 +255,3 @@ class command_processor:
         for key, value in self.processor.context.values.items():
             result += key + " = " + str(value) + "\n"
         return result[:-1]
-    
-    
- 
-def typo_main():
-    try:
-        init_file_name = "init.typo"
-        if len(sys.argv) > 1:
-            init_file_name = sys.argv[1]
-            if not os.path.isfile(init_file_name):
-                raise typo_error("File '" + init_file_name + "' not found")
-            
-        typo = typo_processor()
-        processor = command_processor(typo)
-    
-        init = file_lines(init_file_name)
-        line_number = 1
-        for init_line in init:
-            try:
-                result = processor.process_command(init_line)
-            except typo_error as err:
-                print("INIT ERROR: " + str(err) + " (in 'init.typo' line: " + str(line_number) + ")")
-            line_number = line_number + 1
-    
-        while(True):
-            command = raw_input("> ")
-            try:
-                result = processor.process_command(command)
-                if not(result is None):
-                    print(result)
-            except typo_error as err:
-                print("ERROR: " + str(err))
-                
-    except exit_typo as exit_info:
-        sys.exit(exit_info.exit_code)
-        
-    except typo_error as err:
-        print("FATAL: " + str(err))

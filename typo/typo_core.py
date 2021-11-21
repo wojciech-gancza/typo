@@ -1,83 +1,10 @@
 # (c) TYPO by WGan 2021
 
 
-
-import datetime
-import re
-import os.path
-
-
-from typo_outputs  import  string_output, file_output, indented_output
-from typo_inputs   import  file_lines
-from typo_tools    import  identifier_formatter, typo_converter, \
-                           typo_generator, typo_error
-
-
-
-""" generator returning timestamp """
-class gen_timestamp(typo_generator):
-
-    def generate(self, context, output):
-        output.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-       
-        
-        
-""" generator returning version of typo translator """
-class gen_typo_version(typo_generator):
-
-    def generate(self, context, output):
-        output.write("1.00.Dev")
-        
-        
-   
-""" genertor of stored user code """
-class gen_user_code(typo_generator):
-
-    def generate(self, context, output):
-        output.write_already_formatted(context.pop_user_code())
-        
-        
-
-""" Some function used to analyze template line """
-class template_line:
-
-    def __init__(self, line_text):
-        self.line = line_text
-
-    def is_just_placeholder(self):
-        if re.match("^\\s*\$\{[a-zA-Z_][0-9a-zA-Z_.]*\}\\s*$", self.line):
-            return True
-        else:
-            return False
-               
-    def is_user_code_placeholder(self):
-        if re.match(".*\$\{user_code\}.*", self.line):
-            if re.match("^\\s*\$\{user_code\}\\s*$", self.line):
-                return True
-            else:
-                raise user_code_placeholder_error("User code placeholder must be the only one in the line.")
-        else:
-            return False
-
-    def is_constant(self):
-        if re.match("^.*\$\{[a-zA-Z_][0-9a-zA-Z_.]*\}.*$", self.line):
-            return False
-        else:
-            return True
-        
-    def is_empty(self):
-        if re.match("^\\s*$", self.line):
-            return True
-        else:
-            return False
-        
-    def find_first_identifier(self):
-        found = re.search("\$\{[a-zA-z][0-9_a-zA-z.]*\}", self.line)
-        if not found:
-            return None
-        else:
-            return (found.start()+2, found.end()-1)
-
+from typo_base import typo_error
+from typo_tools import placeholders_info, gen_timestamp, gen_typo_version, \
+    gen_user_code, conv_CAPITALIZE_ALL, conv_lowercase_with_underscores, \
+    conv_UppercaseCamel, conv_lowercaseCamel
 
 
 """ error - identifier not found when tranlating value """
@@ -90,8 +17,6 @@ class identifier_not_found(typo_error):
     def set_name(self, name):
         self.text = "Value of '" + self.symbol + "' not found during resolving value '" + name + "'."
 
-
-
 """ error of resolving variables - cycle was found """
 class loop_error_when_resolving(typo_error):
  
@@ -103,8 +28,6 @@ class module_not_loaded(typo_error):
 
     def __init__(self, module_name):
         typo_error.__init__(self, "Module '" + module_name + "' cannot be loaded.")        
-
-
 
 """ context - all settings are defined here """
 class typo_context:
@@ -149,7 +72,7 @@ class typo_context:
     def create_object(self, class_name):
         try:
             return eval(class_name + "()")
-        except:
+        except Exception as err:
             pass
         for loaded_module in self.modules:
             try:    
@@ -190,7 +113,7 @@ class typo_context:
             return name, None
         
     def _translate_text(self, text):
-        line = template_line(text)
+        line = placeholders_info(text)
         if line.is_constant():
             return text
         start, end = line.find_first_identifier()
@@ -203,81 +126,4 @@ class typo_context:
         if before != "" or after != "":
             value = before + str(value) + after
         return self._translate_value(value)
-
-
-
-""" error - variable which need to contain path - is not defined """
-class path_not_secified(typo_error):
-
-    def __init__(self, path_name):
-        typo_error.__init__(self, "Variable '" + path_name + "' is not defined but it should point to the directory.")
-    
-""" error - path is defined, but such path do not exist on disc """
-class path_not_found(typo_error):
-    
-    def __init__(self, path_name, path):
-        typo_error.__init__(self, "Path '" + path + "' in variable '" + path_name + "' does not exist.")
-        
-""" error - file name is not defined """
-class file_name_is_not_defined(typo_error):
-
-    def __init__(self, variable_name):
-        typo_error.__init__(self, "Variable '" + variable_name + "' is not defined byt should contain valid file name.")
-
-""" error - file name is malformed """
-class malformed_file_name(typo_error):
-
-    def __init(self, variable_name, file_name):
-        typo_error.__init__(self, "Value '" + file_name + "' or variable '" + variable_name + "' is wrong as a file name.")
-
-""" context reader contain few methods helping to read the context variables """
-class context_reader:
-
-    def __init__(self, context):
-        self.context = context
-
-    def get_path(self, path_name):
-        value = self.context.get_value(path_name)
-        if value is None:
-            raise path_not_secified(path_name)
-	    value = str(value)
-        if not os.path.isdir(value):
-            raise path_not_found(path_name, value)
-        if value[-1] != "/":
-            value += "/"
-        return value
-
-    def get_file_name(self, file_name_variable_name):
-        value = self.context.get_value(file_name_variable_name)
-        if value is None:
-            raise file_name_is_not_defined(file_name_variable_name)
-	value = str(value)
-        if not re.match("[_a-zA-Z][0-9_a-zA-Z.]*", value):
-            raise malformed_file_name(file_name_variable_name, value)
-        return value
-
-
-""" simple converters for use with identifiers """
-class conv_CAPITALIZE_ALL(typo_converter):
-
-    def convert(self, text):
-        id = identifier_formatter(text)
-        return id.CAPITALIZE_ALL()
-        
-class conv_lowercase_with_underscores(typo_converter):
-
-    def convert(self, text):
-        id = identifier_formatter(text)
-        return id.lowercase_with_underscores()
-        
-class conv_UppercaseCamel(typo_converter):
-
-    def convert(self, text):
-        id = identifier_formatter(text)
-        return id.UppercaseCamel()
-        
-class conv_lowercaseCamel(typo_converter):
-
-    def convert(self, text):
-        id = identifier_formatter(text)
-        return id.lowercaseCamel()
+  

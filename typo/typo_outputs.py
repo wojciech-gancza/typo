@@ -1,22 +1,20 @@
 # (c) TYPO by WGan 2021
 
 
-
 """ interface to any outputs """
 class output:
 
     def write(self, text):
         pass
         
-        
-      
+            
 """ console - each write operation denotes one line """
 class console_output(output):
 
     def write(self, text):
         print(text)
         
-        
+                
 """ base output decorator to create data flow modification of output """
 class output_decorator(output):
 
@@ -25,8 +23,7 @@ class output_decorator(output):
         
     def write_on_output(self, text):
         self.output.write(text)
-    
-    
+        
      
 """ output splitting files """
 class line_split_decorator(output_decorator):
@@ -45,13 +42,11 @@ class line_split_decorator(output_decorator):
             self.write_on_output(line)
             
 
-
 """ source of the text - used as base class of varous data """
 class text_source:
 
     def get(self):
         pass
-
 
 
 """ indentation allow to return indent text """
@@ -72,8 +67,7 @@ class indentation(text_source):
         
     def get(self):
         return " " * (self.value * self.step)
-        
-        
+                
 
 """ prefixer decorates each data with  """
 class prefixing_output_decorator(output_decorator):
@@ -84,8 +78,7 @@ class prefixing_output_decorator(output_decorator):
         
     def write(self, text):
         self.write_on_output(self.prefix_source.get() + text)
-        
-        
+               
         
 """ prefixer decorates each data with  """
 class sufixing_output_decorator(output_decorator):
@@ -96,8 +89,7 @@ class sufixing_output_decorator(output_decorator):
         
     def write(self, text):
         self.write_on_output(text + self.sufix)
-        
-        
+                
         
 """ output storing indented lines with possibility to store already 
     formatted text - when contain whole lines """
@@ -127,7 +119,6 @@ class indented_output(line_split_decorator):
             self.write("\n")
 
 
-
 """ output used to redirect output into string """
 class string_output(output):
 
@@ -136,8 +127,7 @@ class string_output(output):
 
     def write(self, text):
         self.text += text
-        
-        
+                
         
 """ file output allows writing to the file on disk """
 class file_output(output):
@@ -150,6 +140,5 @@ class file_output(output):
     
     def close(self):
         self.file.close()
-        
-        
+                
         

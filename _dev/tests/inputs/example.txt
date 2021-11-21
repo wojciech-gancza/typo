@@ -1,3 +1,0 @@
-a file to test
-how the file is read
-by the file lines reader

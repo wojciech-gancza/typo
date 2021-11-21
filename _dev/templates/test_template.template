@@ -1,14 +1,9 @@
 // File generated ${timestamp} by (c) TYPO ${typo_version}
 // Do not update its content out of marked places
-$> import _dev1
-$> import _dev2
-$> simple_type_value = ${type} ${variable}
-$> variable = value
-$> type = "long"
-$> id = some strange class nobody knows what for
+$> import _test_module_1
 // ${copyright}
 
-#pragma once
+// ${id.user_test_converter}
 
 // user defined includes - manual changes allowed here
 ${user_code}
@@ -17,9 +12,8 @@ ${user_code}
 class ${id.UppercaseCamel}
 {
     public:
-        ${simple_type_constructor}
-        
-        ${simple_type_setter_and_getter}
+        ${test_generator_1}
+        ${test_generator_2}
         
         // user defined code - manual changes allowed here
         ${user_code}

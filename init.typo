@@ -1,7 +1,15 @@
+# Fill free to modify or overrite the whole content of this file
+
+# This is init file for typo generator. Here you can set any common
+# settings. This file is run when the TYPO.py is run as stand alone
+# program. When it is run with script as a parameter - this file is 
+# not executed
+
+# Path to directory with output files templates. This path is used when typo
+# is looking for template to generate file. This path can be changed at any time
+# but it is handy to initialize it with usually used location
 template_path = _dev/templates
+
+# Path to output files. Also could be changed by the script, but by default 
+# output files will be placed here.
 path = _dev/tests/outputs
-copyright = (c) WGan 2021 [lic:MIT]
-file_name = default_output.hpp
-class_name = SomethingStrange
-simple_type
-exit

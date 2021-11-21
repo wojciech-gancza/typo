@@ -1,0 +1,32 @@
+// File generated 2021-11-21 20:46:24 by (c) TYPO 1.00.Dev
+// Do not update its content out of marked places
+*** this line should contain copyright, by it was manually deleted ***
+
+// user defined includes - manual changes allowed here
+/* here first block of 
+   User code is
+   located */
+// generated code
+
+class ThisIsSomethingImportant
+{
+    public:
+        constructor(parameters)
+        {
+            // indented text
+            // multiline
+        }
+        
+        value is: 'val'
+        
+        // user defined code - manual changes allowed here
+	// *** just some user text inside the class ***
+        // generated code
+    private:
+        double val;
+};
+
+// manual changes allowed here
+And last but not least...
+Some user text at the last placeholder
+// end of manual changes

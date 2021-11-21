@@ -1,0 +1,26 @@
+// File generated ${timestamp} by (c) TYPO ${typo_version}
+// Do not update its content out of marked places
+$> import _test_module_1
+// ${copyright}
+
+// user defined includes - manual changes allowed here
+${user_code}
+// generated code
+
+class ${id.UppercaseCamel}
+{
+    public:
+        ${test_generator}
+        
+        ${another_part_of_code}
+        
+        // user defined code - manual changes allowed here
+        ${user_code}
+        // generated code
+    private:
+        ${simple_type_value}
+};
+
+// manual changes allowed here
+${user_code}
+// end of manual changes

@@ -1,3 +1,0 @@
-# cp _dev/files/test_output_file.h _dev/tests/outputs/default_output.hpp
-python typo/TYPO.py
-# cat _dev/tests/outputs/default_output.hpp

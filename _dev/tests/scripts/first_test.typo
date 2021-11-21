@@ -1,0 +1,28 @@
+# (c) TYPO by WGan 2021
+# First test of typo. Generate one output file containing user code.
+
+# Path to directory with output files templates. This path is used when typo
+# is looking for template to generate file. This path can be changed at any time
+# but it is handy to initialize it with usually used location
+template_path = _dev/tests/templates
+
+# Path to output files. Also could be changed by the script, but by default 
+# output files will be placed here.
+path = _dev/tests/outputs
+
+# Output file - this file fill be generated:
+file_name = "generated_by_test.txt"
+
+# Setting needed by the template we have to run:
+copyright = WGan (c) 2021
+import _test_module_2
+id = this is something important
+simple_type_value = ${type} ${value};
+type = double
+value = val
+
+# generate file based on given template
+test_template
+
+# End of file
+exit
