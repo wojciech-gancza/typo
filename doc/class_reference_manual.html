@@ -27,22 +27,25 @@
         <li><a href="#module_not_loaded">module_not_loaded</a></li>
         <li><a href="#typo_context">typo_context</a></li>
         </ul>
-      <li><a name="typo_inputs_py"></a><b>typo_inputs</b> module<ul>
+      <li><a name="typo_inputs_py"></a><b>typo_inputs</b> module - all inputs 
+        of the program. Now just one simple input is defined:<ul>
         <li><a href="#file_lines">file lines</a></li>
         </ul></li>
-      <li><a name="typo_interpreter_py"></a><b>typo_interpreter</b> module<ul>
-        <li><a _href="#_">user_code_placeholder_error</a></li>
+      <li><a name="typo_interpreter_py"></a><b>typo_interpreter</b> module - a 
+        module defining the typo interpreter creating output files: <ul>
+        <li><a href="#user_code_placeholder_error">user_code_placeholder_error</a></li>
         <li><a _href="#_">user_code_extractor</a></li>
-        <li><a _href="#_">template_does_not_exist</a></li>
-        <li><a _href="#_">cannot_translate</a></li>
-        <li><a _href="#_">wrong_generator_for_inline</a></li>
-        <li><a _href="#_">error_in_generator</a></li>
+        <li><a href="#template_does_not_exist">template_does_not_exist</a></li>
+        <li><a href="#cannot_translate">cannot_translate</a></li>
+        <li><a href="#wrong_generator_for_inline">wrong_generator_for_inline</a></li>
+        <li><a href="#error_in_generator">error_in_generator</a></li>
         <li><a _href="#_">output_file_generator</a></li>
         <li><a _href="#_">typo_processor</a></li>
         <li><a _href="#_">exit_typo</a></li>
         <li><a _href="#_">command_processor</a></li>
         </ul></li>
-      <li><a name="typo_outputs_py"></a><b>typo_outputs</b> module<ul>
+      <li><a name="typo_outputs_py"></a><b>typo_outputs</b> module - all
+        output specific clsses including some formatting tools:<ul>
         <li><a href="#output">output</a></li>
         <li><a _href="#_">console_output</a></li>
         <li><a _href="#_">output_decorator</a></li>
@@ -55,14 +58,15 @@
         <li><a _href="#_">string_output</a></li>
         <li><a _href="#_">file_output</a></li>  
         </ul></li>
-      <li><a name="typo_tools_py"></a><b>typo_tools</b> module<ul>
-        <li><a _href="#_">identifier_non_alphanueric_error</a></li>
-        <li><a _href="#_">identifier_start_with_digit_error</a></li>
+      <li><a name="typo_tools_py"></a><b>typo_tools</b> module - classes used
+        by typo but also usefull for different purposes:<ul>
+        <li><a href="#identifier_non_alphanueric_error">identifier_non_alphanueric_error</a></li>
+        <li><a href="#identifier_start_with_digit_error">identifier_start_with_digit_error</a></li>
         <li><a _href="#_">identifier_formatter</a></li>
-        <li><a _href="#_">path_not_secified</a></li>
-        <li><a _href="#_">path_not_found</a></li>
-        <li><a _href="#_">file_name_is_not_defined</a></li>
-        <li><a _href="#_">malformed_file_name</a></li>
+        <li><a href="#path_not_specified">path_not_specified</a></li>
+        <li><a href="#path_not_found">path_not_found</a></li>
+        <li><a href="#file_name_is_not_defined">file_name_is_not_defined</a></li>
+        <li><a href="#malformed_file_name">malformed_file_name</a></li>
         <li><a _href="#_">context_reader</a></li>
         <li><a _href="#_">placeholders_info</a></li>
         <li><a href="#gen_timestamp">gen_timestamp</a></li>
@@ -76,6 +80,21 @@
       </ul>
     And now, alphabetically:
     
+    <h2><a name="cannot_translate"></a>cannot_translate 
+      <a href="#typo_error"><span class="parent">(typo_error)</span></a>
+      <a href="#typo_interpreter_py"><span class="module">typo_interpreter.py</span></a>
+      </h2>
+      Error raised when a symbol defining placeholder in template is neither
+      a value nor code generator located in one of registered modules. 
+      
+    <h2><a name="error_in_generator"></a>error_in_generator 
+      <a href="#typo_error"><span class="parent">(typo_error)</span></a>
+      <a href="#typo_interpreter_py"><span class="module">typo_interpreter.py</span></a>
+      </h2>
+      When generator is called, and error occures inside generator - it is wrapped
+      in this error. It is made for reporting programmer errors to the user of
+      generator. Such error message allow to find problem inside generator.
+           
     <h2><a name=file_lines></a>file_lines 
       <span class="parent">(list)</parent> 
       <a href="#typo_inputs_py"><span class="module">typo_inputs.py</span></a>
@@ -89,15 +108,14 @@
         exception are thrown.
     </ul>
     
-
-    <h2><a name="identifier_not_found"></a>identifier_not_found 
+    <h2><a name="file_name_is_not_defined"></a>file_name_is_not_defined 
       <a href="#typo_error"><span class="parent">(typo_error)</span></a>
-      <a href="#typo_core_py"><span class="module">typo_core.py</span></a>
+      <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
       </h2>
-      When cannot resolve symbol located in the value to resolve, this error 
-      is raised.
-      
-      
+      When uou use context reader to retrieve data having given meaning, you can 
+      take the file name from the context variabled. When value is not defined
+      context returns None, but when uoy need a file - it is better to raise error.
+
     <h2><a name="gen_timestamp"></a>gen_timestamp 
       <a href="#typo_error"><span class="parent">(typo_error)</span></a>
       <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
@@ -108,8 +126,7 @@
       timestamps in the same document are different.
     <p>
       This generator could be used as inlined, because it neither use 
-      indentations nor unformatted access to the output.
-      
+      indentations nor unformatted access to the output.     
       
     <h2><a name="gen_typo_version"></a>gen_typo_version 
       <a href="#typo_generator"><span class="parent">(typo_generator)</span></a> 
@@ -121,8 +138,7 @@
     <p>
       This generator could be used as inlined, because it neither use 
       indentations nor unformatted access to the output.
-      
-      
+           
     <h2><a name="gen_user_code"></a>gen_user_code 
       <a href="#typo_generator"><span class="parent">(typo_generator)</span></a> 
       <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
@@ -134,8 +150,32 @@
     <p>
       This generator assumes that the output have possibility to 
       write unformatted code, but do not check it.
-   
-   
+      
+    <h2><a name="identifier_non_alphanueric_error"></a>identifier_non_alphanueric_error 
+      <a href="#typo_error"><span class="parent">(typo_error)</span></a>
+      <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
+      </h2>
+      Error raised by identifier formatter. This formatter takes a string 
+      containing set of words separated by spaces. This words must allow to form
+      proper identifier. The text must be formed from alphanumeric characters and must 
+      not start from the ditis. Underscore character is also available.
+    <p>
+      It the input data contain wrong character - this error is raised.
+
+    <h2><a name="identifier_not_found"></a>identifier_not_found 
+      <a href="#typo_error"><span class="parent">(typo_error)</span></a>
+      <a href="#typo_core_py"><span class="module">typo_core.py</span></a>
+      </h2>
+      When cannot resolve symbol located in the value to resolve, this error 
+      is raised.
+           
+    <h2><a name="identifier_start_with_digit_error"></a>identifier_start_with_digit_error 
+      <a href="#typo_error"><span class="parent">(typo_error)</span></a>
+      <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
+      </h2>
+      Error raised by identifier formatter. When the forst character is 
+      digit - thois error is raised.
+
     <h2><a name="loop_error_when_resolving"></a>loop_error_when_resolving 
       <span class="parent">(typo_error)</parent> 
       <span class="module">typo_core.py</span>
@@ -145,8 +185,15 @@
       forms an loop. In such case we have infinite number of steps to obtain 
       the value. This is not higly welcome situation - so error is raised.
       </h2>
-      
-      
+            
+    <h2><a name="malformed_file_name"></a>malformed_file_name 
+      <a href="#typo_error"><span class="parent">(typo_error)</span></a>
+      <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
+      </h2>
+      When uou use context reader to retrieve data having given meaning, you can 
+      take the file name from the context variabled. The value is additionally
+      checked by testing if the value points to existing file.
+
     <h2><a name="module_not_loaded"></a>module_not_loaded 
       <a href="#typo_generator"><span class="parent">(typo_generator)</span></a> 
       <a href="#typo_core_py"><span class="module">typo_core.py</span></a>
@@ -154,8 +201,7 @@
       When module is needed, but the module itself cannot be found - this error 
       is raised. Lack of module could be a problem in the future, so better is 
       to raise error and leave the problem to the caller.
-      
-      
+           
     <h2><a name="output"></a>output 
       <a href="#typo_outputs_py"><span class="module">typo_outputs.py</span></a>
       </h2>
@@ -202,7 +248,33 @@
         allowing also navigation of indenting lines. Usefull when generating 
         formatted code.</li>
       </ul>
-      
+
+    <h2><a name="path_not_found"></a>path_not_found 
+      <a href="#typo_error"><span class="parent">(typo_error)</span></a>
+      <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
+      </h2>
+      When you use context reader to retrieve data having given meaning, you can 
+      take the path from the context variabled. When the value is read - it is 
+      additionally checked - if it points to existing folder. If not - this error
+      happened.
+    
+    <h2><a name="path_not_specified"></a>path_not_specified 
+      <a href="#typo_error"><span class="parent">(typo_error)</span></a>
+      <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
+      </h2>
+      When you use context reader to retrieve data having given meaning, you can 
+      take the path from the context variabled. Normally, when the variable is not
+      defined - None value is returned. When you require a path - sush 
+      situation is not desired - so special error is raised. This error.
+    
+    <h2><a name="template_does_not_exist"></a>template_does_not_exist 
+      <a href="#typo_interpreter_py"><span class="module">typo_interpreter.py</span></a>
+      </h2>
+      This error is raised when user try to build output file, but mistype the 
+      template name. This can also be problem of wrong setting of variable
+      <i>template_path</i>. Result is: the file with definition of required 
+      template cannot be found in the directory set by <i>template_path</i>.
+            
     <h2><a name="typo_context"></a>typo_context 
       <a href="#typo_core_py"><span class="module">typo_core.py</span></a>
       </h2>
@@ -280,8 +352,7 @@
         When context is asked for generator or converter object (function
         <b>create_object</b>)- these modules
         are searched for definition of needed class.</li>
-      </ul>
-    
+      </ul>    
     
     <h2><a name="typo_error"></a>typo_error
       <span class="parent">(Exception)</span> 
@@ -331,7 +402,7 @@
       <li><a href="#malformed_file_name">malformed_file_name</a></li>
       <li><a href="#module_not_loaded">module_not_loaded</a></li> 
       <li><a href="#path_not_found">path_not_found</a></li>
-      <li><a href="#path_not_secified">path_not_secified</a></li>
+      <li><a href="#path_not_specified">path_not_specified</a></li>
       <li><a href="#template_does_not_exist">template_does_not_exist</a></li>
       <li><a href="#user_code_placeholder_error">user_code_placeholder_error</a></li>
       <li><a href="#wrong_generator_for_inline">wrong_generator_for_inline</a></li>    
@@ -378,6 +449,28 @@
         the output file</li>
       </ul>
       
+    <h2><a name="user_code_placeholder_error"></a>user_code_placeholder_error 
+      <a href="#typo_error"><span class="parent">(typo_error)</span></a>
+      <a href="#typo_interpreter_py"><span class="module">typo_interpreter.py</span></a></h2>
+      This error just group problems with <i>user_code</i> placeholder in template.
+      This placeholder is processed in different way then other placeholders, because
+      typo interpreter must read the user code before it starts to write output file.
+      This is needed to keep such parts of code when output file is re-generated.
+      Error can occure in few situations. The only differnce is the message:
+    <ul>
+      <li>placeholder is not the only one in a line.</li>
+      <li>line before and after are not well recognizable and cannot be used as delimiters</li>
+      <li>when analising output file - ending delimiter cannot be found.</li>
+    </ul>
+      
+    <h2><a name="wrong_generator_for_inline"></a>wrong_generator_for_inline 
+      <a href="#typo_error"><span class="parent">(typo_error)</span></a>
+      <a href="#typo_interpreter_py"><span class="module">typo_interpreter.py</span></a></h2>
+      This error is raised when generator raises any kind of error. It usually
+      happened, when you use placeholder inside the line containing also other
+      content. WHen this placeholder denotes generator which requires indentation
+      functionality on the its output.
+  
   </body>
   
 </html>

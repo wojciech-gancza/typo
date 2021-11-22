@@ -54,7 +54,7 @@ class identifier_formatter:
      
 
 """ error - variable which need to contain path - is not defined """
-class path_not_secified(typo_error):
+class path_not_specified(typo_error):
 
     def __init__(self, path_name):
         typo_error.__init__(self, "Variable '" + path_name + "' is not defined but it should point to the directory.")
@@ -86,7 +86,7 @@ class context_reader:
     def get_path(self, path_name):
         value = self.context.get_value(path_name)
         if value is None:
-            raise path_not_secified(path_name)
+            raise path_not_specified(path_name)
 	    value = str(value)
         if not os.path.isdir(value):
             raise path_not_found(path_name, value)
