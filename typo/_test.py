@@ -9,11 +9,12 @@ import shutil
 
 from TYPO           import  typo_main
 from typo_inputs    import  file_lines
-from typo_outputs   import  indented_output, string_output
+from typo_outputs   import  indented_output, string_output, file_output, \
+                            file_cannot_be_created
 from typo_core      import  typo_context, module_not_loaded      
 from typo_tools     import  typo_error, conv_UppercaseCamel, conv_lowercaseCamel, \
-    conv_CAPITALIZE_ALL, conv_lowercase_with_underscores, identifier_non_alphanueric_error, \
-    identifier_start_with_digit_error
+                            conv_CAPITALIZE_ALL, conv_lowercase_with_underscores, \
+                            identifier_non_alphanueric_error, identifier_start_with_digit_error
     
     
     
@@ -43,6 +44,9 @@ class file_checker:
             file.close()
         except:
             pass
+        
+    def get_text(self):
+        return self.file_content
         
     def get_md5hex(self):
         md5_hash = hashlib.md5(self.file_content)
@@ -246,6 +250,33 @@ class test_of_builtin_converters(unittest.TestCase):
         txt = "thIs is SpaRTa"
         val = conv.convert(txt)
         self.assertEqual(val, "this_is_sparta")
+        
+class test_of_output_file(unittest.TestCase):
+
+    def test_of_writing_to_file(self):
+        file = file_output("_dev/tests/outputs/test_of_file_output.txt")
+        file.write("ABC")
+        file.write("DE\nFGH")
+        file.close()
+        result = file_checker("_dev/tests/outputs/test_of_file_output.txt")
+        self.assertEqual(result.get_text(), "ABCDE\nFGH")
+        
+    def test_of_writing_to_file_error(self):
+        try:
+            file = file_output("_dev/tests/bad_directory/test_of_file_output.txt")
+            self.assertTrue(False)
+        except file_cannot_be_created as err:
+            self.assertEqual(str(err), "File '_dev/tests/bad_directory/test_of_file_output.txt' cannot be created.")
+        except:
+            self.assertTrue(False)
+                
+class test_of_output_string(unittest.TestCase):
+
+    def test_of_writing_to_string(self):
+        out = string_output()
+        out.write("ABC")
+        out.write("DE\nFGH")
+        self.assertEqual(out.text, "ABCDE\nFGH")
         
 #-----------------------------------------------------------------       
 

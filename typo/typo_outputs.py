@@ -1,6 +1,9 @@
 # (c) TYPO by WGan 2021
 
 
+from typo_base import typo_error
+
+
 """ interface to any outputs """
 class output:
 
@@ -128,13 +131,21 @@ class string_output(output):
     def write(self, text):
         self.text += text
                 
-        
+""" when creating file - exception was raised """
+class file_cannot_be_created(typo_error):
+
+    def __init__(self, file_name):
+        typo_error.__init__(self, "File '" + file_name + "' cannot be created.")
+
 """ file output allows writing to the file on disk """
 class file_output(output):
 
     def __init__(self, file_name):
-        self.file = open(file_name, "w")
-        
+        try:
+            self.file = open(file_name, "w")
+        except:
+            raise file_cannot_be_created(file_name)
+
     def write(self, text):
         self.file.write(text)
     
