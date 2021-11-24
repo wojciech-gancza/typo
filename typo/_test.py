@@ -5,7 +5,9 @@
 import unittest
 import hashlib
 import re
+import shutil
 
+from TYPO           import  typo_main
 from typo_inputs    import  file_lines
 from typo_outputs   import  indented_output, string_output
 from typo_core      import  typo_context, module_not_loaded      
@@ -29,6 +31,28 @@ class test_output(indented_output):
         return md5_hash.hexdigest()
         
         
+class file_checker:
+
+    def __init__(self, file_name):
+        self.file_content = None
+        try:
+            file = open(file_name)
+            self.file_content = file.read()
+            file.close()
+        except:
+            pass
+        
+    def get_md5hex(self):
+        md5_hash = hashlib.md5(self.file_content)
+        return md5_hash.hexdigest()
+        
+    def has(self, pattern):
+        if re.search(pattern, self.file_content):
+            return True
+        else:
+            return False
+ 
+#-----------------------------------------------------------------       
 
 class test_buildin_generators(unittest.TestCase):
 
@@ -166,7 +190,20 @@ class test_of_context(unittest.TestCase):
         obj = ctx.create_object("test_class_3")
         self.assertEqual(obj, None)
         
-                
+#-----------------------------------------------------------------       
+
+class test_of_processing(unittest.TestCase):
+
+    def test_processing_like_in_command_line(self):
+        shutil.copyfile("_dev/tests/inputs/generated_by_test.txt", "_dev/tests/outputs/generated_by_test.txt")
+        argv = ["test", "_dev/tests/scripts/first_test.typo"]
+        typo_main(argv)
+        result = file_checker("_dev/tests/outputs/generated_by_test.txt")
+        self.assertFalse(result.has(" this line should contain copyright, by it was manually deleted "))
+        self.assertTrue(result.has(" just some user text inside the class "))
+        
+#-----------------------------------------------------------------       
+
 unittest.main()
 
 

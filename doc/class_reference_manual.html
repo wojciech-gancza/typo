@@ -1,7 +1,7 @@
 <html>
 
   <head>
-    <link rel="stylesheet" href="wgan.css">
+    <link rel="stylesheet" href="typo.css">
   </head>
   
   <body>
@@ -17,7 +17,7 @@
         base elements of typo like:<ul>
         <li><a href="#typo_error">typo_error</a></li>
         <li><a href="#typo_generator">typo_generator</a></li>
-        <li><a _href="#_">typo_converter</a></li>
+        <li><a href="#typo_converter">typo_converter</a></li>
         </ul>
       <li><a name="typo_core_py"></a><b>typo_core</b> module - core items 
         of typo. Tools from here could be used also outside typo if you find it
@@ -353,6 +353,33 @@
         <b>create_object</b>)- these modules
         are searched for definition of needed class.</li>
       </ul>    
+    
+    <h2><a name="typo_converter"></a>typo_converter 
+      <a href="#typo_base_py"><span class="module">typo_base.py</span></a>
+      </h2>
+      Base class for all converter classes. Converters are used when the 
+      placeholder contain name of valid converter written after the dot. Converters
+      could be defined by the user/author of metacode generating output files. 
+      Such metacode contain templates and code written in python - generators, 
+      and converters. And converters must derive from this class.
+    <p>
+      Converter class must implement one function:
+    <ul>
+      <li><b>convert(text)</b> - function returning text fater conversion</li>
+    </ul>
+      Class name of the converter must start with <i>conv_</i>
+    <p>
+      Typo contain few built in converters:
+    <ul>
+      <li><a href="#conv_CAPITALIZE_ALL">conv_CAPITALIZE_ALL</a> 
+        - makes capitalized identifier from a sentence.</li>
+      <li><a href="#conv_lowercase_with_underscores">conv_lowercase_with_underscores</a>
+        - makes underscored identifier from a sentence.</li>
+      <li><a href="#conv_lowercaseCamel">conv_lowercaseCamel</a> 
+        - makes lowerace camel named identifier from a sentence.</li>
+      <li><a href="#conv_UppercaseCamel">conv_UppercaseCamel</a> 
+        - makes uppercase camel named identifier from a sentence.</li>
+    </ul>
     
     <h2><a name="typo_error"></a>typo_error
       <span class="parent">(Exception)</span> 

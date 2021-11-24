@@ -1,0 +1,3 @@
+Test of the way
+how the file is read
+And that's it

@@ -41,11 +41,14 @@ def typo_main(argv):
                 print("ERROR: " + str(err))
                 
     except exit_typo as exit_info:
-        sys.exit(exit_info.exit_code)
+        return exit_info.exit_code
         
     except typo_error as err:
         print("FATAL: " + str(err))
+	return 1
 
     
 if __name__ == "__main__":
-    typo_main(sys.argv)
+    exit_code = typo_main(sys.argv)
+    sys.exit(exit_code)
+
