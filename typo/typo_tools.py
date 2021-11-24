@@ -23,8 +23,8 @@ class identifier_non_alphanueric_error(typo_error):
 """ problem with identifier - cannot start with digit """
 class identifier_start_with_digit_error(typo_error):
 
-    def __init(self, identifier):
-        typo_error.__init__(self, "Identifier cannot start with digit but it is '" + whole_identifier + "'")
+    def __init__(self, identifier):
+        typo_error.__init__(self, "Identifier cannot start with digit but it is '" + identifier + "'")
 
 """ formatter allowing change a multiword description into identifier """
 class identifier_formatter:
@@ -32,11 +32,11 @@ class identifier_formatter:
     def __init__(self, identifier):
         identifier_text = str(identifier)
         self.words = identifier_text.split()
-        for word in self.words:
-            if not re.match("[_a-zA-Z][0-9_a-zA-Z]", word):
-                raise identifier_non_alphanueric_error(word, identifier_text)
         if self.words[0][0].isdigit():
             raise identifier_start_with_digit_error(identifier_text)
+        for word in self.words:
+            if not re.match("^[_a-zA-Z][0-9_a-zA-Z]*$", word):
+                raise identifier_non_alphanueric_error(word, identifier_text)
 
     def CAPITALIZE_ALL(self, prefix = "", suffix = ""):
         return prefix + "_".join([word.upper() for word in self.words]) + suffix

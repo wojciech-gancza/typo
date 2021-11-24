@@ -47,10 +47,10 @@
       <li><a name="typo_outputs_py"></a><b>typo_outputs</b> module - all
         output specific clsses including some formatting tools:<ul>
         <li><a href="#output">output</a></li>
-        <li><a _href="#_">console_output</a></li>
-        <li><a _href="#_">output_decorator</a></li>
+        <li><a href="#console_output">console_output</a></li>
+        <li><a href="#output_decorator">output_decorator</a></li>
         <li><a _href="#_">line_split_decorator</a></li>
-        <li><a _href="#_">text_source</a></li>
+        <li><a href="#text_source">text_source</a></li>
         <li><a _href="#_">indentation</a></li>
         <li><a _href="#_">prefixing_output_decorator</a></li>
         <li><a _href="#_">sufixing_output_decorator</a></li>
@@ -72,10 +72,10 @@
         <li><a href="#gen_timestamp">gen_timestamp</a></li>
         <li><a href="#gen_typo_version">gen_typo_version</a></li>
         <li><a href="#gen_user_code">gen_user_code</a></li>        
-        <li><a _href="#_">conv_CAPITALIZE_ALL</a></li>
-        <li><a _href="#_">conv_lowercase_with_underscores</a></li>
-        <li><a _href="#_">conv_UppercaseCamel</a></li>
-        <li><a _href="#_">conv_lowercaseCamel</a></li>
+        <li><a href="#conv_CAPITALIZE_ALL">conv_CAPITALIZE_ALL</a></li>
+        <li><a href="#conv_lowercase_with_underscores">conv_lowercase_with_underscores</a></li>
+        <li><a href="#conv_UppercaseCamel">conv_UppercaseCamel</a></li>
+        <li><a href="#conv_lowercaseCamel">conv_lowercaseCamel</a></li>
         </ul></li>
       </ul>
     And now, alphabetically:
@@ -86,7 +86,63 @@
       </h2>
       Error raised when a symbol defining placeholder in template is neither
       a value nor code generator located in one of registered modules. 
+    <p>
+      This error is raised by <a href="#output_file_generator">output_file_generator</a>.translate_line.
+
+    <h2><a name="console_output"></a>console_output 
+      <a href="#output"><span class="parent">(output)</span></a>
+      <a href="#typo_outputs_py"><span class="module">typo_outputs.py</span></a>
+      </h2>
+      An output sending values to standard console. Notice, that this output
+      adds newline after each portion of data, so it is better to decorate it 
+      by <a href="#line_split_decorator">line_split_decorator</a> 
+      to avoid newlines added between the writes.
+    <p>
+      This output was prepared for debugging purposes - to see the result of the
+      generation to the console to review them. 
+
+    <h2><a name="conv_CAPITALIZE_ALL"></a>conv_CAPITALIZE_ALL 
+      <a href="#typo_converter"><span class="parent">(typo_converter)</span></a>
+      <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
+      </h2>
+      Converter transforming many word phraze into identifier denoted as capital
+      letters with words separated by underscores. Such identiferis are 
+      typically used to denote contants or enviroment variables. 
+    <p>
+      When proper identifier cannot be found because source phraze contain
+      non-alphanumeric characters or first word starts with digit - error is
+      raised. For non-aplfanumeric error type is 
+      <a href="#identifier_non_alphanueric_error">identifier_non_alphanueric_error</a>.
+      When first character of passed string is a digit - 
+      <a href="#identifier_start_with_digit_error">identifier_start_with_digit_error</a>
+      is raised.
+    <p>
+      This placeholder implementation bases on functionality of class 
+      <a href="#identifier_formatter">identifier_formatter</a>.     
       
+    <h2><a name="conv_lowercase_with_underscores"></a>conv_lowercase_with_underscores 
+      <a href="#typo_converter"><span class="parent">(typo_converter)</span></a>
+      <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
+      </h2>
+      Works like <a href="#conv_CAPITALIZE_ALL">conv_CAPITALIZE_ALL</a>, but 
+      formats output string as lowercase and with words connected with underscores.
+      
+    <h2><a name="conv_lowercaseCamel"></a>conv_lowercaseCamel 
+      <a href="#typo_converter"><span class="parent">(typo_converter)</span></a>
+      <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
+      </h2>
+      Works like <a href="#conv_CAPITALIZE_ALL">conv_CAPITALIZE_ALL</a>, but 
+      formats output string as lowercase and with words started by uppercase.
+      Words are not separated by space nor unsercore.
+      
+    <h2><a name="conv_UppercaseCamel"></a>conv_UppercaseCamel 
+      <a href="#typo_converter"><span class="parent">(typo_converter)</span></a>
+      <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
+      </h2>
+      Works like <a href="#conv_CAPITALIZE_ALL">conv_CAPITALIZE_ALL</a>, but 
+      formats output string as uppercase and with words started by uppercase. 
+      Words are not separated by space nor unsercore.
+
     <h2><a name="error_in_generator"></a>error_in_generator 
       <a href="#typo_error"><span class="parent">(typo_error)</span></a>
       <a href="#typo_interpreter_py"><span class="module">typo_interpreter.py</span></a>
@@ -94,6 +150,8 @@
       When generator is called, and error occures inside generator - it is wrapped
       in this error. It is made for reporting programmer errors to the user of
       generator. Such error message allow to find problem inside generator.
+    <p>
+      This error is raised by <a href="#output_file_generator">output_file_generator</a>.translate_line.
            
     <h2><a name=file_lines></a>file_lines 
       <span class="parent">(list)</parent> 
@@ -115,6 +173,8 @@
       When uou use context reader to retrieve data having given meaning, you can 
       take the file name from the context variabled. When value is not defined
       context returns None, but when uoy need a file - it is better to raise error.
+    <p>
+      This error is raised by <a href="#context_reader">context_reader</a>.get_file_name.
 
     <h2><a name="gen_timestamp"></a>gen_timestamp 
       <a href="#typo_error"><span class="parent">(typo_error)</span></a>
@@ -161,6 +221,8 @@
       not start from the ditis. Underscore character is also available.
     <p>
       It the input data contain wrong character - this error is raised.
+    <p>
+      This error is raised by <a href="#identifier_formatter">identifier_formatter</a>.__init__.
 
     <h2><a name="identifier_not_found"></a>identifier_not_found 
       <a href="#typo_error"><span class="parent">(typo_error)</span></a>
@@ -168,13 +230,17 @@
       </h2>
       When cannot resolve symbol located in the value to resolve, this error 
       is raised.
+    <p>
+      This error is raised by <a href="#typo_context">typo_context</a>._translate_text.
            
     <h2><a name="identifier_start_with_digit_error"></a>identifier_start_with_digit_error 
       <a href="#typo_error"><span class="parent">(typo_error)</span></a>
       <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
       </h2>
       Error raised by identifier formatter. When the forst character is 
-      digit - thois error is raised.
+      digit - this error is raised.
+    <p>
+      This error is raised by <a href="#identifier_formatter">identifier_formatter</a>.__init__.
 
     <h2><a name="loop_error_when_resolving"></a>loop_error_when_resolving 
       <span class="parent">(typo_error)</parent> 
@@ -184,8 +250,9 @@
       another value name - and such chunk of the need of resolving - somewhere
       forms an loop. In such case we have infinite number of steps to obtain 
       the value. This is not higly welcome situation - so error is raised.
-      </h2>
-            
+    <p>
+      This error is raised by <a href="#typo_context">typo_context</a>.get_value.
+       
     <h2><a name="malformed_file_name"></a>malformed_file_name 
       <a href="#typo_error"><span class="parent">(typo_error)</span></a>
       <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
@@ -193,6 +260,8 @@
       When uou use context reader to retrieve data having given meaning, you can 
       take the file name from the context variabled. The value is additionally
       checked by testing if the value points to existing file.
+    <p>
+      This error is raised by <a href="#context_reader">context_reader</a>.get_file_name.
 
     <h2><a name="module_not_loaded"></a>module_not_loaded 
       <a href="#typo_generator"><span class="parent">(typo_generator)</span></a> 
@@ -201,6 +270,8 @@
       When module is needed, but the module itself cannot be found - this error 
       is raised. Lack of module could be a problem in the future, so better is 
       to raise error and leave the problem to the caller.
+    <p>
+      This error is raised by <a href="#typo_context">typo_context</a>.import_module.
            
     <h2><a name="output"></a>output 
       <a href="#typo_outputs_py"><span class="module">typo_outputs.py</span></a>
@@ -249,6 +320,47 @@
         formatted code.</li>
       </ul>
 
+    <h2><a name="output_decorator"></a>output_decorator 
+      <a href="#typo_outputs_py"><span class="module">typo_outputs.py</span></a>
+      </h2>
+      Decorator which allow decorate output. As parameter it takes original output
+      and implements method <i>write</i>, but instead of writing to 
+      <a href="#console_output">console</a>, <a href="file_output">file</a>, 
+      <a href="#string_output">string</a> or any other location, it writes 
+      on the output passed as parameter.
+    <p>
+      Class defines two methods
+    <ul>
+      <li><b>__init__(output)</b> - constructor storing decorated output in 
+        the field <i>self.output</i>.</li>
+      <li><b>write_on_output(text)</b> - function sending text to decorated
+        output. It is preferable to use this function instead of dealing
+        direclty to <i>self.output</i></li>
+      </ul>
+      It derives method which need to be implemented as implementation of 
+      decorator functionality:
+    <ul>
+      <li><b>write(text)</b></li>
+      </ul>
+      You can define your own decorators however it might be usefull when you 
+      need to modify code of the typo. 
+    <p>
+      This class is base class of few formatting decorators implemented as a 
+      part of typo:
+    <ul>
+      <li><a href="#line_split_decorator">line_split_decorator</a> 
+        - buffers content of the file up to newline character and then sends 
+        whole line to decorated output.</li>
+      <li><a href="#prefixing_output_decorator">prefixing_output_decorator</a> 
+        - Adds prefix to each passed data. </li>
+      <li><a href="#sufixing_output_decorator">sufixing_output_decorator</a> 
+        - Adds suffix to each passed data.</li>
+      <li><a href="#indented_output">indented_output</a> 
+        - Combined decorator which derives from 
+        <a href="#line_split_decorator">line_split_decorator</a> adding indent
+        as prefix and newline character as each line suffix.</li>
+      </ul>      
+
     <h2><a name="path_not_found"></a>path_not_found 
       <a href="#typo_error"><span class="parent">(typo_error)</span></a>
       <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
@@ -257,6 +369,8 @@
       take the path from the context variabled. When the value is read - it is 
       additionally checked - if it points to existing folder. If not - this error
       happened.
+    <p>
+      This error is raised by <a href="#context_reader">context_reader</a>.get_path.
     
     <h2><a name="path_not_specified"></a>path_not_specified 
       <a href="#typo_error"><span class="parent">(typo_error)</span></a>
@@ -266,6 +380,8 @@
       take the path from the context variabled. Normally, when the variable is not
       defined - None value is returned. When you require a path - sush 
       situation is not desired - so special error is raised. This error.
+    <p>
+      This error is raised by <a href="#context_reader">context_reader</a>.get_path.
     
     <h2><a name="template_does_not_exist"></a>template_does_not_exist 
       <a href="#typo_interpreter_py"><span class="module">typo_interpreter.py</span></a>
@@ -274,6 +390,24 @@
       template name. This can also be problem of wrong setting of variable
       <i>template_path</i>. Result is: the file with definition of required 
       template cannot be found in the directory set by <i>template_path</i>.
+    <p>
+      This error is raised by <a href="#output_file_generator">output_file_generator</a>.build_source_code.
+      
+    <h2><a name="text_source"></a>text_source 
+      <a href="#typo_outputs_py"><span class="module">typo_outputs.py</span></a>
+      </h2>
+      Base class for text sources - object providing texts. It implement only 
+      one method:
+    <ul>
+      <li><b>get()</b> - function which should return the text which is needed
+        when the object of this class is in use.</li>
+      </ul>
+    <p>
+      In current version of typo - this class is base of only one class:
+    <ul>
+      <li><a href="indentation">indentation</a> - class building chunk of spaces 
+      depending on depth of indentation.
+      </ul>
             
     <h2><a name="typo_context"></a>typo_context 
       <a href="#typo_core_py"><span class="module">typo_core.py</span></a>
@@ -489,6 +623,7 @@
       <li>line before and after are not well recognizable and cannot be used as delimiters</li>
       <li>when analising output file - ending delimiter cannot be found.</li>
     </ul>
+      This error is raised by <a href="#user_code_extractor">user_code_extractor</a>.__init__.
       
     <h2><a name="wrong_generator_for_inline"></a>wrong_generator_for_inline 
       <a href="#typo_error"><span class="parent">(typo_error)</span></a>
@@ -497,6 +632,8 @@
       happened, when you use placeholder inside the line containing also other
       content. WHen this placeholder denotes generator which requires indentation
       functionality on the its output.
+    <p>
+      This error is raised by <a href="#output_file_generator">output_file_generator</a>.translate_line.
   
   </body>
   

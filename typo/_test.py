@@ -11,7 +11,9 @@ from TYPO           import  typo_main
 from typo_inputs    import  file_lines
 from typo_outputs   import  indented_output, string_output
 from typo_core      import  typo_context, module_not_loaded      
-from typo_tools     import  typo_error
+from typo_tools     import  typo_error, conv_UppercaseCamel, conv_lowercaseCamel, \
+    conv_CAPITALIZE_ALL, conv_lowercase_with_underscores, identifier_non_alphanueric_error, \
+    identifier_start_with_digit_error
     
     
     
@@ -135,6 +137,13 @@ class test_of_context(unittest.TestCase):
         ctx.set_value("bxd", "BCD")
         val = ctx.get_value("f")
         self.assertEqual(val, "ABCDE")
+
+    def test_of_converter(self):
+        ctx = typo_context()
+        ctx.set_value("f", "this is sparta")
+        ctx.set_value("ff", "${f.UppercaseCamel}")
+        val = ctx.get_value("ff")
+        self.assertEqual(val, "ThisIsSparta")
            
     def test_of_error_on_unresolved_symbol(self):
         ctx = typo_context()
@@ -189,6 +198,54 @@ class test_of_context(unittest.TestCase):
         self.assertEqual(txt, "result 2")
         obj = ctx.create_object("test_class_3")
         self.assertEqual(obj, None)
+        
+class test_of_builtin_converters(unittest.TestCase):
+
+    def test_of_UppercaseCamel_converter(self):
+        conv = conv_UppercaseCamel()
+        txt = "thIs is SpaRTa"
+        val = conv.convert(txt)
+        self.assertEqual(val, "ThisIsSparta")
+        
+    def test_of_UppercaseCamel_converter_error(self):
+        conv = conv_UppercaseCamel()
+        txt = "thIs is Sp()aRTa"
+        try:
+            val = conv.convert(txt)
+            self.assertTrue(False)
+        except identifier_non_alphanueric_error as err:
+            self.assertEqual(str(err), "'thIs is Sp()aRTa' could not be an identifier because it contain non alphanumeric character")
+        except Exception as err: 
+            self.assertTrue(False)
+        
+    def test_of_lowercaseCamel_converter(self):
+        conv = conv_lowercaseCamel()
+        txt = "thIs is SpaRTa"
+        val = conv.convert(txt)
+        self.assertEqual(val, "thisIsSparta")
+        
+    def test_of_lowercaseCamel_converter_error(self):
+        conv = conv_lowercaseCamel()
+        txt = "1hIs is SpaRTa"
+        try:
+            val = conv.convert(txt)
+            self.assertTrue(False)
+        except identifier_start_with_digit_error as err:
+            self.assertEqual(str(err), "Identifier cannot start with digit but it is '1hIs is SpaRTa'")
+        except Exception as err: 
+            self.assertTrue(False)
+        
+    def test_of_conv_CAPITALIZE_ALL_converter(self):
+        conv = conv_CAPITALIZE_ALL()
+        txt = "thIs is SpaRTa"
+        val = conv.convert(txt)
+        self.assertEqual(val, "THIS_IS_SPARTA")
+        
+    def test_of_lowercase_with_underscores_converter(self):
+        conv = conv_lowercase_with_underscores()
+        txt = "thIs is SpaRTa"
+        val = conv.convert(txt)
+        self.assertEqual(val, "this_is_sparta")
         
 #-----------------------------------------------------------------       
 

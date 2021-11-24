@@ -69,7 +69,7 @@ class indentation(text_source):
         return " " * (self.value * self.step)
                 
 
-""" prefixer decorates each data with  """
+""" decorates each data with prefix  """
 class prefixing_output_decorator(output_decorator):
 
     def __init__(self, prefix_source, output):
@@ -80,7 +80,7 @@ class prefixing_output_decorator(output_decorator):
         self.write_on_output(self.prefix_source.get() + text)
                
         
-""" prefixer decorates each data with  """
+""" decorates each data with suffix  """
 class sufixing_output_decorator(output_decorator):
 
     def __init__(self, output, sufix):
