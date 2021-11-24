@@ -1,1 +1,2 @@
+mkdir _dev/tests/outputs/ > /dev/null 2> /dev/null
 python typo/_test.py
