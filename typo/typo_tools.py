@@ -74,8 +74,8 @@ class file_name_is_not_defined(typo_error):
 """ error - file name is malformed """
 class malformed_file_name(typo_error):
 
-    def __init(self, variable_name, file_name):
-        typo_error.__init__(self, "Value '" + file_name + "' or variable '" + variable_name + "' is wrong as a file name.")
+    def __init__(self, variable_name, file_name):
+        typo_error.__init__(self, "Value '" + file_name + "' in variable '" + variable_name + "' is wrong as a file name.")
 
 """ context reader contain few methods helping to read the context variables """
 class context_reader:
@@ -99,7 +99,7 @@ class context_reader:
         if value is None:
             raise file_name_is_not_defined(file_name_variable_name)
 	value = str(value)
-        if not re.match("[_a-zA-Z][0-9_a-zA-Z.]*", value):
+        if not re.match("^[_a-zA-Z][0-9_a-zA-Z.]*$", value):
             raise malformed_file_name(file_name_variable_name, value)
         return value    
 

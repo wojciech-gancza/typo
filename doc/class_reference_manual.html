@@ -68,7 +68,7 @@
         <li><a href="#path_not_found">path_not_found</a></li>
         <li><a href="#file_name_is_not_defined">file_name_is_not_defined</a></li>
         <li><a href="#malformed_file_name">malformed_file_name</a></li>
-        <li><a _href="#_">context_reader</a></li>
+        <li><a href="#context_reader">context_reader</a></li>
         <li><a _href="#_">placeholders_info</a></li>
         <li><a href="#gen_timestamp">gen_timestamp</a></li>
         <li><a href="#gen_typo_version">gen_typo_version</a></li>
@@ -101,6 +101,26 @@
     <p>
       This output was prepared for debugging purposes - to see the result of the
       generation to the console to review them. 
+
+    <h2><a name="context_reader"></a>context_reader 
+      <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
+      </h2>
+      Simple class allowing to interpret values from the context for given 
+      purposes.
+    <p>
+      Currently it allow to take path name and file name:
+    <ul>
+      <li><b>__init__(context)</b> - initializes reader with given 
+        <a href="#typo_context">typo_context</a> object</li>
+      <li><b>get_path(variable_name)</b> - gets variable value and checks
+        if it is valid path name. Variable must exist and must denote proper 
+        and exisitng directory. Function also checks if the path
+        ends with slash character. If not - function adds it.</li>
+      <li><b>get_file_name(variable_name)</b> - gets variable value and 
+        checks if it forms valid file name. Existance of file name is not
+        tested, just the value is checked for forbidden characters. 
+        Value must exist.</li>
+      </ul>
 
     <h2><a name="conv_CAPITALIZE_ALL"></a>conv_CAPITALIZE_ALL 
       <a href="#typo_converter"><span class="parent">(typo_converter)</span></a>

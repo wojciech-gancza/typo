@@ -14,7 +14,9 @@ from typo_outputs   import  indented_output, string_output, file_output, \
 from typo_core      import  typo_context, module_not_loaded      
 from typo_tools     import  typo_error, conv_UppercaseCamel, conv_lowercaseCamel, \
                             conv_CAPITALIZE_ALL, conv_lowercase_with_underscores, \
-                            identifier_non_alphanueric_error, identifier_start_with_digit_error
+                            identifier_non_alphanueric_error, identifier_start_with_digit_error, \
+                            context_reader, path_not_found, path_not_specified, \
+                            malformed_file_name, file_name_is_not_defined
     
     
     
@@ -278,6 +280,76 @@ class test_of_output_string(unittest.TestCase):
         out.write("DE\nFGH")
         self.assertEqual(out.text, "ABCDE\nFGH")
         
+class test_of_context_reader(unittest.TestCase):
+
+    def test_of_taking_proper_path(self):
+        ctx = typo_context()
+        ctx.set_value("path", "_dev/tests/templates")
+        rdr = context_reader(ctx)
+        pth = rdr.get_path("path")
+        self.assertEqual(pth, "_dev/tests/templates/")
+    
+    def test_of_taking_proper_path_with_slash_ending(self):
+        ctx = typo_context()
+        ctx.set_value("path", "_dev/tests/templates/")
+        rdr = context_reader(ctx)
+        pth = rdr.get_path("path")
+        self.assertEqual(pth, "_dev/tests/templates/")
+    
+    def test_ot_taking_nonexisting__path_variable(self):
+        ctx = typo_context()
+        rdr = context_reader(ctx)
+        try:
+            pth = rdr.get_path("path")
+            self.assertTrue(False)
+        except path_not_specified as err:
+            self.assertEqual(str(err), "Variable 'path' is not defined but it should point to the directory.")
+        except:
+            self.assertTrue(False)
+    
+    def test_ot_taking_wrong_path(self):
+        ctx = typo_context()
+        ctx.set_value("path", "_dev/test/templates/")
+        rdr = context_reader(ctx)
+        try:
+            pth = rdr.get_path("path")
+            self.assertTrue(False)
+        except path_not_found as err:
+            self.assertEqual(str(err), "Path '_dev/test/templates/' in variable 'path' does not exist.")
+        except:
+            self.assertTrue(False)
+    
+    def test_of_taking_proper_file_name(self):
+        ctx = typo_context()
+        ctx.set_value("file", "test_template.template")
+        rdr = context_reader(ctx)
+        fnm = rdr.get_file_name("file")
+        self.assertEqual(fnm, "test_template.template")
+    
+    def test_of_taking_wrong_file_name(self):
+        ctx = typo_context()
+        ctx.set_value("file", "test_te{}ate.template")
+        rdr = context_reader(ctx)
+        try:  
+            fnm = rdr.get_file_name("file")
+            self.assertTrue(False)
+        except malformed_file_name as err:
+            self.assertEqual(str(err), "Value 'test_te{}ate.template' in variable 'file' is wrong as a file name.")
+        except Exception as err:
+            print(err)
+            self.assertTrue(False)
+      
+    def test_of_taking_file_name_from_nonexisting_variable(self):
+        ctx = typo_context()
+        rdr = context_reader(ctx)
+        try:  
+            fnm = rdr.get_file_name("file")
+            self.assertTrue(False)
+        except file_name_is_not_defined as err:
+            self.assertEqual(str(err), "Variable 'file' is not defined byt should contain valid file name.")
+        except:
+            self.assertTrue(False)
+      
 #-----------------------------------------------------------------       
 
 class test_of_processing(unittest.TestCase):
