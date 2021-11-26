@@ -55,7 +55,7 @@ class text_source:
 """ indentation allow to return indent text """
 class indentation(text_source):
 
-    def __init__(self, step):
+    def __init__(self, step = 4):
         self.value = 0;
         self.step = step
         

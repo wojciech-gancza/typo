@@ -51,7 +51,7 @@
         <li><a href="#output_decorator">output_decorator</a></li>
         <li><a _href="#_">line_split_decorator</a></li>
         <li><a href="#text_source">text_source</a></li>
-        <li><a _href="#_">indentation</a></li>
+        <li><a href="#indentation">indentation</a></li>
         <li><a _href="#_">prefixing_output_decorator</a></li>
         <li><a _href="#_">sufixing_output_decorator</a></li>
         <li><a _href="#_">indented_output</a></li>
@@ -274,6 +274,25 @@
       is raised.
     <p>
       This error is raised by <a href="#typo_context">typo_context</a>._translate_text.
+
+    <h2><a name="indentation"></a>indentation 
+      <a href="#text_source"><span class="parent">(text_source)</span></a>
+      <a href="#typo_outputs_py"><span class="module">typo_outputs.py</span></a>
+      </h2>
+      Class implenting indentation. Indentation step can be set during the 
+      construction, but default step, st to populat 4 spaces, also cound be used.
+      Instenataion can be increased or decreased. 
+    <p>
+      It's a simple class:
+    <ul>
+      <li><b>__init__(step = 4)</b> - sets indentation step</li>
+      <li><b>increase()</b> - insrease indent. So simple.</li>
+      <li><b>decrease()</b> - decrease indnet </li>
+      <li><b>set(amount_of_spaces)</b> - sets the indent. The value of indent 
+        is set to the integer value of amount of spaces divided by the step.
+        It is simpler in the code then in documentation.</li>
+      <li><b>get()</b> - returns chunk of spaces forming current indentation.</li>
+     </ul>
            
     <h2><a name="identifier_start_with_digit_error"></a>identifier_start_with_digit_error 
       <a href="#typo_error"><span class="parent">(typo_error)</span></a>
@@ -466,7 +485,7 @@
     <p>
       In current version of typo - this class is base of only one class:
     <ul>
-      <li><a href="indentation">indentation</a> - class building chunk of spaces 
+      <li><a href="#indentation">indentation</a> - class building chunk of spaces 
       depending on depth of indentation.
       </ul>
             

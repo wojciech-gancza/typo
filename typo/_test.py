@@ -10,7 +10,7 @@ import shutil
 from TYPO           import  typo_main
 from typo_inputs    import  file_lines
 from typo_outputs   import  indented_output, string_output, file_output, \
-                            file_cannot_be_created
+                            file_cannot_be_created, indentation
 from typo_core      import  typo_context, module_not_loaded      
 from typo_tools     import  typo_error, conv_UppercaseCamel, conv_lowercaseCamel, \
                             conv_CAPITALIZE_ALL, conv_lowercase_with_underscores, \
@@ -349,6 +349,36 @@ class test_of_context_reader(unittest.TestCase):
             self.assertEqual(str(err), "Variable 'file' is not defined byt should contain valid file name.")
         except:
             self.assertTrue(False)
+      
+class test_of_context_reader(unittest.TestCase):
+
+    def test_of_indent(self):
+        i = indentation()
+        self.assertEqual(i.get(), "")
+        i.increase()
+        self.assertEqual(i.get(), "    ")
+        i.increase()
+        self.assertEqual(i.get(), "        ")
+        i.decrease()
+        self.assertEqual(i.get(), "    ")
+        i.decrease()
+        self.assertEqual(i.get(), "")
+      
+    def test_of_different_indent_step(self):
+        i = indentation(3)
+        self.assertEqual(i.get(), "")
+        i.increase()
+        self.assertEqual(i.get(), "   ")
+        i.set(12)
+        self.assertEqual(i.get(), "            ")
+        i.decrease()
+        self.assertEqual(i.get(), "         ")
+        i.decrease()
+        self.assertEqual(i.get(), "      ")
+        i.decrease()
+        self.assertEqual(i.get(), "   ")
+        i.decrease()
+        self.assertEqual(i.get(), "")
       
 #-----------------------------------------------------------------       
 
