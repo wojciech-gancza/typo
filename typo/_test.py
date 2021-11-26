@@ -16,10 +16,10 @@ from typo_tools     import  typo_error, conv_UppercaseCamel, conv_lowercaseCamel
                             conv_CAPITALIZE_ALL, conv_lowercase_with_underscores, \
                             identifier_non_alphanueric_error, identifier_start_with_digit_error, \
                             context_reader, path_not_found, path_not_specified, \
-                            malformed_file_name, file_name_is_not_defined
-    
-    
-    
+                            malformed_file_name, file_name_is_not_defined, \
+                            identifier_formatter, identifier_cannot_be_empty, \
+                            identifier_start_with_digit_error, identifier_non_alphanueric_error
+
 class test_output(indented_output):
 
     def __init__(self):
@@ -379,7 +379,72 @@ class test_of_context_reader(unittest.TestCase):
         self.assertEqual(i.get(), "   ")
         i.decrease()
         self.assertEqual(i.get(), "")
-      
+        
+class test_of_identifier_formatter(unittest.TestCase):
+
+    def test_of_empty_identifier(self):
+        try:
+            id = identifier_formatter("")
+            self.assertTrue(False)
+        except identifier_cannot_be_empty as err:
+            self.assertEqual(str(err), "Identifier cannot be empty")
+        except:
+            self.assertTrue(False)
+    
+    def test_of_wrong_characeter_in_identifier(self):
+        try:
+            id = identifier_formatter("Some 5tr&GE SeN73Nc3")
+            self.assertTrue(False)
+        except identifier_non_alphanueric_error as err:
+            self.assertEqual(str(err), "'Some 5tr&GE SeN73Nc3' could not be an identifier because it contain non alphanumeric character")
+        except:
+            self.assertTrue(False)
+    
+    def test_of_identifier_starting_with_digit(self):
+        try:
+            id = identifier_formatter("5ome 5trGE SeN73Nc3")
+            self.assertTrue(False)
+        except identifier_start_with_digit_error as err:
+            self.assertEqual(str(err), "Identifier cannot start with digit but it is '5ome 5trGE SeN73Nc3'")
+        except:
+            self.assertTrue(False)
+    
+    def test_of_CAPITALIZE_ALL_identifier(self):    
+        id = identifier_formatter("Some 5tranGE SeN73Nc3")
+        id_val = id.CAPITALIZE_ALL()
+        self.assertEqual(id_val, "SOME_5TRANGE_SEN73NC3")
+        id_val = id.CAPITALIZE_ALL("enm_")
+        self.assertEqual(id_val, "enm_SOME_5TRANGE_SEN73NC3")
+        id_val = id.CAPITALIZE_ALL("_", "_H_")
+        self.assertEqual(id_val, "_SOME_5TRANGE_SEN73NC3_H_")
+ 
+    def test_of_lowercase_with_underscores_identifier(self): 
+        id = identifier_formatter("Some 5tranGE SeN73Nc3")
+        id_val = id.lowercase_with_underscores()
+        self.assertEqual(id_val, "some_5trange_sen73nc3")
+        id_val = id.lowercase_with_underscores("enm_")
+        self.assertEqual(id_val, "enm_some_5trange_sen73nc3")
+        id_val = id.lowercase_with_underscores("_", "_H_")
+        self.assertEqual(id_val, "_some_5trange_sen73nc3_H_")
+        
+    def test_of_UppercaseCamel_identifier(self): 
+        id = identifier_formatter("Some 5tranGE SeN73Nc3")
+        id_val = id.UppercaseCamel()
+        self.assertEqual(id_val, "Some5trangeSen73nc3")
+        id_val = id.UppercaseCamel("enm_")
+        self.assertEqual(id_val, "enm_Some5trangeSen73nc3")
+        id_val = id.UppercaseCamel("_", "_H_")
+        self.assertEqual(id_val, "_Some5trangeSen73nc3_H_")
+    
+    def test_of_lowercaseCamel_identifier(self): 
+        id = identifier_formatter("Some 5tranGE SeN73Nc3")
+        id_val = id.lowercaseCamel()
+        self.assertEqual(id_val, "some5trangeSen73nc3")
+        id_val = id.lowercaseCamel("enm_")
+        self.assertEqual(id_val, "enm_some5trangeSen73nc3")
+        id_val = id.lowercaseCamel("_", "_H_")
+        self.assertEqual(id_val, "_some5trangeSen73nc3_H_")       
+        
 #-----------------------------------------------------------------       
 
 class test_of_processing(unittest.TestCase):

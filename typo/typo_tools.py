@@ -26,16 +26,24 @@ class identifier_start_with_digit_error(typo_error):
     def __init__(self, identifier):
         typo_error.__init__(self, "Identifier cannot start with digit but it is '" + identifier + "'")
 
+""" problem with identifier - cannot start with digit """
+class identifier_cannot_be_empty(typo_error):
+
+    def __init__(self):
+        typo_error.__init__(self, "Identifier cannot be empty")
+
 """ formatter allowing change a multiword description into identifier """
 class identifier_formatter:
 
     def __init__(self, identifier):
-        identifier_text = str(identifier)
+        identifier_text = str(identifier).strip()
+        if identifier_text == "":
+            raise identifier_cannot_be_empty()
         self.words = identifier_text.split()
         if self.words[0][0].isdigit():
             raise identifier_start_with_digit_error(identifier_text)
         for word in self.words:
-            if not re.match("^[_a-zA-Z][0-9_a-zA-Z]*$", word):
+            if not re.match("^[0-9_a-zA-Z]*$", word):
                 raise identifier_non_alphanueric_error(word, identifier_text)
 
     def CAPITALIZE_ALL(self, prefix = "", suffix = ""):

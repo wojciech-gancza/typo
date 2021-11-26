@@ -63,7 +63,8 @@
         by typo but also usefull for different purposes:<ul>
         <li><a href="#identifier_non_alphanueric_error">identifier_non_alphanueric_error</a></li>
         <li><a href="#identifier_start_with_digit_error">identifier_start_with_digit_error</a></li>
-        <li><a _href="#_">identifier_formatter</a></li>
+        <li><a href="#identifier_cannot_be_empty">identifier_cannot_be_empty</a></li>
+        <li><a href="#identifier_formatter">identifier_formatter</a></li>
         <li><a href="#path_not_specified">path_not_specified</a></li>
         <li><a href="#path_not_found">path_not_found</a></li>
         <li><a href="#file_name_is_not_defined">file_name_is_not_defined</a></li>
@@ -253,11 +254,63 @@
       This generator assumes that the output have possibility to 
       write unformatted code, but do not check it.
       
+    <h2><a name="identifier_cannot_be_empty"></a>identifier_cannot_be_empty 
+      <a href="#typo_error"><span class="parent">(typo_error)</span></a>
+      <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
+      </h2>
+    <p>
+      Identifier formatter takes a string 
+      containing set of words separated by spaces. This words must allow to form
+      proper identifier. It the input data is empty - this error is raised.
+    <p>
+      This error is raised by <a href="#identifier_formatter">identifier_formatter</a>.__init__.
+      
+    <h2><a name="identifier_formatter"></a>identifier_formatter 
+      <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
+      </h2>
+      IdentifierFormatter allow to change sentence or a phraze into identifier valid 
+      in most of programming languages. Such identifier contain text form passed 
+      phraze and removes spaces. Different ways of formatting is returned 
+      by various methods.
+    <p>
+      Phraze is analized in constructor, and the identifier is formed
+      by method building the identifier. Phraze must:
+    <ul>
+      <li>not empty</li>
+      <li>contain only alphanumneri characters or underscores</li>
+      <li>must not start with digit</li>
+    </ul>
+      In current version, the class contain methods:
+    <ul>
+      <li><b>__init__(identifier)</b> - Initializes formatter checking input
+        data. All possible errors can happen here. Constructor sets
+        the <i>words</i> collection.</li>
+      <li><b>CAPITALIZE_ALL(prefix = "", suffix = "")</b> - build identifier by 
+        capitalizint all characters and separates its word by underscore. Returned
+        identifer can be decorated by prefix and/or suffix. Such indentifiers
+        are mainly used to denote constants, enum, preprocessor or system 
+        variables.</li>
+      <li><b>lowercase_with_underscores(prefix = "", suffix = "")</b> - formats
+        idnetifier as set of lowercase words separated by underscores. Good 
+        chose for local variable identifers or parameters. As in other functions,
+        prefix and suffix can be added.</li>
+      <li><b>UppercaseCamel(prefix = "", suffix = "")</b> - Uppercase camel 
+        notation - typical way to express class names. As in other functions,
+        prefix and suffix can be added.</li>
+      <li><b>lowercaseCamel(self, prefix = "", suffix = "")</b> - lowercase camel 
+        notation - typical way to express object names and local variables. 
+        As in other functions, prefix and suffix can be added.</li>
+      </ul>
+    And fields:
+    <ul>
+      <li><b>words</b> - list containinig list of words to form the identifier</li>
+      </ul>
+   
     <h2><a name="identifier_non_alphanueric_error"></a>identifier_non_alphanueric_error 
       <a href="#typo_error"><span class="parent">(typo_error)</span></a>
       <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
       </h2>
-      Error raised by identifier formatter. This formatter takes a string 
+      Identifier formatter takes a string 
       containing set of words separated by spaces. This words must allow to form
       proper identifier. The text must be formed from alphanumeric characters and must 
       not start from the ditis. Underscore character is also available.
@@ -636,6 +689,7 @@
       <li><a href="#cannot_translate">cannot_translate</a></li>
       <li><a href="#error_in_generator">error_in_generator</a></li>
       <li><a href="#file_name_is_not_defined">file_name_is_not_defined</a></li>
+      <li><a href="#identifier_cannot_be_empty">identifier_cannot_be_empty</a></li>
       <li><a href="#identifier_non_alphanueric_error">identifier_non_alphanueric_error</a></li>
       <li><a href="#identifier_not_found">identifier_not_found</a></li>
       <li><a href="#identifier_start_with_digit_error">identifier_start_with_digit_error</a></li>
