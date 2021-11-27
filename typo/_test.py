@@ -7,18 +7,20 @@ import hashlib
 import re
 import shutil
 
-from TYPO           import  typo_main
-from typo_inputs    import  file_lines
-from typo_outputs   import  indented_output, string_output, file_output, \
-                            file_cannot_be_created, indentation
-from typo_core      import  typo_context, module_not_loaded      
-from typo_tools     import  typo_error, conv_UppercaseCamel, conv_lowercaseCamel, \
-                            conv_CAPITALIZE_ALL, conv_lowercase_with_underscores, \
-                            identifier_non_alphanueric_error, identifier_start_with_digit_error, \
-                            context_reader, path_not_found, path_not_specified, \
-                            malformed_file_name, file_name_is_not_defined, \
-                            identifier_formatter, identifier_cannot_be_empty, \
-                            identifier_start_with_digit_error, identifier_non_alphanueric_error
+from TYPO             import  typo_main
+from typo_inputs      import  file_lines
+from typo_outputs     import  indented_output, string_output, file_output, \
+                              file_cannot_be_created, indentation
+from typo_core        import  typo_context, module_not_loaded      
+from typo_tools       import  typo_error, conv_UppercaseCamel, conv_lowercaseCamel, \
+                              conv_CAPITALIZE_ALL, conv_lowercase_with_underscores, \
+                              identifier_non_alphanueric_error, identifier_start_with_digit_error, \
+                              context_reader, path_not_found, path_not_specified, \
+                              malformed_file_name, file_name_is_not_defined, \
+                              identifier_formatter, identifier_cannot_be_empty, \
+                              identifier_start_with_digit_error, identifier_non_alphanueric_error
+from typo_interpreter import  output_file_generator, template_does_not_exist, \
+                              cannot_translate
 
 class test_output(indented_output):
 
@@ -33,19 +35,31 @@ class test_output(indented_output):
     def get_md5hex(self):
         self.flush()
         md5_hash = hashlib.md5(self.string.text)
-        return md5_hash.hexdigest()
-        
+        return md5_hash.hexdigest()        
         
 class file_checker:
 
     def __init__(self, file_name):
+        self.file_name = file_name
+        self.load()
+    
+    def load(self):    
         self.file_content = None
         try:
-            file = open(file_name)
+            file = open(self.file_name)
             self.file_content = file.read()
             file.close()
         except:
             pass
+            
+    def delete(self):
+        try:
+            os.remove(self.file_name)
+        except:
+            pass
+            
+    def copy_from(self, name_of_file_to_copy):
+        shutil.copyfile(name_of_file_to_copy, self.file_name)       
         
     def get_text(self):
         return self.file_content
@@ -444,16 +458,140 @@ class test_of_identifier_formatter(unittest.TestCase):
         self.assertEqual(id_val, "enm_some5trangeSen73nc3")
         id_val = id.lowercaseCamel("_", "_H_")
         self.assertEqual(id_val, "_some5trangeSen73nc3_H_")       
-        
+     
+class test_output_file_generator(unittest.TestCase):
+
+    def test_of_build_source_code_just_generate(self):
+        output_file = "_dev/tests/outputs/test_file_generator_01.out"
+        template_file = "_dev/tests/templates/test_of_copying_content.template"
+        try:
+            os.remove(output_file)
+        except:
+            pass
+        context = typo_context()
+        generator = output_file_generator(context)
+        generator.build_source_code(template_file, output_file)
+        file = file_checker(output_file)
+        self.assertTrue(file.has("containing no placeholders"))
+    
+    def test_of_build_source_code_missing_template(self):
+        output_file = "_dev/tests/outputs/test_file_generator_01.out"
+        template_file = "_dev/tests/templates/test_of_missing_template.template"
+        context = typo_context()
+        generator = output_file_generator(context)
+        try:
+            generator.build_source_code(template_file, output_file)
+            self.assertTrue(False)
+        except template_does_not_exist as err:
+            self.assertEqual(str(err), "Template file '_dev/tests/templates/test_of_missing_template.template' does not exist.")
+        except:
+            self.assertTrue(False)
+            
+    def test_of_build_source_code_wih_generator(self):
+        output_file = "_dev/tests/outputs/test_file_generator_02.out"
+        template_file = "_dev/tests/templates/test_of_running_generator.template"
+        file = file_checker(output_file)
+        file.delete()
+        context = typo_context()
+        generator = output_file_generator(context)
+        generator.build_source_code(template_file, output_file)
+        file.load()
+        self.assertTrue(file.has("Typo version is: 1.00.Dev. Isn.t it?"))
+            
+    def test_of_build_source_code_wih_value(self):
+        output_file = "_dev/tests/outputs/test_file_generator_03.out"
+        template_file = "_dev/tests/templates/test_of_using_value.template"
+        file = file_checker(output_file)
+        file.delete()
+        context = typo_context()
+        context.set_value("copyright", "WGan (c) 2021")
+        generator = output_file_generator(context)
+        generator.build_source_code(template_file, output_file)
+        file.load()
+        self.assertTrue(file.has("\# WGan \(c\) 2021"))
+            
+    def test_of_build_source_code_wih_value(self):
+        output_file = "_dev/tests/outputs/test_file_generator_04.out"
+        template_file = "_dev/tests/templates/test_of_using_value.template"
+        file = file_checker(output_file)
+        file.delete()
+        context = typo_context()
+        context.set_value("copyright", "WGan (c) 2021")
+        generator = output_file_generator(context)
+        generator.build_source_code(template_file, output_file)
+        file.load()
+        self.assertTrue(file.has("\# WGan \(c\) 2021"))
+            
+    def test_of_build_source_code_with_missing_generator(self):
+        output_file = "_dev/tests/outputs/test_file_generator_04.out"
+        template_file = "_dev/tests/templates/test_of_using_value.template"
+        context = typo_context()
+        generator = output_file_generator(context)
+        try:
+            generator.build_source_code(template_file, output_file)
+            self.assertTrue(False)
+        except cannot_translate as err:
+            self.assertEqual(str(err), "Placeholder 'copyright' is not known. Found in '_dev/tests/templates/test_of_using_value.template' in line 2.")
+        except Exception as err:
+            self.assertTrue(False)
+            
+    def test_of_build_source_code_into_wrong_file(self):
+        output_file = "_dev/tests/XXX/test_file_generator_04.out"
+        template_file = "_dev/tests/templates/test_of_using_value.template"
+        context = typo_context()
+        generator = output_file_generator(context)
+        try:
+            generator.build_source_code(template_file, output_file)
+            self.assertTrue(False)
+        except file_cannot_be_created as err:
+            self.assertEqual(str(err), "File '_dev/tests/XXX/test_file_generator_04.out' cannot be created. Found in '_dev/tests/templates/test_of_using_value.template' in line 1.")
+        except:
+            self.assertTrue(False)
+                      
+    def test_of_build_source_with_user_code(self):
+        output_file = "_dev/tests/outputs/test_file_generator_05.out"
+        template_file = "_dev/tests/templates/test_of_user_code.template"
+        file = file_checker(output_file)
+        file.copy_from("_dev/tests/inputs/test_file_generator_05.in")
+        context = typo_context()
+        generator = output_file_generator(context)
+        generator.build_source_code(template_file, output_file)
+        file.load()
+        self.assertTrue(file.has("XXX"))
+        self.assertTrue(file.has("YYY"))
+        self.assertTrue(file.has("ZZZ"))
+                      
+    def test_of_build_source_with_orders(self):
+        output_file = "_dev/tests/outputs/test_file_generator_06.out"
+        template_file = "_dev/tests/templates/test_of_orders.template"
+        file = file_checker(output_file)
+        file.delete()
+        context = typo_context()
+        generator = output_file_generator(context)
+        generator.build_source_code(template_file, output_file)
+        file.load()
+        self.assertFalse(file.has("copyright"))
+        self.assertEqual(context.get_value("copyright"), "WGan (c) 2021")
+                      
+    #def test_of_interpret_line(self)):
+    #    pass
+    
+    #def test_of_translate_line(self):
+    #    pass
+    # wrong generator for inline
+            
 #-----------------------------------------------------------------       
 
 class test_of_processing(unittest.TestCase):
 
     def test_processing_like_in_command_line(self):
-        shutil.copyfile("_dev/tests/inputs/generated_by_test.txt", "_dev/tests/outputs/generated_by_test.txt")
-        argv = ["test", "_dev/tests/scripts/first_test.typo"]
-        typo_main(argv)
         result = file_checker("_dev/tests/outputs/generated_by_test.txt")
+        result.copy_from("_dev/tests/inputs/generated_by_test.txt")
+        argv = ["test", "_dev/tests/scripts/first_test.typo"]
+        result.load()
+        self.assertTrue(result.has(" this line should contain copyright, by it was manually deleted "))
+        typo_main(argv)
+        result.load()
         self.assertFalse(result.has(" this line should contain copyright, by it was manually deleted "))
         self.assertTrue(result.has(" just some user text inside the class "))
         
@@ -461,6 +599,7 @@ class test_of_processing(unittest.TestCase):
 
 unittest.main()
 
+                  
 
 
 #try:

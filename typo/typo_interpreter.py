@@ -37,7 +37,7 @@ class user_code_extractor:
                         line_after = self.find_line(after, source_file, line_before)
                         if line_after is None:
                             raise user_code_placeholder_error("Cannot find ending delimiter of user code")
-                        source_file_line = line_after + 1
+                        source_file_line = line_after
                         user_code = ""
                         for line_number in range(line_before+1, line_after):
                             user_code += source_file[line_number]

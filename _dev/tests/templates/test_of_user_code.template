@@ -1,0 +1,9 @@
+Just simple file
+${user_code}
+and no special treatment
+line set by template
+next user code delimiter
+${user_code}
+and next user code block
+${user_code}
+and the last line
