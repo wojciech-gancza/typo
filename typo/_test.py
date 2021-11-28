@@ -18,7 +18,8 @@ from typo_tools       import  typo_error, conv_UppercaseCamel, conv_lowercaseCam
                               context_reader, path_not_found, path_not_specified, \
                               malformed_file_name, file_name_is_not_defined, \
                               identifier_formatter, identifier_cannot_be_empty, \
-                              identifier_start_with_digit_error, identifier_non_alphanueric_error
+                              identifier_start_with_digit_error, identifier_non_alphanueric_error, \
+                              placeholders_info, user_code_placeholder_error
 from typo_interpreter import  output_file_generator, template_does_not_exist, \
                               cannot_translate, wrong_generator_for_inline, \
                               error_in_generator
@@ -655,6 +656,78 @@ class test_output_file_generator(unittest.TestCase):
         except Exception as err:
             print(str(err))
             self.assertTrue(False)
+            
+class test_placeholders_info(unittest.TestCase):
+
+    def test_of_just_placeholder(self):
+        line = placeholders_info("${placeholder}")
+        self.assertTrue(line.is_just_placeholder())
+        line = placeholders_info("  ${placeholder}")
+        self.assertTrue(line.is_just_placeholder())
+        line = placeholders_info("  ${placeholder}      ")
+        self.assertTrue(line.is_just_placeholder())
+        line = placeholders_info("  ${plac%eholder}      ")
+        self.assertFalse(line.is_just_placeholder())
+        line = placeholders_info("  ${plac%eholder}  .    ")
+        self.assertFalse(line.is_just_placeholder())
+        line = placeholders_info("  ${plac%eholder}   ${second}   ")
+        self.assertFalse(line.is_just_placeholder())
+        
+    def test_is_user_code_placeholder(self):
+        line = placeholders_info("${user_code}")
+        self.assertTrue(line.is_user_code_placeholder())
+        line = placeholders_info("  ${user_code}")
+        self.assertTrue(line.is_user_code_placeholder())
+        line = placeholders_info("  ${auto_code}")
+        self.assertFalse(line.is_user_code_placeholder())
+        
+    def test_is_user_code_placeholder_error(self):
+        line = placeholders_info("Here: ${user_code}")
+        try:
+            result = line.is_user_code_placeholder()
+            self.assertTrue(False)
+        except user_code_placeholder_error as err:
+            self.assertEqual(str(err), "User code placeholder must be the only one in the line.")
+        except:
+            self.assertTrue(False)
+            
+    def test_is_empty(self):
+        line = placeholders_info("")
+        self.assertTrue(line.is_empty())
+        line = placeholders_info("\n")
+        self.assertTrue(line.is_empty())
+        line = placeholders_info("    ")
+        self.assertTrue(line.is_empty())
+        line = placeholders_info("  \t   ")
+        self.assertTrue(line.is_empty())
+        line = placeholders_info("  .    . ")
+        self.assertFalse(line.is_empty())
+        line = placeholders_info("ABCD")
+        self.assertFalse(line.is_empty())
+        line = placeholders_info("${abcd}")
+        self.assertFalse(line.is_empty())
+        
+    def test_is_constant(self):
+        line = placeholders_info("ABCD")
+        self.assertTrue(line.is_constant())
+        line = placeholders_info("${ABCD}")
+        self.assertFalse(line.is_constant())
+        line = placeholders_info("")
+        self.assertTrue(line.is_constant())
+        line = placeholders_info(" qe q q qs addad as dc ")
+        self.assertTrue(line.is_constant())
+        line = placeholders_info("AB${x}CD")
+        self.assertFalse(line.is_constant())
+    
+    def test_find_pirst_identifer(self):
+        line = placeholders_info("ABCD")
+        self.assertTrue(line.find_first_identifier() is None)
+        line = placeholders_info("A${BC}D")
+        self.assertEqual(line.find_first_identifier(), (3, 5))
+        line = placeholders_info("${ABCD}")
+        self.assertEqual(line.find_first_identifier(), (2, 6))
+        line = placeholders_info("AB${xyz${hhhh}aa}CD")
+        self.assertEqual(line.find_first_identifier(), (9, 13))
 
 #-----------------------------------------------------------------       
 

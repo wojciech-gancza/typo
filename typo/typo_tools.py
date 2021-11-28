@@ -112,6 +112,12 @@ class context_reader:
         return value    
 
 
+""" error when extracting user code """
+class user_code_placeholder_error(typo_error):
+
+    def __init__(self, message):
+        typo_error.__init__(self, message)
+
 """ Some function used to analyze value which might contain placeholders """
 class placeholders_info:
 

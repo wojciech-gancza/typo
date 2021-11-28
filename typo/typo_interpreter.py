@@ -8,14 +8,7 @@ from typo_base import typo_error
 from typo_core import typo_context
 from typo_inputs import file_lines
 from typo_outputs import file_output, indented_output, string_output
-from typo_tools import context_reader, placeholders_info
-
-
-""" error when extracting user code """
-class user_code_placeholder_error(typo_error):
-
-    def __init__(self, message):
-        typo_error.__init__(self, message)
+from typo_tools import context_reader, placeholders_info, user_code_placeholder_error
 
 """ user code extractor """
 class user_code_extractor:

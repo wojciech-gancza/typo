@@ -33,7 +33,6 @@
         </ul></li>
       <li><a name="typo_interpreter_py"></a><b>typo_interpreter</b> module - a 
         module defining the typo interpreter creating output files: <ul>
-        <li><a href="#user_code_placeholder_error">user_code_placeholder_error</a></li>
         <li><a _href="#_">user_code_extractor</a></li>
         <li><a href="#template_does_not_exist">template_does_not_exist</a></li>
         <li><a href="#cannot_translate">cannot_translate</a></li>
@@ -70,7 +69,8 @@
         <li><a href="#file_name_is_not_defined">file_name_is_not_defined</a></li>
         <li><a href="#malformed_file_name">malformed_file_name</a></li>
         <li><a href="#context_reader">context_reader</a></li>
-        <li><a _href="#_">placeholders_info</a></li>
+        <li><a href="#user_code_placeholder_error">user_code_placeholder_error</a></li>
+        <li><a href="#placeholders_info">placeholders_info</a></li>
         <li><a href="#gen_timestamp">gen_timestamp</a></li>
         <li><a href="#gen_typo_version">gen_typo_version</a></li>
         <li><a href="#gen_user_code">gen_user_code</a></li>        
@@ -540,6 +540,39 @@
     <p>
       This error is raised by <a href="#context_reader">context_reader</a>.get_path.
    
+    <h2><a name="placeholders_info"></a>placeholders_info
+      <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
+      </h2>
+      Small helpers analizing line and looking for placeholder. Allow to check the 
+      line content and answer few important questions related to placeholders 
+      locaed in the string:
+    <ul>
+      <li><b>__init__(line_text)</b> - constructor - stores string in class
+        variable for future analisys.</li>
+      <li><b>is_just_placeholder()</b> - checks if the line contain only one
+        placeholder, eventually decorated by wite characters. Only one
+        placeholder can exist.</li>
+      <li><b>is_user_code_placeholder():</b> - checks if the line contain
+        correct user_code placeholder. Teturns True or Fsle, but also raise 
+        exception <a href="#user_code_placeholder_error">user_code_placeholder_error</a>
+        when user code placeholder was found, but it is not the only one content
+        of the line.</li>
+      <li><b>is_constant()</b> - checks if the line contain no placeholders. 
+        Just the content to place directly in output file.</li>
+      <li><b>is_empty()</b> - checks if the line contain only white chars. If any
+        other character is found - function returns false.</li>
+      <li><b>find_first_identifier()</b> - returns position of first placeholder 
+        to interpret. Result value is tuple containing position of begining
+        of the placeholder name (without "${") and position of ending bracket
+        ("}"). Slicing line by this two positions returns name of the 
+        placeholder interpre</li>
+      </ul>
+      The object contain one field:
+    <ul>
+      <li><b>line</b> - value which is analized - stored to allow parameterless
+        calles to test functions.</li>
+      </ul>
+   
     <h2><a name="string_output"></a>string_output
       <a href="#output"><span class="parent">(output)</span></a>
       <a href="#typo_outputs_py"><span class="module">typo_outputs.py</span></a>
@@ -789,7 +822,7 @@
       
     <h2><a name="user_code_placeholder_error"></a>user_code_placeholder_error 
       <a href="#typo_error"><span class="parent">(typo_error)</span></a>
-      <a href="#typo_interpreter_py"><span class="module">typo_interpreter.py</span></a></h2>
+      <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a></h2>
       This error just group problems with <i>user_code</i> placeholder in template.
       This placeholder is processed in different way then other placeholders, because
       typo interpreter must read the user code before it starts to write output file.
