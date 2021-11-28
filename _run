@@ -1,4 +1,3 @@
 # (c) TYPO by WGan 2021
 
-cp _dev/tests/inputs/generated_by_test.txt _dev/tests/outputs/
-python typo/TYPO.py _dev/tests/scripts/first_test.typo
+python typo/TYPO.py

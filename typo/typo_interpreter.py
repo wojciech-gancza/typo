@@ -164,7 +164,6 @@ class output_file_generator:
                         generator.generate(self.context, temporary_output)
                         line = before + temporary_output.text + after  
                     except Exception as err:
-                        print(err)
                         raise wrong_generator_for_inline(identifier)
                 else:
                     value = self.context.get_value(identifier)

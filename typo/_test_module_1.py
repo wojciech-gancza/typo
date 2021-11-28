@@ -19,3 +19,7 @@ class gen_test_generator(typo_generator):
         output.decrease_indent()
         output.write("}")
         
+class gen_test_of_error(typo_generator):
+
+    def generate(self, context, output):
+        raise Exception("exception in 'gen_test_of_error'")        

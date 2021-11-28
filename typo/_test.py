@@ -20,7 +20,8 @@ from typo_tools       import  typo_error, conv_UppercaseCamel, conv_lowercaseCam
                               identifier_formatter, identifier_cannot_be_empty, \
                               identifier_start_with_digit_error, identifier_non_alphanueric_error
 from typo_interpreter import  output_file_generator, template_does_not_exist, \
-                              cannot_translate
+                              cannot_translate, wrong_generator_for_inline, \
+                              error_in_generator
 
 class test_output(indented_output):
 
@@ -573,13 +574,88 @@ class test_output_file_generator(unittest.TestCase):
         self.assertFalse(file.has("copyright"))
         self.assertEqual(context.get_value("copyright"), "WGan (c) 2021")
                       
-    #def test_of_interpret_line(self)):
-    #    pass
-    
-    #def test_of_translate_line(self):
-    #    pass
-    # wrong generator for inline
-            
+    def test_of_interpret_line(self):
+        context = typo_context()
+        generator = output_file_generator(context)
+        generator.interpret_line("something=12+34")
+        self.assertEqual(context.get_value("something"), 46)
+        
+    def test_of_translate_line(self):
+        context = typo_context()
+        generator = output_file_generator(context)
+        output = test_output()
+        generator.translate_line("Line without placeholders\n", output)
+        self.assertEqual(output.get_text(), "Line without placeholders\n")
+        
+    def test_of_translate_line_with_placeholder(self):
+        context = typo_context()
+        context.set_value("here", "PLACEHOLDER")
+        generator = output_file_generator(context)
+        output = test_output()
+        generator.translate_line("Line with placeholder ${here}\n", output)
+        self.assertEqual(output.get_text(), "Line with placeholder PLACEHOLDER\n")
+        
+    def test_of_translate_line_with_generator(self):
+        context = typo_context()
+        generator = output_file_generator(context)
+        output = test_output()
+        generator.translate_line("Line with placeholder ${typo_version}\n", output)
+        self.assertEqual(output.get_text(), "Line with placeholder 1.00.Dev\n")
+        
+    def test_of_translate_line_with_generator(self):
+        context = typo_context()
+        generator = output_file_generator(context)
+        output = test_output()
+        generator.translate_line("Line with placeholder ${typo_version}\n", output)
+        self.assertEqual(output.get_text(), "Line with placeholder 1.00.Dev\n")
+        
+    def test_of_translate_line_with_multiline_generator(self):
+        context = typo_context()
+        context.import_module("_test_module_1")
+        generator = output_file_generator(context)
+        output = test_output()
+        generator.translate_line("    ${test_generator}\n", output)
+        self.assertEqual(output.get_text(), "    constructor(parameters)\n    {\n        // indented text\n        // multiline\n    }\n")
+
+    def test_of_translate_line_with_multiline_generator_error(self):
+        context = typo_context()
+        context.import_module("_test_module_1")
+        generator = output_file_generator(context)
+        output = test_output()
+        try:
+            generator.translate_line("    ${test_generator} and some other text\n", output)
+            self.assertTrue(False)
+        except wrong_generator_for_inline as err:
+            self.assertEqual(str(err), "Generator 'test_generator' cannot be used inline.")
+        except:
+            self.assertTrue(False)
+
+    def test_of_translate_line_with_nonexisting_value(self):
+        context = typo_context()
+        generator = output_file_generator(context)
+        output = test_output()
+        try:
+            generator.translate_line("Line with placeholder ${here}\n", output)
+            self.assertTrue(False)
+        except cannot_translate as err:
+            self.assertEqual(str(err), "Placeholder 'here' is not known.")
+        except:
+            self.assertTrue(False)
+
+    def test_of_translate_line_with_error_in_generator(self):
+        context = typo_context()
+        context.import_module("_test_module_1")
+        generator = output_file_generator(context)
+        output = test_output()
+        try:
+            generator.translate_line("  ${test_of_error}\n", output)
+            self.assertTrue(False)
+        except error_in_generator as err:
+            self.assertEqual(str(err), "Generator 'test_of_error' raises error 'exception in 'gen_test_of_error''.")
+        except Exception as err:
+            print(str(err))
+            self.assertTrue(False)
+
 #-----------------------------------------------------------------       
 
 class test_of_processing(unittest.TestCase):

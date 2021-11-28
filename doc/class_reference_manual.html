@@ -39,7 +39,7 @@
         <li><a href="#cannot_translate">cannot_translate</a></li>
         <li><a href="#wrong_generator_for_inline">wrong_generator_for_inline</a></li>
         <li><a href="#error_in_generator">error_in_generator</a></li>
-        <li><a _href="#_">output_file_generator</a></li>
+        <li><a href="#output_file_generator">output_file_generator</a></li>
         <li><a _href="#_">typo_processor</a></li>
         <li><a _href="#_">exit_typo</a></li>
         <li><a _href="#_">command_processor</a></li>
@@ -473,7 +473,50 @@
         - Combined decorator which derives from 
         <a href="#line_split_decorator">line_split_decorator</a> adding indent
         as prefix and newline character as each line suffix.</li>
-      </ul>      
+      </ul>  
+      
+    <h2><a name="output_file_generator"></a>output_file_generator
+      <a href="#typo_interpreter_py"><span class="module">typo_interpreter.py</span></a>
+      </h2>
+      Main class of typo system - this is real output file generator creating
+      output file from template. It creates output file copying all content from 
+      template, filling placeholders with content set in context or generated
+      with <a href="#typo_generator">generators</a>.
+    <p>
+      Output file generator process the template line by line:
+    <ul>
+      <li>Line containing constant text are just copied in into output file</li>
+      <li>Line starting with '<i>$></i>' are interpreted as orders. This allow 
+        to add and preprocess settings or import necessary modules with generators.</li>
+      <li>Lines containing only one placeholder generates the code allowing
+        generator directly write into the file. </li>
+      <li>When more then one placeholder is located in line, or placeholder is
+        inside constant content - it is replaced 'inline' - output
+        of generator is redirected to string and the content of the string
+        is copied into output file. This is why generators used inline cannot 
+        use indentation controling methods on output.</li>
+      </ul>
+      The class has only 3 methods and contructor:
+    <ul>
+      <li><b>__init__(context)</b> - constructor taking and storing context.</li>
+      <li><b>build_source_code(template_file_name, source_code_file_name)</b> - 
+        method perforing whole functionality. It takes two parameters. Both are 
+        full file name with the path. Template must exist. Output file can exist
+        and is owerwritten, but first it is read to scan for manually added
+        code. Scan is performed by <a href="#user_code_extractor">user_code_extractor</a></li>
+      <li><b>interpret_line(line)</b> - function processing order located in the
+        template. Method creates <a href="#command_processor">command_processor</a>
+        passing <i>self</i> into its constructor.</li>
+      <li><b>translate_line(line, output)</b> - function translation single 
+        template line and stores the result on output. Depending on line content, 
+        differnet approach to building output is used.</li>
+      </ul>
+      And one field:
+    <ul>
+      <li><b>context</b> - repository of all settings needed to generate output 
+        files. This repository (of type <a href="#typo_context">typo_context</a>)
+        is also passed to generators to give access to parameters.</li>
+      </ul>
 
     <h2><a name="path_not_found"></a>path_not_found 
       <a href="#typo_error"><span class="parent">(typo_error)</span></a>
