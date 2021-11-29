@@ -33,7 +33,7 @@
         </ul></li>
       <li><a name="typo_interpreter_py"></a><b>typo_interpreter</b> module - a 
         module defining the typo interpreter creating output files: <ul>
-        <li><a _href="#_">user_code_extractor</a></li>
+        <li><a href="#user_code_extractor">user_code_extractor</a></li>
         <li><a href="#template_does_not_exist">template_does_not_exist</a></li>
         <li><a href="#cannot_translate">cannot_translate</a></li>
         <li><a href="#wrong_generator_for_inline">wrong_generator_for_inline</a></li>
@@ -819,6 +819,53 @@
       <li><a href="#gen_user_code">gen_user_code</a> - writes user code back to 
         the output file</li>
       </ul>
+      
+    <h2><a name="user_code_extractor"></a>user_code_extractor 
+      <a href="#typo_interpreter_py"><span class="module">typo_interpreter.py</span></a></h2>
+      Class reading output file and looking for code added maually in special
+      places of the file. Such code is pointed in template by <i>${user_code}</i>
+      placeholder. This placeholder must be the only one in line. Its indent 
+      does not matter.
+    <p>
+      Line before and line after <i>${user_code}</i> placeholder, must be 
+      constant - it should not contain any placeholders. It should be also 
+      easily recognizable. Do not use empty lines. Much better is comment denoting 
+      manually added code.
+    <p>
+      All the logic is in constructor. Once constructed - object contain user code
+      as list of text blocks. Each <i>${user_code}</i>  from template is 
+      reprezented by one string in the list.
+    <p>
+      User code extractor checks the correctnes of using <i>${user_code}</i> 
+      placeholder in the template. All errors which might occure during reading
+      user code are raised as <a href="#user_code_placeholder_error">user_code_placeholder_error</a>
+      
+    <p>
+      Class has few methods:
+    <ul>
+      <li><b>__init__(template, source_code_file_name)</b> - Performs all the action.
+        Two parameters represent already loaded template (in form of a list
+        of template lines) and file name of the file
+        which is analized to find user code blocks. </li>
+      <li><b>def is_user_code_placeholder(line)</b> - checks if the line correspond
+        to user code placeholder. Function just calls similarely named method
+        in <a href="#placeholders_info">placeholders_info</a>.</li>
+      <li><b>def get_line_before(lines, index)</b> - gets one line before 
+        line of given number checking if the line exists and do not contain 
+        any placeholders. If it lead to trouble - exception is raised.</li>
+      <li><b>def get_line_after(lines, index)</b> - gets one line after 
+        line of given number Similar checks like in previous methods are 
+        performed.</li>
+      <li><b>def find_line(pattern, lines, start_from)</b> - finds the line
+        in list of lines. Pattern is line content to search. Start_from - is 
+        the initial index which is checked.</li>
+      </ul>
+      And one field:
+    <ul>
+      <li><b>user_code</b> - list of multiline strings. Each element of the
+        list represents one user code block and is related to one occurance
+        of <i>${user_code}</i> placeholder.</li>
+      </ul> 
       
     <h2><a name="user_code_placeholder_error"></a>user_code_placeholder_error 
       <a href="#typo_error"><span class="parent">(typo_error)</span></a>

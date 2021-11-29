@@ -22,7 +22,7 @@ from typo_tools       import  typo_error, conv_UppercaseCamel, conv_lowercaseCam
                               placeholders_info, user_code_placeholder_error
 from typo_interpreter import  output_file_generator, template_does_not_exist, \
                               cannot_translate, wrong_generator_for_inline, \
-                              error_in_generator
+                              error_in_generator, user_code_extractor
 
 class test_output(indented_output):
 
@@ -729,6 +729,91 @@ class test_placeholders_info(unittest.TestCase):
         line = placeholders_info("AB${xyz${hhhh}aa}CD")
         self.assertEqual(line.find_first_identifier(), (9, 13))
 
+class test_user_code_extractor(unittest.TestCase):
+
+    def test_of___init__(self):
+        template = file_lines("_dev/tests/templates/test_of_user_code.template")
+        user_code = user_code_extractor(template, "_dev/tests/inputs/test_file_generator_05.in")
+        self.assertEqual(user_code.user_code, ["XXX\n", "YYY\n", "ZZZ\n"])
+        user_code = user_code_extractor(template, "_dev/tests/inputs/test_file_generator_05_A.in")
+        self.assertEqual(user_code.user_code, ["XXX\n", "\n", "ZZZ\n"])
+        try:
+            user_code = user_code_extractor(template, "_dev/tests/inputs/test_file_generator_05_B.in")
+            self.assertTrue(False)
+        except user_code_placeholder_error as err:
+            self.assertEqual(str(err), "Cannot find ending delimiter of user code Found in '_dev/tests/inputs/test_file_generator_05_B.in' in line 8.")
+        except:
+            self.assertTrue(False)
+                
+    def test_is_user_code_placeholder(self):
+        user_code = user_code_extractor([], "_dev/tests/inputs/test)file_generator_05.in")
+        self.assertTrue(user_code.is_user_code_placeholder("${user_code}"))
+        self.assertTrue(user_code.is_user_code_placeholder("  ${user_code}"))
+        self.assertFalse(user_code.is_user_code_placeholder("  ${auto_code}"))
+        
+    def test_is_user_code_placeholder_error(self):
+        user_code = user_code_extractor("_dev/tests/templates/test_of_user_code.template", "_dev/tests/inputs/test)file_generator_05.in")
+        try:
+            result = user_code.is_user_code_placeholder("x ${user_code}")
+            self.assertTrue(False)
+        except user_code_placeholder_error as err:
+            self.assertEqual(str(err), "User code placeholder must be the only one in the line.")
+        except Exception as err:
+            print(str(err))
+            self.assertTrue(False)
+            
+    def test_of_get_line_before(self):
+        user_code = user_code_extractor([], "_dev/tests/inputs/test)file_generator_05.in")
+        lines = ["ABC", "AAA${B}ddd", "ds", "", "${hello}"]
+        line = user_code.get_line_before(lines, 1)
+        self.assertEqual(line, "ABC")
+        try:
+            line = user_code.get_line_before(lines, 0)
+            self.assetTrue(False)
+        except user_code_placeholder_error as err:
+            self.assertEqual(str(err), "'user_code' placeholder cannot be in the first line")
+        except:
+            self.assetTrue(False)
+        try:
+            line = user_code.get_line_before(lines, 2)
+            self.assetTrue(False)
+        except user_code_placeholder_error as err:
+            self.assertEqual(str(err), "Line before 'user_code' placeholder must be constant.")
+        except:
+            self.assetTrue(False)
+
+    def test_of_get_line_after(self):
+        user_code = user_code_extractor([], "_dev/tests/inputs/test)file_generator_05.in")
+        lines = ["ABC", "AAA${B}ddd", "ds", "", "${hello}"]
+        line = user_code.get_line_after(lines, 1)
+        self.assertEqual(line, "ds")
+        try:
+            line = user_code.get_line_after(lines, 4)
+            self.assetTrue(False)
+        except user_code_placeholder_error as err:
+            self.assertEqual(str(err), "'user_code' placeholder cannot be in the last line")
+        except:
+            self.assetTrue(False)
+        try:
+            line = user_code.get_line_after(lines, 3)
+            self.assetTrue(False)
+        except user_code_placeholder_error as err:
+            self.assertEqual(str(err), "Line after 'user_code' placeholder must be constant.")
+        except:
+            self.assetTrue(False)
+
+    def test_of_find_line(self):
+        user_code = user_code_extractor([], "_dev/tests/inputs/test)file_generator_05.in")
+        lines = ["ABC", "xyz", "x12345678", "ABC", "a12", "a34", "x99", "ABC", "F9"]
+        line_number = user_code.find_line("ABC", lines, 0)
+        self.assertEqual(line_number, 0)
+        line_number = user_code.find_line("ABC", lines, 1)
+        self.assertEqual(line_number, 3)
+        line_number = user_code.find_line("ABC", lines, 4)
+        self.assertEqual(line_number, 7)
+        line_number = user_code.find_line("nothinf", lines, 4)
+        self.assertEqual(line_number, None)
+ 
 #-----------------------------------------------------------------       
 
 class test_of_processing(unittest.TestCase):
@@ -749,7 +834,6 @@ class test_of_processing(unittest.TestCase):
 unittest.main()
 
                   
-
 
 #try:
 #    typo = typo_processor()

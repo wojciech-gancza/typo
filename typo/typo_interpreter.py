@@ -8,7 +8,8 @@ from typo_base import typo_error
 from typo_core import typo_context
 from typo_inputs import file_lines
 from typo_outputs import file_output, indented_output, string_output
-from typo_tools import context_reader, placeholders_info, user_code_placeholder_error
+from typo_tools import context_reader, placeholders_info, user_code_placeholder_error, \
+            placeholders_info
 
 """ user code extractor """
 class user_code_extractor:
@@ -41,13 +42,8 @@ class user_code_extractor:
                 raise err 
                 
     def is_user_code_placeholder(self, line):
-        if re.match(".*\$\{user_code\}.*", line):
-            if re.match("\s*\$\{user_code\}\s*", line):
-                return True
-            else:
-                raise user_code_placeholder_error("'user_code' placeholder must be the only text in template line.")
-        else:
-            return False
+        line = placeholders_info(line)
+        return line.is_user_code_placeholder()
 
     def get_line_before(self, lines, index):
         if index == 0:
