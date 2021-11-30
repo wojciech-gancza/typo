@@ -166,8 +166,11 @@ class output_file_generator:
 """ processor - main class of TYPO programm - contain everything which is needed """
 class typo_processor:
 
-    def __init__(self, context = typo_context()):
-        self.context = context
+    def __init__(self, context = None):
+        if context is None:
+            self.context = typo_context()
+        else:
+            self.context = context
         self.generator = output_file_generator(self.context)
         self.context_reader = context_reader(self.context)
         

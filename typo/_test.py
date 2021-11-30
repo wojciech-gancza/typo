@@ -22,7 +22,8 @@ from typo_tools       import  typo_error, conv_UppercaseCamel, conv_lowercaseCam
                               placeholders_info, user_code_placeholder_error
 from typo_interpreter import  output_file_generator, template_does_not_exist, \
                               cannot_translate, wrong_generator_for_inline, \
-                              error_in_generator, user_code_extractor
+                              error_in_generator, user_code_extractor, \
+                              typo_processor
 
 class test_output(indented_output):
 
@@ -814,6 +815,46 @@ class test_user_code_extractor(unittest.TestCase):
         line_number = user_code.find_line("nothinf", lines, 4)
         self.assertEqual(line_number, None)
  
+class test_typo_processor(unittest.TestCase):
+
+    def test_of__init__(self):
+        processor = typo_processor()
+        self.assertEqual(processor.context.__class__.__name__, "typo_context")
+        self.assertEqual(processor.generator.__class__.__name__, "output_file_generator")
+        self.assertEqual(processor.context_reader.__class__.__name__, "context_reader")
+        
+    def test_of_set_value(self):
+        processor = typo_processor()
+        processor.set_value("var", "X234ABC")
+        val = processor.context.get_value("var")
+        self.assertEqual(val, "X234ABC")
+        
+    def test_of_import_module(self):
+        processor = typo_processor()
+        processor.import_module("_test_module_1")
+        txt = str(processor.context.modules[0])
+        self.assertEqual(txt, "<module '_test_module_1' from '/Users/wgan/Documents/DEV/typo/typo/_test_module_1.pyc'>")
+        
+    def test_of_generate(self):
+        result = file_checker("_dev/tests/outputs/generated_by_test.txt")
+        result.copy_from("_dev/tests/inputs/generated_by_test.txt")
+        result.load()
+        self.assertTrue(result.has(" this line should contain copyright, by it was manually deleted "))
+        processor = typo_processor()
+        processor.set_value("template_path", "_dev/tests/templates")
+        processor.set_value("path", "_dev/tests/outputs")
+        processor.set_value("file_name", "generated_by_test.txt")
+        processor.set_value("copyright", "WGan (c) 2021")
+        processor.set_value("id", "this is something important")
+        processor.set_value("simple_type_value", "${type} ${value};")
+        processor.set_value("type", "double")
+        processor.set_value("value", "val")
+        processor.import_module("_test_module_2")
+        processor.generate("test_template")
+        result.load()
+        self.assertFalse(result.has(" this line should contain copyright, by it was manually deleted "))
+        self.assertTrue(result.has(" just some user text inside the class "))
+ 
 #-----------------------------------------------------------------       
 
 class test_of_processing(unittest.TestCase):
@@ -832,8 +873,6 @@ class test_of_processing(unittest.TestCase):
 #-----------------------------------------------------------------       
 
 unittest.main()
-
-                  
 
 #try:
 #    typo = typo_processor()

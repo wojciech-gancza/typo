@@ -39,7 +39,7 @@
         <li><a href="#wrong_generator_for_inline">wrong_generator_for_inline</a></li>
         <li><a href="#error_in_generator">error_in_generator</a></li>
         <li><a href="#output_file_generator">output_file_generator</a></li>
-        <li><a _href="#_">typo_processor</a></li>
+        <li><a href="#typo_processor">typo_processor</a></li>
         <li><a _href="#_">exit_typo</a></li>
         <li><a _href="#_">command_processor</a></li>
         </ul></li>
@@ -820,6 +820,44 @@
         the output file</li>
       </ul>
       
+    <h2><a name="typo_processor"></a>typo_processor 
+      <a href="#typo_interpreter_py"><span class="module">typo_interpreter.py</span></a></h2>
+      Main interface to core of typo. When you want to use typo in your own 
+      Python projects - this class should be used as the interface to all 
+      typo functionality.
+    <p>
+      Methods of this calss implements everything you can do normally using 
+      command line interpreter:
+    <ul>
+      <li><b>__init__(context = None)</b> - initializes instance. 
+        During initialization the external context can be used, so you can 
+        work sharing context or work on its own. When <i>None</i> is passed - processor
+        creates new context.</li>
+      <li><b>set_value(name, value)</b> - sets context value. Method just 
+        redirects the parameters to the context</li>
+      <li><b>import_module(generators_module_name)</b> - imports module with
+        converters and generators. Method just redirects parameter to the 
+        context.</li>
+      <li><b>generate(template)</b> - generates the output file based on a 
+        template. Just the template names need to be passed - without 
+        <i>.template</i> suffix. Path to templates, path to output file and 
+        output file name is taken from context values:<ul>
+          <li>template_path - path to the template directory</li>
+          <li>path - path to output file</li>
+          <li>file_name - output file name</li>
+          </ul></li>
+      </ul>
+      If you need to extend this class, it might be handy to know the fields:
+    <ul>
+      <li><b>context</b> - object of type <a href="#typo_context">typo_context</a> containing
+        all settings of current typo instance. Encapsulates all data of typo.</li>
+      <li><b>generator</b> - object of type 
+        <a href="#output_file_generator">output_file_generator</a> - this is the
+        main processor creating files. Encapsulates operations of typo.</li>
+      <li><b>context_reader</b> - object of type <a href="#context_reader">context_reader</a>
+       just a helper analising context values. Connected to context</li>
+      </ul>      
+      
     <h2><a name="user_code_extractor"></a>user_code_extractor 
       <a href="#typo_interpreter_py"><span class="module">typo_interpreter.py</span></a></h2>
       Class reading output file and looking for code added maually in special
@@ -838,8 +876,7 @@
     <p>
       User code extractor checks the correctnes of using <i>${user_code}</i> 
       placeholder in the template. All errors which might occure during reading
-      user code are raised as <a href="#user_code_placeholder_error">user_code_placeholder_error</a>
-      
+      user code are raised as <a href="#user_code_placeholder_error">user_code_placeholder_error</a>      
     <p>
       Class has few methods:
     <ul>
