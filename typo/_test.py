@@ -10,7 +10,8 @@ import shutil
 from TYPO             import  typo_main
 from typo_inputs      import  file_lines
 from typo_outputs     import  indented_output, string_output, file_output, \
-                              file_cannot_be_created, indentation
+                              file_cannot_be_created, indentation, text_source, \
+                              prefixing_output_decorator, sufixing_output_decorator
 from typo_core        import  typo_context, module_not_loaded      
 from typo_tools       import  typo_error, conv_UppercaseCamel, conv_lowercaseCamel, \
                               conv_CAPITALIZE_ALL, conv_lowercase_with_underscores, \
@@ -759,8 +760,7 @@ class test_user_code_extractor(unittest.TestCase):
             self.assertTrue(False)
         except user_code_placeholder_error as err:
             self.assertEqual(str(err), "User code placeholder must be the only one in the line.")
-        except Exception as err:
-            print(str(err))
+        except:
             self.assertTrue(False)
             
     def test_of_get_line_before(self):
@@ -781,7 +781,7 @@ class test_user_code_extractor(unittest.TestCase):
         except user_code_placeholder_error as err:
             self.assertEqual(str(err), "Line before 'user_code' placeholder must be constant.")
         except:
-            self.assetTrue(False)
+            self.assertTrue(False)
 
     def test_of_get_line_after(self):
         user_code = user_code_extractor([], "_dev/tests/inputs/test)file_generator_05.in")
@@ -801,7 +801,7 @@ class test_user_code_extractor(unittest.TestCase):
         except user_code_placeholder_error as err:
             self.assertEqual(str(err), "Line after 'user_code' placeholder must be constant.")
         except:
-            self.assetTrue(False)
+            self.assertTrue(False)
 
     def test_of_find_line(self):
         user_code = user_code_extractor([], "_dev/tests/inputs/test)file_generator_05.in")
@@ -854,6 +854,54 @@ class test_typo_processor(unittest.TestCase):
         result.load()
         self.assertFalse(result.has(" this line should contain copyright, by it was manually deleted "))
         self.assertTrue(result.has(" just some user text inside the class "))
+        
+    def test_of_generate_error(self):
+        result = file_checker("_dev/tests/outputs/generated_by_test.txt")
+        result.copy_from("_dev/tests/inputs/generated_by_test.txt")
+        result.load()
+        processor = typo_processor()
+        processor.set_value("template_path", "_dev/tests/templates")
+        processor.set_value("path", "_dev/tests/outputs")
+        processor.set_value("file_name", "generated_by_test.txt")
+        processor.set_value("copyright", "WGan (c) 2021")
+        processor.set_value("id", "this is something important")
+        processor.set_value("simple_type_value", "${type} ${value};")
+        processor.set_value("type", "double")
+        processor.set_value("value", "val")
+        try:
+            processor.generate("test_template")
+            self.assetTrue(False)
+        except typo_error as err:
+            self.assertEqual(str(err), "Placeholder 'another_part_of_code' is not known. Found in '_dev/tests/templates/test_template.template' in line 15.")
+        except:
+            self.assertTrue(False)
+        
+class _text_source(text_source):
+
+    def __init__(self, text):
+        self.text = text
+        
+    def get(self):
+        return self.text
+        
+class test_of_output_decorators(unittest.TestCase):
+    
+    def test_of_prefixing_decorator(self):
+        out = string_output()
+        txt = _text_source("P_")
+        decorated_out = prefixing_output_decorator(txt, out)
+        decorated_out.write("hello")
+        decorated_out.write("world\n")
+        decorated_out.write("and goodbye")
+        self.assertEqual(out.text, "P_helloP_world\nP_and goodbye")
+        
+    def test_of_sufixing_output_decorator(self):
+        out = string_output()
+        decorated_out = sufixing_output_decorator(out, "Xyz")
+        decorated_out.write("hello")
+        decorated_out.write("world\n")
+        decorated_out.write("and goodbye")
+        self.assertEqual(out.text, "helloXyzworld\nXyzand goodbyeXyz")
  
 #-----------------------------------------------------------------       
 
@@ -873,22 +921,6 @@ class test_of_processing(unittest.TestCase):
 #-----------------------------------------------------------------       
 
 unittest.main()
-
-#try:
-#    typo = typo_processor()
-#    typo.set_value("template_path", "_dev/templates")
-#    typo.set_value("path", "_dev/tests/outputs")
-#    typo.set_value("file_name", "${class_name}.hpp")
-#    typo.set_value("copyright", "WGan softerware")
-#    typo.set_value("class_name", "default_output")
-#    typo.set_value("simple_type_value", "m_default_output")
-#    typo.import_generator("_dev1")
-#    typo.import_generator("_dev2")
-#    typo.generate("simple_type")
-#except typo_error as err:
-#    print("ERROR: " + str(err))
-
-
 
 #out = indented_output(console_output())
 #

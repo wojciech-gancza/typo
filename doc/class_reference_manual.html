@@ -51,8 +51,8 @@
         <li><a _href="#_">line_split_decorator</a></li>
         <li><a href="#text_source">text_source</a></li>
         <li><a href="#indentation">indentation</a></li>
-        <li><a _href="#_">prefixing_output_decorator</a></li>
-        <li><a _href="#_">sufixing_output_decorator</a></li>
+        <li><a href="#prefixing_output_decorator">prefixing_output_decorator</a></li>
+        <li><a href="#sufixing_output_decorator">sufixing_output_decorator</a></li>
         <li><a _href="#_">indented_output</a></li>
         <li><a href="#string_output">string_output</a></li>
         <li><a href="#file_cannot_be_created">file_cannot_be_created</a>
@@ -81,7 +81,7 @@
         </ul></li>
       </ul>
     And now, alphabetically:
-    
+ 
     <h2><a name="cannot_translate"></a>cannot_translate 
       <a href="#typo_error"><span class="parent">(typo_error)</span></a>
       <a href="#typo_interpreter_py"><span class="module">typo_interpreter.py</span></a>
@@ -573,6 +573,30 @@
         calles to test functions.</li>
       </ul>
    
+    <h2><a name="prefixing_output_decorator"></a>prefixing_output_decorator 
+      <a href="#output_decorator"><span class="parent">(output_decorator)</span></a>
+      <a href="#typo_outputs_py"><span class="module">typo_outputs.py</span></a>
+      </h2>
+      Simple decorator adding something before each text passed to <i>write</i>
+      method. In typo, it is used to add indentation before each line
+      written to output file. Because indentation is not constant text, this 
+      decorator uses <a href="#text_source">text_source</a> object as source 
+      of text prefix.
+    <p>
+      Class has only two methods:
+    <ul>
+      <li><b>__init__(prefix, output)</b> - stores output and text source in
+        internal fields. Prefix is a <a href="#text_source">text_source</a>, 
+        and output is any <a href="#typo_output">typo_output</a></li>
+      <li><b>write(text)</b> - Writes decorated text on decorated output. Text
+        is enriched by the prefix taken from stored text source</li>
+      </ul>
+      And one field:
+    <ul>
+      <li><b>prefix</b></li>
+      </ul>
+      Decorated output is stored in output_decorator this clas derive from.
+
     <h2><a name="string_output"></a>string_output
       <a href="#output"><span class="parent">(output)</span></a>
       <a href="#typo_outputs_py"><span class="module">typo_outputs.py</span></a>
@@ -591,6 +615,28 @@
     <ul>
       <li><b>text</b> - stored text</li>
       </ul>
+    
+    <h2><a name="sufixing_output_decorator"></a>sufixing_output_decorator 
+      <a href="#output_decorator"><span class="parent">(output_decorator)</span></a>
+      <a href="#typo_outputs_py"><span class="module">typo_outputs.py</span></a>
+      </h2> 
+      Simple decorator adding something before each text passed to <i>write</i>
+      method. In typo, it is used to add newline to each of lines splitted by 
+      <a href="#line_split_decorator">line_split_decorator</a>
+    <p>
+      Class has only two methods:
+    <ul>
+      <li><b>__init__(output, sufix)</b> - stores output and text source in
+        internal fields. Output is any <a href="#typo_output">typo_output</a>
+        and suffix is just a text</li>
+      <li><b>write(text)</b> - Writes decorated text on decorated output. Text
+        is enriched by the stored sufix.</li>
+      </ul>
+      And one field:
+    <ul>
+      <li><b>sufix</b></li>
+      </ul>
+      Decorated output is stored in output_decorator this clas derive from.
     
     <h2><a name="template_does_not_exist"></a>template_does_not_exist 
       <a href="#typo_interpreter_py"><span class="module">typo_interpreter.py</span></a>
