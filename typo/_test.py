@@ -11,7 +11,8 @@ from TYPO             import  typo_main
 from typo_inputs      import  file_lines
 from typo_outputs     import  indented_output, string_output, file_output, \
                               file_cannot_be_created, indentation, text_source, \
-                              prefixing_output_decorator, sufixing_output_decorator
+                              prefixing_output_decorator, sufixing_output_decorator, \
+                              line_split_decorator
 from typo_core        import  typo_context, module_not_loaded      
 from typo_tools       import  typo_error, conv_UppercaseCamel, conv_lowercaseCamel, \
                               conv_CAPITALIZE_ALL, conv_lowercase_with_underscores, \
@@ -24,7 +25,8 @@ from typo_tools       import  typo_error, conv_UppercaseCamel, conv_lowercaseCam
 from typo_interpreter import  output_file_generator, template_does_not_exist, \
                               cannot_translate, wrong_generator_for_inline, \
                               error_in_generator, user_code_extractor, \
-                              typo_processor
+                              typo_processor, exit_typo, command_processor, \
+                              cannot_execute_command, cannot_execute_command
 
 class test_output(indented_output):
 
@@ -903,6 +905,141 @@ class test_of_output_decorators(unittest.TestCase):
         decorated_out.write("and goodbye")
         self.assertEqual(out.text, "helloXyzworld\nXyzand goodbyeXyz")
  
+class test_of_line_split_decorator(unittest.TestCase):
+
+    def test_of_splitting_lines(self):
+        out = string_output()
+        splitting_output = line_split_decorator(out)
+        splitting_output.write("ABCD")
+        self.assertEqual(out.text, "")
+        self.assertEqual(splitting_output.line_buffer, "ABCD")
+        splitting_output.write("EFG\nHIJ")
+        self.assertEqual(out.text, "ABCDEFG")
+        self.assertEqual(splitting_output.line_buffer, "HIJ")
+        splitting_output.write("\n")
+        self.assertEqual(out.text, "ABCDEFGHIJ")
+        self.assertEqual(splitting_output.line_buffer, "")
+ 
+class test_of_indented_output(unittest.TestCase):
+
+    def test_of_indented_output(self):
+        output = string_output()
+        out = indented_output(output)
+        out.write("Hello\n")
+        out.write("this is in new line\n")
+        out.increase_indent()
+        out.write("indented once\n")
+        out.increase_indent()
+        out.write("indented twice\n")
+        out.write_already_formatted("Injected text without indentation\n")
+        out.decrease_indent()
+        out.write("indented once again\nand similarely\n(C) ")
+        out.decrease_indent()
+        out.write("base text\n")
+        pattern = "Hello\n" \
+                  "this is in new line\n" \
+                  "    indented once\n" \
+                  "        indented twice\n" \
+                  "Injected text without indentation\n" \
+                  "    indented once again\n" \
+                  "    and similarely\n" \
+                  "(C) base text\n"
+        self.assertEqual(output.text, pattern)
+        
+class test_of_exit_typo(unittest.TestCase):
+
+    def test_of_passing_exit_code_by_exception(self):
+        try:
+            raise exit_typo(997)
+        except exit_typo as err:
+            self.assertEqual(err.exit_code, 997)
+        except:
+            self.assertTrue(False)
+ 
+class text_of_typo_command(unittest.TestCase):
+
+    def test_of_process_command(self):
+        context = typo_context()
+        processor = typo_processor(context)
+        commands = command_processor(processor)
+        commands.process_command("template_path = _dev/tests/templates")
+        commands.process_command("path = _dev/tests/outputs")
+        commands.process_command("file_name = \"generated_by_test.txt\"")
+        commands.process_command("copyright = WGan (c) 2021")
+        commands.process_command("import _test_module_2")
+        commands.process_command("id = this is something important")
+        commands.process_command("simple_type_value = ${type} ${value};")
+        commands.process_command("type = double")
+        commands.process_command("value = val")
+        result = file_checker("_dev/tests/outputs/generated_by_test.txt")
+        result.copy_from("_dev/tests/inputs/generated_by_test.txt")
+        result.load()
+        self.assertTrue(result.has(" this line should contain copyright, by it was manually deleted "))
+        commands.process_command("test_template")
+        try:
+            commands.process_command("exit")
+            self.assertTrue(False)
+        except exit_typo:
+            pass
+        except:
+            self.assertTrue(False)
+        result.load()
+        self.assertFalse(result.has(" this line should contain copyright, by it was manually deleted "))
+        self.assertTrue(result.has(" just some user text inside the class "))  
+        list = commands.process_command("list")
+        self.assertEqual(list, "template_path = _dev/tests/templates\ncopyright = WGan (c) 2021\nfile_name = generated_by_test.txt\nvalue = val\nsimple_type_value = ${type} ${value};\npath = _dev/tests/outputs\ntype = double\nid = this is something important")
+
+    def test_of_assignments_and_list(self):
+        context = typo_context()
+        processor = typo_processor(context)
+        commands = command_processor(processor)
+        commands._process_assignment("file_name = \"generated_by_test.txt\"")
+        commands._process_assignment("copyright = WGan (c) 2021")
+        text = commands._list_variables()
+        self.assertEqual(text, "file_name = generated_by_test.txt\ncopyright = WGan (c) 2021")
+        
+    def test_of_import(self):
+        context = typo_context()
+        processor = typo_processor(context)
+        commands = command_processor(processor)
+        self.assertEqual("[]", str(context.modules))
+        commands._process_import("import _test_module_2")
+        self.assertEqual("[<module '_test_module_2' from '/Users/wgan/Documents/DEV/typo/typo/_test_module_2.pyc'>]", str(context.modules))
+        
+    def test_of_generation(self):
+        context = typo_context()
+        processor = typo_processor(context)
+        commands = command_processor(processor)
+        commands.process_command("template_path = _dev/tests/templates")
+        commands.process_command("path = _dev/tests/outputs")
+        commands.process_command("file_name = \"generated_by_test.txt\"")
+        commands.process_command("copyright = WGan (c) 2021")
+        commands.process_command("import _test_module_2")
+        commands.process_command("id = this is something important")
+        commands.process_command("simple_type_value = ${type} ${value};")
+        commands.process_command("type = double")
+        commands.process_command("value = val")
+        result = file_checker("_dev/tests/outputs/generated_by_test.txt")
+        result.copy_from("_dev/tests/inputs/generated_by_test.txt")
+        result.load()
+        self.assertTrue(result.has(" this line should contain copyright, by it was manually deleted "))
+        commands._process_generation("test_template")
+        result.load()
+        self.assertFalse(result.has(" this line should contain copyright, by it was manually deleted "))
+        self.assertTrue(result.has(" just some user text inside the class "))  
+        
+    def test_of_unknown_command_error(self):
+        context = typo_context()
+        processor = typo_processor(context)
+        commands = command_processor(processor)
+        try:
+            commands.process_command("&^%XXXX")
+            self.assertTrue(False)
+        except cannot_execute_command as err:
+            self.assertEqual(str(err), "I do not understand command '&^%XXXX'")
+        except:
+            self.assertTrue(False)
+ 
 #-----------------------------------------------------------------       
 
 class test_of_processing(unittest.TestCase):
@@ -921,57 +1058,3 @@ class test_of_processing(unittest.TestCase):
 #-----------------------------------------------------------------       
 
 unittest.main()
-
-#out = indented_output(console_output())
-#
-#out.write("Hello\n")
-#out.write("this is in new line\n")
-#out.increase_indent()
-#out.write("indented once\n")
-#out.increase_indent()
-#out.write("indented twice\n")
-#out.write_already_formatted("Injected text without indentation")
-#out.decrease_indent()
-#out.write("indented once again\nand similarely\n(C) ")
-#out.decrease_indent()
-#out.write("base text\n")
-#
-#file = file_lines("templates/simple_type.template")
-#for line in file.lines:
-#    out.write(line)
-
-#context = typo_context()
-#translator = typo_translator(context)
-#context.set_value("copyright", "WGan softerware ")
-#timestamp = translator.translate_name("timestamp")
-#print(timestamp)
-#copyright = translator.translate_name("copyright")
-#print(copyright)
-#
-#print(translator.translate_line("before${timestamp}after${copyright}end"))
-
-
-#try:
-#    print(translator.translate_line("before${hgw} xxx"))
-#except typo_error as  e:
-#    e.source = "code"
-#    e.line = 40
-#    print(e)
-
-#try:
-#    source_name = "templates/simple_type.template"
-#    file = file_lines(source_name)
-#    out = indented_output(console_output())
-#    context = typo_context()
-#    translator = typo_translator(context)
-#
-#    context.set_value("copyright", "// (c) WGan softerware 2021")
-#    
-#    for line in file.lines:
-#        translated_line = translator.translate_line(line)
-#        out.write(translated_line)
-#
-#except typo_error as  e:
-#    e.source = source_name
-#    print("ERROR: " + str(e))
-
