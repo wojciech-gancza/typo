@@ -49,12 +49,12 @@
         <li><a href="#output">output</a></li>
         <li><a href="#console_output">console_output</a></li>
         <li><a href="#output_decorator">output_decorator</a></li>
-        <li><a _href="#_">line_split_decorator</a></li>
+        <li><a href="#line_split_decorator">line_split_decorator</a></li>
         <li><a href="#text_source">text_source</a></li>
         <li><a href="#indentation">indentation</a></li>
         <li><a href="#prefixing_output_decorator">prefixing_output_decorator</a></li>
         <li><a href="#sufixing_output_decorator">sufixing_output_decorator</a></li>
-        <li><a _href="#_">indented_output</a></li>
+        <li><a href="#indented_output">indented_output</a></li>
         <li><a href="#string_output">string_output</a></li>
         <li><a href="#file_cannot_be_created">file_cannot_be_created</a>
         <li><a href="#file_output">file_output</a></li>  
@@ -395,6 +395,15 @@
     <p>
       This error is raised by <a href="#typo_context">typo_context</a>._translate_text.
 
+    <h2><a name="identifier_start_with_digit_error"></a>identifier_start_with_digit_error 
+      <a href="#typo_error"><span class="parent">(typo_error)</span></a>
+      <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
+      </h2>
+      Error raised by identifier formatter. When the forst character is 
+      digit - this error is raised.
+    <p>
+      This error is raised by <a href="#identifier_formatter">identifier_formatter</a>.__init__.
+
     <h2><a name="indentation"></a>indentation 
       <a href="#text_source"><span class="parent">(text_source)</span></a>
       <a href="#typo_outputs_py"><span class="module">typo_outputs.py</span></a>
@@ -414,18 +423,91 @@
       <li><b>get()</b> - returns chunk of spaces forming current indentation.</li>
      </ul>
            
-    <h2><a name="identifier_start_with_digit_error"></a>identifier_start_with_digit_error 
-      <a href="#typo_error"><span class="parent">(typo_error)</span></a>
-      <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
+    <h2><a name="indented_output"></a>indented_output 
+      <a href="#line_split_decorator"><span class="parent">(line_split_decorator)</span></a>
+      <a href="#typo_outputs_py"><span class="module">typo_outputs.py</span></a>
       </h2>
-      Error raised by identifier formatter. When the forst character is 
-      digit - this error is raised.
+      A nice example how the combination of processing could work. This decorator
+      need to split the text to separate lines, decorate each line by the 
+      gropu of spaces at the beggining, then restore newline characters when 
+      passing text to decorated output. This decorator uses:
+    <ul>
+      <li><a href="#line_split_decorator">line_split_decorator</a> - splits into lines</li>
+      <li><a href="#prefixing_output_decorator">prefixing_output_decorator</a> - as a 
+        prefix of each line it uses
+        <ul>
+          <li><a href="#indentation">indentation</a></li>
+          </ul></li>
+      <li><a href="#sufixing_output_decorator">sufixing_output_decorator</a> - to restore 
+        newlines characters at the otptu by adding </i>\n</i> as each line 
+        suffix</li>
+      </ul>
+        Additionally to decorated method, this clas implementd few methods to 
+        controll indentation and allowing passing text directly to decorated 
+        ouptut.
+      <ul>
+        <li><b>__init__(output, indent_step = 4)</b> - initializes
+          decorator output object and sets up the indentation object</li>
+        <li><b>write_already_formatted(text)</b> - just passes the text to the
+          output. Workaround allowing to pass user code inside generated 
+          indented text.</li>
+        <li><b>increase_indent()</b> - no comments needed</li>
+        <li><b>decrease_indent()</b> - ALSO NO COMMENTS</li>
+        <li><b>set_indent(amount_of_spaces)</b> - Sets the indent. Amount of 
+          spaces is rounded to the indent which is set as base indentation.</li>
+        <li><b>flush()</b> - sends to the ouptut the content of the line buffer.</li>
+        </ul>
+        And few fields:
+      <ul>
+        <li><b>direct_output</b> - <a href="#typo_output">typo_output</a>
+          object which is decorated. It must be separatelly stored, 
+          because the decorated output is stored inside additional 
+          decorator.</li>
+        <li><b>indent</b> - <a href="#indentation">indentation</a> object 
+          generating chunk of spaces depending in indentation level.</li>
+        </ul>
+
+    <h2><a name="line_split_decorator"></a>line_split_decorator 
+      <a href="#output_decorator"><span class="parent">(output_decorator)</parent></a>
+      <a href="#typo_outputs_py"><span class="module">typo_outputs_py</span></a>
+      </h2>
+      Line split decorator, merge the text and pass to the output when whole 
+      line is completed. When you pass the text not containing newlines, it will be
+      buffered. When newline character is in the output, the part before it is added to the 
+      content of buffer and it is passed to decorated output. 
     <p>
-      This error is raised by <a href="#identifier_formatter">identifier_formatter</a>.__init__.
+      This decorator can be usefull to override newlines on console output, but 
+      is it designed as a part of <i> data flow</i> processing adding indentations
+      into saved text
+    <p>
+      Class has only two methods:
+    <ul>
+      <li><b>__init__(output)</b> - additionally to call the constructor
+        of base class, it initializes line buffer.</li>
+      <li><b>write(text)</b> - decorated method - splits the input on newline
+        characters and stores the content of unifinished lines.</li>
+    </ul>
+      And one member field:
+    <ul>
+      <li><b>line_buffer</b> - buffer where the line is completed before send.</li>
+    </ul>
+      
+    def __init__(self, output):
+        output_decorator.__init__(self, output)
+        self.line_buffer = ""
+        
+    def write(self, text):
+        text = self.line_buffer + text
+        lines = text.split("\n")  
+        self.line_buffer = lines[-1]
+        lines.pop(-1)
+        
+        for line in lines:
+            self.write_on_output(line)
 
     <h2><a name="loop_error_when_resolving"></a>loop_error_when_resolving 
       <span class="parent">(typo_error)</parent> 
-      <span class="module">typo_core.py</span>
+      <a href="#typo_core_py"><span class="module">typo_core.py</span></a>
       </h2>
       Error of resolving value containing <i>${name}</i> which value containg 
       another value name - and such chunk of the need of resolving - somewhere
