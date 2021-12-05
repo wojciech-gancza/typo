@@ -835,7 +835,7 @@ class test_typo_processor(unittest.TestCase):
         processor = typo_processor()
         processor.import_module("_test_module_1")
         txt = str(processor.context.modules[0])
-        self.assertEqual(txt, "<module '_test_module_1' from '/Users/wgan/Documents/DEV/typo/typo/_test_module_1.pyc'>")
+        self.assertTrue(re.match("<module '_test_module_1' from.*", txt)) 
         
     def test_of_generate(self):
         result = file_checker("_dev/tests/outputs/generated_by_test.txt")
@@ -1004,7 +1004,8 @@ class text_of_typo_command(unittest.TestCase):
         commands = command_processor(processor)
         self.assertEqual("[]", str(context.modules))
         commands._process_import("import _test_module_2")
-        self.assertEqual("[<module '_test_module_2' from '/Users/wgan/Documents/DEV/typo/typo/_test_module_2.pyc'>]", str(context.modules))
+        txt = str(context.modules)
+        self.assertTrue(re.match("\[<module '_test_module_2' from .*", txt)) 
         
     def test_of_generation(self):
         context = typo_context()
