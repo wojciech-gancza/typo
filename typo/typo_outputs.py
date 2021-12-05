@@ -86,12 +86,12 @@ class prefixing_output_decorator(output_decorator):
 """ decorates each data with suffix  """
 class sufixing_output_decorator(output_decorator):
 
-    def __init__(self, output, sufix):
+    def __init__(self, output, suffix):
         output_decorator.__init__(self, output)
-        self.sufix = sufix
+        self.suffix = suffix
         
     def write(self, text):
-        self.write_on_output(text + self.sufix)
+        self.write_on_output(text + self.suffix)
                 
         
 """ output storing indented lines with possibility to store already 

@@ -6,11 +6,11 @@
   
   <body>
     <h1><a href="typo.html">TYPO</a> class reference manual</h1>
-      (c) WGan 2021 <a href="https://en.wikipedia.org/wiki/MIT_License">[licence: MIT]</a>
+      (c) WGan 2021 <a href="https://en.wikipedia.org/wiki/MIT_License">[license: MIT]</a>
       
     <p>
       This manual do not describe all classes. Specific errors or adapters could
-      not be described here or described very brifely. Lets take a look on list
+      not be described here or described very briefly. Let's take a look on list
       of classes. In order of appearance:
     <ul>
       <li><a name="typo_base_py"></a><b>typo_base</b> module - definition of all
@@ -45,7 +45,7 @@
         <li><a href="#command_processor">command_processor</a></li>
         </ul></li>
       <li><a name="typo_outputs_py"></a><b>typo_outputs</b> module - all
-        output specific clsses including some formatting tools:<ul>
+        output specific classes including some formatting tools:<ul>
         <li><a href="#output">output</a></li>
         <li><a href="#console_output">console_output</a></li>
         <li><a href="#output_decorator">output_decorator</a></li>
@@ -60,7 +60,7 @@
         <li><a href="#file_output">file_output</a></li>  
         </ul></li>
       <li><a name="typo_tools_py"></a><b>typo_tools</b> module - classes used
-        by typo but also usefull for different purposes:<ul>
+        by typo but also useful for different purposes:<ul>
         <li><a href="#identifier_non_alphanueric_error">identifier_non_alphanueric_error</a></li>
         <li><a href="#identifier_start_with_digit_error">identifier_start_with_digit_error</a></li>
         <li><a href="#identifier_cannot_be_empty">identifier_cannot_be_empty</a></li>
@@ -88,8 +88,8 @@
       <a href="#typo_interpreter_py"><span class="module">typo_interpreter.py</span></a>
       </h2>
       Error raised when command processor cannot interpret command. It happened
-      when command cannot be rocognized neither as assignemnt nor order of typo.
-      In current version this error heppened when the command contain characters which are 
+      when command cannot be recognized neither as assignment nor order of typo.
+      In current version this error happened when the command contain characters which are 
       not accepted.
     <p>
       This error is raised by <a href="#command_processor">command_processor</a>.process_command.
@@ -106,8 +106,8 @@
     <h2><a name="command_processor"></a>command_processor 
       <a href="#typo_interpreter_py"><span class="module">typo_interpreter.py</span></a>
       </h2>
-      Class transfroming text into calls to <a href="#typo_processor">typo_processor</a>.
-      Usefull when creating interpreter of script or command taken from console.
+      Class transforming text into calls to <a href="#typo_processor">typo_processor</a>.
+      Useful when creating interpreter of script or command taken from console.
       Interpretation of text gives:
     <ul>
       <li>When the line contain equal sign and before it is a text which can be 
@@ -115,20 +115,20 @@
       <li>When the line contain text <i>exit</i> - this is exit order and program 
         raises <a href="#exit_typo">exit_typo</a> exception</li>
       <li>When the line contain text <i>list</i> - function interpreting line 
-        returns text containig list of all settings stored in <a href="#typo_context">context</a>
-      <li>When lise starts with <i>import</i> - this is import order - it 
+        returns text containing list of all settings stored in <a href="#typo_context">context</a>
+      <li>When line starts with <i>import</i> - this is import order - it 
        imports specified module with generators and converters</li>
       <li>When line contain valid identifier - it is used to generate output 
-        file from the template having the name equal to this identifeier</li>
-      <li>In all other cases it riases error <a href="#cannot_execute_command">cannot_execute_command</a></li>
+        file from the template having the name equal to this identifier</li>
+      <li>In all other cases it raises error <a href="#cannot_execute_command">cannot_execute_command</a></li>
       </ul>
     <p>
       Class have few methods:
     <ul>
-      <li><b>__init__(processor)</b> - Constructor. Just stores <i>typo_procesot</i>
+      <li><b>__init__(processor)</b> - Constructor. Just stores <i>typo_procesor</i>
         object to perform operations on it.</li>
       <li><b>process_command(command)</b> - method taking an order to interpret
-        and deciding which type of command it contain. To detemine the text
+        and deciding which type of command it contain. To determine the text
         content regular expressions are used.</li>
       <li><b>_process_assignment(command)</b> - method transforming line 
         containing assignment into call of generator method <i>set_value</i></li>
@@ -168,10 +168,10 @@
         <a href="#typo_context">typo_context</a> object</li>
       <li><b>get_path(variable_name)</b> - gets variable value and checks
         if it is valid path name. Variable must exist and must denote proper 
-        and exisitng directory. Function also checks if the path
+        and exisiting directory. Function also checks if the path
         ends with slash character. If not - function adds it.</li>
       <li><b>get_file_name(variable_name)</b> - gets variable value and 
-        checks if it forms valid file name. Existance of file name is not
+        checks if it forms valid file name. Existence of file name is not
         tested, just the value is checked for forbidden characters. 
         Value must exist.</li>
       </ul>
@@ -180,13 +180,13 @@
       <a href="#typo_converter"><span class="parent">(typo_converter)</span></a>
       <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
       </h2>
-      Converter transforming many word phraze into identifier denoted as capital
-      letters with words separated by underscores. Such identiferis are 
-      typically used to denote contants or enviroment variables. 
+      Converter transforming many word phrase into identifier denoted as capital
+      letters with words separated by underscores. Such identifiers are 
+      typically used to denote constants or environment variables. 
     <p>
-      When proper identifier cannot be found because source phraze contain
+      When proper identifier cannot be found because source phrase contain
       non-alphanumeric characters or first word starts with digit - error is
-      raised. For non-aplfanumeric error type is 
+      raised. For non-alphanumeric error type is 
       <a href="#identifier_non_alphanueric_error">identifier_non_alphanueric_error</a>.
       When first character of passed string is a digit - 
       <a href="#identifier_start_with_digit_error">identifier_start_with_digit_error</a>
@@ -208,7 +208,7 @@
       </h2>
       Works like <a href="#conv_CAPITALIZE_ALL">conv_CAPITALIZE_ALL</a>, but 
       formats output string as lowercase and with words started by uppercase.
-      Words are not separated by space nor unsercore.
+      Words are not separated by space nor unserscore.
       
     <h2><a name="conv_UppercaseCamel"></a>conv_UppercaseCamel 
       <a href="#typo_converter"><span class="parent">(typo_converter)</span></a>
@@ -216,13 +216,13 @@
       </h2>
       Works like <a href="#conv_CAPITALIZE_ALL">conv_CAPITALIZE_ALL</a>, but 
       formats output string as uppercase and with words started by uppercase. 
-      Words are not separated by space nor unsercore.
+      Words are not separated by space nor unserscore.
 
     <h2><a name="error_in_generator"></a>error_in_generator 
       <a href="#typo_error"><span class="parent">(typo_error)</span></a>
       <a href="#typo_interpreter_py"><span class="module">typo_interpreter.py</span></a>
       </h2>
-      When generator is called, and error occures inside generator - it is wrapped
+      When generator is called, and error occurs inside generator - it is wrapped
       in this error. It is made for reporting programmer errors to the user of
       generator. Such error message allow to find problem inside generator.
     <p>
@@ -246,7 +246,7 @@
       <a href="#typo_error"><span class="parent">(typo_error)</span></a>
       <a href="#typo_outputs_py"><span class="module">typo_outputs.py</span></a>
       </h2>
-      Error raised when exception occure while trying to opern file for writing.
+      Error raised when exception occur while trying to open file for writing.
     <p>
       This error is raised by <a href="#output_file">output_file</a>.__init__.
 
@@ -258,8 +258,8 @@
       but it is constructed from file name. If file exists - it read whole file 
       and splits it into lines stored in the object.
     <ul>
-      <li><b>__init__(file_name)</b> - constructore taking name of the file to 
-        read. If file do not exist, the object is createtes as empty list. No
+      <li><b>__init__(file_name)</b> - constructor taking name of the file to 
+        read. If file do not exist, the object is creates as empty list. No
         exception are thrown.
     </ul>
     
@@ -267,9 +267,9 @@
       <a href="#typo_error"><span class="parent">(typo_error)</span></a>
       <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
       </h2>
-      When uou use context reader to retrieve data having given meaning, you can 
-      take the file name from the context variabled. When value is not defined
-      context returns None, but when uoy need a file - it is better to raise error.
+      When you use context reader to retrieve data having given meaning, you can 
+      take the file name from the context variables. When value is not defined
+      context returns None, but when you need a file - it is better to raise error.
     <p>
       This error is raised by <a href="#context_reader">context_reader</a>.get_file_name.
 
@@ -292,7 +292,7 @@
       </h2>
       Simple code <a href="#typo_generator">generator</a> which generates 
       current timestamp. Timestamp is taken
-      at the moment when generator is used. So do not be suprised when two 
+      at the moment when generator is used. So do not be surprised when two 
       timestamps in the same document are different.
     <p>
       This generator could be used as inlined, because it neither use 
@@ -335,16 +335,16 @@
     <h2><a name="identifier_formatter"></a>identifier_formatter 
       <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
       </h2>
-      IdentifierFormatter allow to change sentence or a phraze into identifier valid 
+      Identifier formatter allow to change sentence or a phrase into identifier valid 
       in most of programming languages. Such identifier contain text form passed 
-      phraze and removes spaces. Different ways of formatting is returned 
+      phrase and removes spaces. Different ways of formatting is returned 
       by various methods.
     <p>
-      Phraze is analized in constructor, and the identifier is formed
-      by method building the identifier. Phraze must:
+      Phrase is analyzed in constructor, and the identifier is formed
+      by method building the identifier. Phrase must:
     <ul>
-      <li>not empty</li>
-      <li>contain only alphanumneri characters or underscores</li>
+      <li>be not empty</li>
+      <li>contain only alphanumneric characters or underscores</li>
       <li>must not start with digit</li>
     </ul>
       In current version, the class contain methods:
@@ -353,13 +353,13 @@
         data. All possible errors can happen here. Constructor sets
         the <i>words</i> collection.</li>
       <li><b>CAPITALIZE_ALL(prefix = "", suffix = "")</b> - build identifier by 
-        capitalizint all characters and separates its word by underscore. Returned
-        identifer can be decorated by prefix and/or suffix. Such indentifiers
+        capitalizing all characters and separates its word by underscore. Returned
+        identifier can be decorated by prefix and/or suffix. Such identifiers 
         are mainly used to denote constants, enum, preprocessor or system 
         variables.</li>
       <li><b>lowercase_with_underscores(prefix = "", suffix = "")</b> - formats
-        idnetifier as set of lowercase words separated by underscores. Good 
-        chose for local variable identifers or parameters. As in other functions,
+        identifier as set of lowercase words separated by underscores. Good 
+        chose for local variable identifiers or parameters. As in other functions,
         prefix and suffix can be added.</li>
       <li><b>UppercaseCamel(prefix = "", suffix = "")</b> - Uppercase camel 
         notation - typical way to express class names. As in other functions,
@@ -370,7 +370,7 @@
       </ul>
     And fields:
     <ul>
-      <li><b>words</b> - list containinig list of words to form the identifier</li>
+      <li><b>words</b> - list containing list of words to form the identifier</li>
       </ul>
    
     <h2><a name="identifier_non_alphanueric_error"></a>identifier_non_alphanueric_error 
@@ -380,7 +380,7 @@
       Identifier formatter takes a string 
       containing set of words separated by spaces. This words must allow to form
       proper identifier. The text must be formed from alphanumeric characters and must 
-      not start from the ditis. Underscore character is also available.
+      not start from the digis. Underscore character is also available.
     <p>
       It the input data contain wrong character - this error is raised.
     <p>
@@ -399,7 +399,7 @@
       <a href="#typo_error"><span class="parent">(typo_error)</span></a>
       <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
       </h2>
-      Error raised by identifier formatter. When the forst character is 
+      Error raised by identifier formatter. When the first character is 
       digit - this error is raised.
     <p>
       This error is raised by <a href="#identifier_formatter">identifier_formatter</a>.__init__.
@@ -408,15 +408,15 @@
       <a href="#text_source"><span class="parent">(text_source)</span></a>
       <a href="#typo_outputs_py"><span class="module">typo_outputs.py</span></a>
       </h2>
-      Class implenting indentation. Indentation step can be set during the 
-      construction, but default step, st to populat 4 spaces, also cound be used.
-      Instenataion can be increased or decreased. 
+      Class implementing indentation. Indentation step can be set during the 
+      construction, but default step is set to popular 4 spaces, also cound be used.
+      Indenataion can be increased or decreased. 
     <p>
       It's a simple class:
     <ul>
       <li><b>__init__(step = 4)</b> - sets indentation step</li>
-      <li><b>increase()</b> - insrease indent. So simple.</li>
-      <li><b>decrease()</b> - decrease indnet </li>
+      <li><b>increase()</b> - increase indent. So simple.</li>
+      <li><b>decrease()</b> - decrease indent </li>
       <li><b>set(amount_of_spaces)</b> - sets the indent. The value of indent 
         is set to the integer value of amount of spaces divided by the step.
         It is simpler in the code then in documentation.</li>
@@ -429,7 +429,7 @@
       </h2>
       A nice example how the combination of processing could work. This decorator
       need to split the text to separate lines, decorate each line by the 
-      gropu of spaces at the beggining, then restore newline characters when 
+      group of spaces at the beginning, then restore newline characters when 
       passing text to decorated output. This decorator uses:
     <ul>
       <li><a href="#line_split_decorator">line_split_decorator</a> - splits into lines</li>
@@ -439,12 +439,12 @@
           <li><a href="#indentation">indentation</a></li>
           </ul></li>
       <li><a href="#sufixing_output_decorator">sufixing_output_decorator</a> - to restore 
-        newlines characters at the otptu by adding </i>\n</i> as each line 
+        newlines characters at the output by adding </i>\n</i> as each line 
         suffix</li>
       </ul>
-        Additionally to decorated method, this clas implementd few methods to 
-        controll indentation and allowing passing text directly to decorated 
-        ouptut.
+        Additionally to decorated method, this class implemented few methods to 
+        control indentation and allowing passing text directly to decorated 
+        output.
       <ul>
         <li><b>__init__(output, indent_step = 4)</b> - initializes
           decorator output object and sets up the indentation object</li>
@@ -455,12 +455,12 @@
         <li><b>decrease_indent()</b> - ALSO NO COMMENTS</li>
         <li><b>set_indent(amount_of_spaces)</b> - Sets the indent. Amount of 
           spaces is rounded to the indent which is set as base indentation.</li>
-        <li><b>flush()</b> - sends to the ouptut the content of the line buffer.</li>
+        <li><b>flush()</b> - sends to the output the content of the line buffer.</li>
         </ul>
         And few fields:
       <ul>
         <li><b>direct_output</b> - <a href="#typo_output">typo_output</a>
-          object which is decorated. It must be separatelly stored, 
+          object which is decorated. It must be separately stored, 
           because the decorated output is stored inside additional 
           decorator.</li>
         <li><b>indent</b> - <a href="#indentation">indentation</a> object 
@@ -476,7 +476,7 @@
       buffered. When newline character is in the output, the part before it is added to the 
       content of buffer and it is passed to decorated output. 
     <p>
-      This decorator can be usefull to override newlines on console output, but 
+      This decorator can be useful to override newlines on console output, but 
       is it designed as a part of <i> data flow</i> processing adding indentations
       into saved text
     <p>
@@ -485,34 +485,21 @@
       <li><b>__init__(output)</b> - additionally to call the constructor
         of base class, it initializes line buffer.</li>
       <li><b>write(text)</b> - decorated method - splits the input on newline
-        characters and stores the content of unifinished lines.</li>
+        characters and stores the content of unfinished lines.</li>
     </ul>
       And one member field:
     <ul>
       <li><b>line_buffer</b> - buffer where the line is completed before send.</li>
     </ul>
       
-    def __init__(self, output):
-        output_decorator.__init__(self, output)
-        self.line_buffer = ""
-        
-    def write(self, text):
-        text = self.line_buffer + text
-        lines = text.split("\n")  
-        self.line_buffer = lines[-1]
-        lines.pop(-1)
-        
-        for line in lines:
-            self.write_on_output(line)
-
     <h2><a name="loop_error_when_resolving"></a>loop_error_when_resolving 
       <span class="parent">(typo_error)</parent> 
       <a href="#typo_core_py"><span class="module">typo_core.py</span></a>
       </h2>
-      Error of resolving value containing <i>${name}</i> which value containg 
+      Error of resolving value containing <i>${name}</i> which value contain 
       another value name - and such chunk of the need of resolving - somewhere
       forms an loop. In such case we have infinite number of steps to obtain 
-      the value. This is not higly welcome situation - so error is raised.
+      the value. This is not highly welcome situation - so error is raised.
     <p>
       This error is raised by <a href="#typo_context">typo_context</a>.get_value.
        
@@ -520,8 +507,8 @@
       <a href="#typo_error"><span class="parent">(typo_error)</span></a>
       <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
       </h2>
-      When uou use context reader to retrieve data having given meaning, you can 
-      take the file name from the context variabled. The value is additionally
+      When you use context reader to retrieve data having given meaning, you can 
+      take the file name from the context variables. The value is additionally
       checked by testing if the value points to existing file.
     <p>
       This error is raised by <a href="#context_reader">context_reader</a>.get_file_name.
@@ -549,7 +536,7 @@
       <li><b>write(text)</b> - method sending the text to the output. This method 
       is virtual. Derived classes must specify this method.
     </ul>
-      In structure of outputs one can find a set of specilized 
+      In structure of outputs one can find a set of specialized 
       classes like 
     <ul>
       <li><a href="#console_output">console_ouptut</a> - output writing each
@@ -558,7 +545,7 @@
       <li><a href="#file_output">file_output</a> - writing data into a text 
         file</li>
       <li><a href="#string_output">string_outout</a> - appends values to 
-        a string stored inside the object. Usefull when you want to use 
+        a string stored inside the object. Useful when you want to use 
         generated text in your code.</li>
       </ul>
       Outputs can do some preprocessing working as decorators on other outputs:
@@ -567,7 +554,7 @@
         decorators which works on original outputs, but preprocess the data
         passed to original output.</li>
       <li><a href="#split_line_decorator">split_line_decorator</a> - handy decorator
-        which buffers contant and sends to origina output - whole lines
+        which buffers content and sends to original output - whole lines
         ended by newline. When data passed to <i>write</i>. Good when you work with
         <a href="#console_output">console_output</a>, but also when you need 
         line indentation and need to add something before or after each line.</li>
@@ -578,8 +565,8 @@
       <li><a href="sufixing_output_decorator">sufixing_output_decorator</a> - 
         this decorator adds suffix after each line. Here the suffix is just a 
         normal string. Nothing more complex was not needed. </li>
-      <li><a href="indented_output">indented_output</a> - aomplex output 
-        allowing also navigation of indenting lines. Usefull when generating 
+      <li><a href="indented_output">indented_output</a> - a complex output decorator 
+        allowing also navigation of indenting lines. Useful when generating 
         formatted code.</li>
       </ul>
 
@@ -605,7 +592,7 @@
     <ul>
       <li><b>write(text)</b></li>
       </ul>
-      You can define your own decorators however it might be usefull when you 
+      You can define your own decorators however it might be useful when you 
       need to modify code of the typo. 
     <p>
       This class is base class of few formatting decorators implemented as a 
@@ -639,26 +626,26 @@
         to add and preprocess settings or import necessary modules with generators.</li>
       <li>Lines containing only one placeholder generates the code allowing
         generator directly write into the file. </li>
-      <li>When more then one placeholder is located in line, or placeholder is
+      <li>When more than one placeholder is located in line, or placeholder is
         inside constant content - it is replaced 'inline' - output
         of generator is redirected to string and the content of the string
         is copied into output file. This is why generators used inline cannot 
-        use indentation controling methods on output.</li>
+        use indentation controlling methods on output.</li>
       </ul>
-      The class has only 3 methods and contructor:
+      The class has only 3 methods and constructor:
     <ul>
       <li><b>__init__(context)</b> - constructor taking and storing context.</li>
       <li><b>build_source_code(template_file_name, source_code_file_name)</b> - 
         method perforing whole functionality. It takes two parameters. Both are 
         full file name with the path. Template must exist. Output file can exist
-        and is owerwritten, but first it is read to scan for manually added
+        and is overwritten, but first it is read to scan for manually added
         code. Scan is performed by <a href="#user_code_extractor">user_code_extractor</a></li>
       <li><b>interpret_line(line)</b> - function processing order located in the
         template. Method creates <a href="#command_processor">command_processor</a>
         passing <i>self</i> into its constructor.</li>
       <li><b>translate_line(line, output)</b> - function translation single 
         template line and stores the result on output. Depending on line content, 
-        differnet approach to building output is used.</li>
+        different approach to building output is used.</li>
       </ul>
       And one field:
     <ul>
@@ -672,7 +659,7 @@
       <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
       </h2>
       When you use context reader to retrieve data having given meaning, you can 
-      take the path from the context variabled. When the value is read - it is 
+      take the path from the context variables. When the value is read - it is 
       additionally checked - if it points to existing folder. If not - this error
       happened.
     <p>
@@ -683,8 +670,8 @@
       <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
       </h2>
       When you use context reader to retrieve data having given meaning, you can 
-      take the path from the context variabled. Normally, when the variable is not
-      defined - None value is returned. When you require a path - sush 
+      take the path from the context variables. Normally, when the variable is not
+      defined - None value is returned. When you require a path - such 
       situation is not desired - so special error is raised. This error.
     <p>
       This error is raised by <a href="#context_reader">context_reader</a>.get_path.
@@ -692,17 +679,17 @@
     <h2><a name="placeholders_info"></a>placeholders_info
       <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a>
       </h2>
-      Small helpers analizing line and looking for placeholder. Allow to check the 
+      Small helpers analyzing line and looking for placeholder. Allow to check the 
       line content and answer few important questions related to placeholders 
-      locaed in the string:
+      located in the string:
     <ul>
       <li><b>__init__(line_text)</b> - constructor - stores string in class
-        variable for future analisys.</li>
+        variable for future analysis.</li>
       <li><b>is_just_placeholder()</b> - checks if the line contain only one
         placeholder, eventually decorated by wite characters. Only one
         placeholder can exist.</li>
       <li><b>is_user_code_placeholder():</b> - checks if the line contain
-        correct user_code placeholder. Teturns True or Fsle, but also raise 
+        correct user code placeholder. Returns True or False, but also raise 
         exception <a href="#user_code_placeholder_error">user_code_placeholder_error</a>
         when user code placeholder was found, but it is not the only one content
         of the line.</li>
@@ -711,15 +698,15 @@
       <li><b>is_empty()</b> - checks if the line contain only white chars. If any
         other character is found - function returns false.</li>
       <li><b>find_first_identifier()</b> - returns position of first placeholder 
-        to interpret. Result value is tuple containing position of begining
+        to interpret. Result value is tuple containing position of beginning
         of the placeholder name (without "${") and position of ending bracket
         ("}"). Slicing line by this two positions returns name of the 
-        placeholder interpre</li>
+        placeholder to interpret</li>
       </ul>
       The object contain one field:
     <ul>
-      <li><b>line</b> - value which is analized - stored to allow parameterless
-        calles to test functions.</li>
+      <li><b>line</b> - value which is analyzed - stored to allow parameter less
+        calls to test functions.</li>
       </ul>
    
     <h2><a name="prefixing_output_decorator"></a>prefixing_output_decorator 
@@ -744,7 +731,7 @@
     <ul>
       <li><b>prefix</b></li>
       </ul>
-      Decorated output is stored in output_decorator this clas derive from.
+      Decorated output is stored in output_decorator this class derive from.
 
     <h2><a name="string_output"></a>string_output
       <a href="#output"><span class="parent">(output)</span></a>
@@ -759,7 +746,7 @@
         empty string</li>
       <li><b>write(text)</b> - appends given text to the string</li>
       </ul>
-      To access the string stored by sybsequent <i>write</i> calls, use direct 
+      To access the string stored by subsequent <i>write</i> calls, use direct 
       access to the field:
     <ul>
       <li><b>text</b> - stored text</li>
@@ -770,22 +757,22 @@
       <a href="#typo_outputs_py"><span class="module">typo_outputs.py</span></a>
       </h2> 
       Simple decorator adding something before each text passed to <i>write</i>
-      method. In typo, it is used to add newline to each of lines splitted by 
+      method. In typo, it is used to add newline to each of lines split by 
       <a href="#line_split_decorator">line_split_decorator</a>
     <p>
       Class has only two methods:
     <ul>
-      <li><b>__init__(output, sufix)</b> - stores output and text source in
+      <li><b>__init__(output, suffix)</b> - stores output and text source in
         internal fields. Output is any <a href="#typo_output">typo_output</a>
         and suffix is just a text</li>
       <li><b>write(text)</b> - Writes decorated text on decorated output. Text
-        is enriched by the stored sufix.</li>
+        is enriched by the stored suffix.</li>
       </ul>
       And one field:
     <ul>
-      <li><b>sufix</b></li>
+      <li><b>suffix</b></li>
       </ul>
-      Decorated output is stored in output_decorator this clas derive from.
+      Decorated output is stored in output_decorator this class derive from.
     
     <h2><a name="template_does_not_exist"></a>template_does_not_exist 
       <a href="#typo_interpreter_py"><span class="module">typo_interpreter.py</span></a>
@@ -819,23 +806,23 @@
       Typo context is a class of object used for communication between code 
       generators and the user of the program. Her you can store values accessible 
       by the output file generator and generators it calls. Context also provides
-      simple processing of values allowng to replace placeholders located in the
+      simple processing of values allowing to replace placeholders located in the
       string values. 
     <p>
       Any python values can be stored in context. It does not limit neither type
       nor the complexity of the values. It also do not provide any check of 
-      values. When you want to use tem in your generator - provide your own check
+      values. When you want to use them in your generator - provide your own check
       or use <a href="context_reader">context reader</a> 
       class - simple helper which allow to take values and check them.
     <p>
       Context also stores all information needed by the interpreter. It is also 
-      responsigle for loading modules with generators and converters, and storing
+      responsible for loading modules with generators and converters, and storing
       additional code loaded when re-generating output files. Feel free to 
       store any values you need to store during a session.
     <p>
       Context object is created once when <a href="typo_processor">typo 
       processor</a> object is created and exists at least till the end of 
-      its existance, so you can keep here values which need to survive between
+      its existence, so you can keep here values which need to survive between
       creation of subsequent output files.
     <p>
       Context provide set of methods getting and getting data from its content:
@@ -850,7 +837,7 @@
       <li><b>get_value(name)</b> main function for reading values. Returns value
         from the dictionary. If the value is string or list of strings, 
         placeholders located inside are interpreted and replaced by values. 
-        Plaholders can represent any value name and can be decorated by converter,
+        Placeholders can represent any value name and can be decorated by converter,
         but cannot use generators. When value does not exist - function returns 
         None</li>
       <li><b>pop_user_code()</b> Returns next user code block to store inside 
@@ -869,7 +856,7 @@
         string or list of strings</li>
       <li><b>_strip_and_get_converter(name)</b> - checks if the name contain
         placeholder written after the dot. If yes - function returns
-        pair of values - stripped anem and already created converter object.
+        pair of values - stripped name and already created converter object.
         If converter is not found - result is the name and None object.
         </li>
       <li><b>_translate_text(text)</b> - translates text by looking for 
@@ -883,7 +870,7 @@
         want here. You can also directly access values or remove them.</li>
       <li><b>user_code</b> list of blocks of user code. From this list you can 
         read by function <b>pop_user_code</b>. This list is filled once per 
-        byulding output file. When output file already exist, typo reads
+        building output file. When output file already exist, typo reads
         it and try to recognize code added by the user. Such code is stored here 
         before generation of the file.</li>
       <li><b>modules</b> - list of all modules loaded by <b>import_module</b>.
@@ -903,7 +890,7 @@
     <p>
       Converter class must implement one function:
     <ul>
-      <li><b>convert(text)</b> - function returning text fater conversion</li>
+      <li><b>convert(text)</b> - function returning text after conversion</li>
     </ul>
       Class name of the converter must start with <i>conv_</i>
     <p>
@@ -914,7 +901,7 @@
       <li><a href="#conv_lowercase_with_underscores">conv_lowercase_with_underscores</a>
         - makes underscored identifier from a sentence.</li>
       <li><a href="#conv_lowercaseCamel">conv_lowercaseCamel</a> 
-        - makes lowerace camel named identifier from a sentence.</li>
+        - makes lowercase camel named identifier from a sentence.</li>
       <li><a href="#conv_UppercaseCamel">conv_UppercaseCamel</a> 
         - makes uppercase camel named identifier from a sentence.</li>
     </ul>
@@ -924,9 +911,9 @@
       <a href="#typo_base_py"><span class="module">typo_base.py</span></a>
       </h2>
       Base class of all errors which may happened during creation of output file.
-      When you desing your own code generator and you want to inform about any 
-      problem like missing or malformed data - raise this excerion and provide
-      meaningfull description. Wyo can also set information about the source of
+      When you design your own code generator and you want to inform about any 
+      problem like missing or malformed data - raise this exception and provide
+      meaningful description. You can also set information about the source of
       the error and position of problematic data in the source. If you do not, 
       such information will be added by typo providing information about position 
       of call of you generator in the template.
@@ -936,7 +923,7 @@
       <li><b>__init__(message)</b> - constructor setting message</li>
       <li><b>__str__()</b> - method casting the object into string containing
         error message decorated by the position where the error was found (if 
-        sych information was provided)
+        such information was provided)
       </ul>
       and three fields:
     <ul>
@@ -944,7 +931,7 @@
         readable message, because when typo is run as standalone application 
         this message is reported to the user.</li>
       <li><b>source</b> - information where the problem is located. This should 
-        be name of the file with problemating data. When you do not fill this 
+        be name of the file with problematic data. When you do not fill this 
         field - it would be set in typo_interpreter to the currently interpreted 
         template file. Also line field will be set to point current line number.
         </li>
@@ -1000,7 +987,7 @@
             generator is called as the only one element in template file line.
           </ul></li>
       </ul>
-      Be carreful and check if the output provides needed functionality. I was
+      Be careful and check if the output provides needed functionality. I was
       thinking to check the typo of output in the <i>${user_code}</i> generator, 
       but this generator cannot be used as inlined. Location of placeholder is 
       checked during reading output file - so it is not possible to use it 
@@ -1009,7 +996,7 @@
       When developing your own code generators - you should derive from this class.
       Some examples you can find in typo code:
     <ul>
-      <li><a href="#gen_timestamp">gen_timestamp</a> - generates current timestemp</li>
+      <li><a href="#gen_timestamp">gen_timestamp</a> - generates current timestamp</li>
       <li><a href="#gen_typo_version">gen_typo_version</a> - places in the
         code version number of this generator.</li>
       <li><a href="#gen_user_code">gen_user_code</a> - writes user code back to 
@@ -1022,7 +1009,7 @@
       Python projects - this class should be used as the interface to all 
       typo functionality.
     <p>
-      Methods of this calss implements everything you can do normally using 
+      Methods of this class implements everything you can do normally using 
       command line interpreter:
     <ul>
       <li><b>__init__(context = None)</b> - initializes instance. 
@@ -1051,12 +1038,12 @@
         <a href="#output_file_generator">output_file_generator</a> - this is the
         main processor creating files. Encapsulates operations of typo.</li>
       <li><b>context_reader</b> - object of type <a href="#context_reader">context_reader</a>
-       just a helper analising context values. Connected to context</li>
+       just a helper analyzing context values. Connected to context</li>
       </ul>      
       
     <h2><a name="user_code_extractor"></a>user_code_extractor 
       <a href="#typo_interpreter_py"><span class="module">typo_interpreter.py</span></a></h2>
-      Class reading output file and looking for code added maually in special
+      Class reading output file and looking for code added manually in special
       places of the file. Such code is pointed in template by <i>${user_code}</i>
       placeholder. This placeholder must be the only one in line. Its indent 
       does not matter.
@@ -1068,10 +1055,10 @@
     <p>
       All the logic is in constructor. Once constructed - object contain user code
       as list of text blocks. Each <i>${user_code}</i>  from template is 
-      reprezented by one string in the list.
+      represented by one string in the list.
     <p>
-      User code extractor checks the correctnes of using <i>${user_code}</i> 
-      placeholder in the template. All errors which might occure during reading
+      User code extractor checks the correctness of using <i>${user_code}</i> 
+      placeholder in the template. All errors which might occur during reading
       user code are raised as <a href="#user_code_placeholder_error">user_code_placeholder_error</a>      
     <p>
       Class has few methods:
@@ -1079,24 +1066,24 @@
       <li><b>__init__(template, source_code_file_name)</b> - Performs all the action.
         Two parameters represent already loaded template (in form of a list
         of template lines) and file name of the file
-        which is analized to find user code blocks. </li>
-      <li><b>def is_user_code_placeholder(line)</b> - checks if the line correspond
-        to user code placeholder. Function just calls similarely named method
+        which is analyzed to find user code blocks. </li>
+      <li><b>is_user_code_placeholder(line)</b> - checks if the line correspond
+        to user code placeholder. Function just calls similarly named method
         in <a href="#placeholders_info">placeholders_info</a>.</li>
-      <li><b>def get_line_before(lines, index)</b> - gets one line before 
+      <li><b>get_line_before(lines, index)</b> - gets one line before 
         line of given number checking if the line exists and do not contain 
         any placeholders. If it lead to trouble - exception is raised.</li>
-      <li><b>def get_line_after(lines, index)</b> - gets one line after 
+      <li><b>get_line_after(lines, index)</b> - gets one line after 
         line of given number Similar checks like in previous methods are 
         performed.</li>
-      <li><b>def find_line(pattern, lines, start_from)</b> - finds the line
-        in list of lines. Pattern is line content to search. Start_from - is 
+      <li><b>find_line(pattern, lines, start_from)</b> - finds the line
+        in list of lines. Pattern is line content to search. Start from - is 
         the initial index which is checked.</li>
       </ul>
       And one field:
     <ul>
       <li><b>user_code</b> - list of multiline strings. Each element of the
-        list represents one user code block and is related to one occurance
+        list represents one user code block and is related to one occurence
         of <i>${user_code}</i> placeholder.</li>
       </ul> 
       
@@ -1104,14 +1091,14 @@
       <a href="#typo_error"><span class="parent">(typo_error)</span></a>
       <a href="#typo_tools_py"><span class="module">typo_tools.py</span></a></h2>
       This error just group problems with <i>user_code</i> placeholder in template.
-      This placeholder is processed in different way then other placeholders, because
+      This placeholder is processed in different way than other placeholders, because
       typo interpreter must read the user code before it starts to write output file.
       This is needed to keep such parts of code when output file is re-generated.
-      Error can occure in few situations. The only differnce is the message:
+      Error can occur in few situations. The only difference is the message:
     <ul>
       <li>placeholder is not the only one in a line.</li>
       <li>line before and after are not well recognizable and cannot be used as delimiters</li>
-      <li>when analising output file - ending delimiter cannot be found.</li>
+      <li>when analyzing output file - ending delimiter cannot be found.</li>
     </ul>
       This error is raised by <a href="#user_code_extractor">user_code_extractor</a>.__init__.
       
@@ -1120,7 +1107,7 @@
       <a href="#typo_interpreter_py"><span class="module">typo_interpreter.py</span></a></h2>
       This error is raised when generator raises any kind of error. It usually
       happened, when you use placeholder inside the line containing also other
-      content. WHen this placeholder denotes generator which requires indentation
+      content. When this placeholder denotes generator which requires indentation
       functionality on the its output.
     <p>
       This error is raised by <a href="#output_file_generator">output_file_generator</a>.translate_line.
