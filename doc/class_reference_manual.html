@@ -40,8 +40,9 @@
         <li><a href="#error_in_generator">error_in_generator</a></li>
         <li><a href="#output_file_generator">output_file_generator</a></li>
         <li><a href="#typo_processor">typo_processor</a></li>
-        <li><a _href="#_">exit_typo</a></li>
-        <li><a _href="#_">command_processor</a></li>
+        <li><a href="#exit_typo">exit_typo</a></li>
+        <li><a href="#cannot_execute_command">cannot_execute_command</a></li>
+        <li><a href="#command_processor">command_processor</a></li>
         </ul></li>
       <li><a name="typo_outputs_py"></a><b>typo_outputs</b> module - all
         output specific clsses including some formatting tools:<ul>
@@ -82,6 +83,17 @@
       </ul>
     And now, alphabetically:
  
+    <h2><a name="cannot_execute_command"></a>cannot_execute_command 
+      <a href="#typo_error"><span class="parent">(typo_error)</span></a>
+      <a href="#typo_interpreter_py"><span class="module">typo_interpreter.py</span></a>
+      </h2>
+      Error raised when command processor cannot interpret command. It happened
+      when command cannot be rocognized neither as assignemnt nor order of typo.
+      In current version this error heppened when the command contain characters which are 
+      not accepted.
+    <p>
+      This error is raised by <a href="#command_processor">command_processor</a>.process_command.
+
     <h2><a name="cannot_translate"></a>cannot_translate 
       <a href="#typo_error"><span class="parent">(typo_error)</span></a>
       <a href="#typo_interpreter_py"><span class="module">typo_interpreter.py</span></a>
@@ -90,6 +102,47 @@
       a value nor code generator located in one of registered modules. 
     <p>
       This error is raised by <a href="#output_file_generator">output_file_generator</a>.translate_line.
+
+    <h2><a name="command_processor"></a>command_processor 
+      <a href="#typo_interpreter_py"><span class="module">typo_interpreter.py</span></a>
+      </h2>
+      Class transfroming text into calls to <a href="#typo_processor">typo_processor</a>.
+      Usefull when creating interpreter of script or command taken from console.
+      Interpretation of text gives:
+    <ul>
+      <li>When the line contain equal sign and before it is a text which can be 
+        an identifier - it is assignment. </li>
+      <li>When the line contain text <i>exit</i> - this is exit order and program 
+        raises <a href="#exit_typo">exit_typo</a> exception</li>
+      <li>When the line contain text <i>list</i> - function interpreting line 
+        returns text containig list of all settings stored in <a href="#typo_context">context</a>
+      <li>When lise starts with <i>import</i> - this is import order - it 
+       imports specified module with generators and converters</li>
+      <li>When line contain valid identifier - it is used to generate output 
+        file from the template having the name equal to this identifeier</li>
+      <li>In all other cases it riases error <a href="#cannot_execute_command">cannot_execute_command</a></li>
+      </ul>
+    <p>
+      Class have few methods:
+    <ul>
+      <li><b>__init__(processor)</b> - Constructor. Just stores <i>typo_procesot</i>
+        object to perform operations on it.</li>
+      <li><b>process_command(command)</b> - method taking an order to interpret
+        and deciding which type of command it contain. To detemine the text
+        content regular expressions are used.</li>
+      <li><b>_process_assignment(command)</b> - method transforming line 
+        containing assignment into call of generator method <i>set_value</i></li>
+      <li><b>_process_import(command)</b> - method transforming line 
+        containing import order into call of generator method <i>import_module</i></li>
+      <li><b>_process_generation(command)</b> - just calls processor method
+        <i>generate</i></li>
+      <li><b>_list_variables()</b> - return text containing all assignments stored
+        in processor context.</li>
+      </ul>
+      and one member:
+    <ul>
+      <li><b>processor</b> - reference to <a href="#typo_processor">typo_processor</a> instance</li>
+      </ul>
 
     <h2><a name="console_output"></a>console_output 
       <a href="#output"><span class="parent">(output)</span></a>
@@ -174,6 +227,20 @@
       generator. Such error message allow to find problem inside generator.
     <p>
       This error is raised by <a href="#output_file_generator">output_file_generator</a>.translate_line.
+
+    <h2><a name="exit_typo"></a>exit_typo 
+      <span class="parent">(Exception)</span>
+      <a href="#typo_interpreter_py"><span class="module">typo_interpreter.py</span></a>
+      </h2>
+      Class used to exit the program. When you cann <a href="#command_processor">command_processor</a>
+      to process typo orders, you should catch this exception. It is raised
+      when processor executes <i>exit</i> command. You can also raise this exception
+      to abort any typo operation and return error code.
+    <p>
+      Class has only one field:
+    <ul>
+      <li><b>exit_code</b></li>
+      </ul>
 
     <h2><a name=file_cannot_be_created></a>file_cannot_be_created 
       <a href="#typo_error"><span class="parent">(typo_error)</span></a>
@@ -808,6 +875,7 @@
     <p>
       All errors in typo are created as separate classes:
     <ul>
+      <li><a href="#cannot_execute_command">cannot_execute_command</a></li>
       <li><a href="#cannot_translate">cannot_translate</a></li>
       <li><a href="#error_in_generator">error_in_generator</a></li>
       <li><a href="#file_name_is_not_defined">file_name_is_not_defined</a></li>
