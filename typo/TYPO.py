@@ -22,15 +22,8 @@ def typo_main(argv):
         typo = typo_processor()
         processor = command_processor(typo)
     
-        init = file_lines(init_file_name)
-        line_number = 1
-        for init_line in init:
-            try:
-                result = processor.process_command(init_line)
-            except typo_error as err:
-                print("INIT ERROR: " + str(err) + " (in 'init.typo' line: " + str(line_number) + ")")
-            line_number = line_number + 1
-    
+        processor.execute_script_from_file(init_file_name)
+
         while(True):
             command = raw_input("> ")
             try:

@@ -185,8 +185,8 @@ class typo_processor:
         output_path = self.context_reader.get_path("path")
         file_name = self.context_reader.get_file_name("file_name")
         self.generator.build_source_code(template_path + template + ".template", output_path + file_name)
-               
-        
+
+
 """ exception thrown when program should exit - this exception should be thrown
     up to level of typo module code (free code in TYPO.py) """
 class exit_typo(Exception):
@@ -199,6 +199,15 @@ class cannot_execute_command(typo_error):
 
     def __init__(self, command):
         typo_error.__init__(self, "I do not understand command '" + command + "'")
+
+""" error: something wrong occured during processing of script file """
+class error_inside_script(typo_error):
+
+    def __init__(self, original_error, file, line):
+        self.original_error = original_error
+        typo_error.__init__(str(original_error))
+        self.source = file
+        self.location = line
 
 """ transforms command lines into operations on typo_processor """
 class command_processor:
@@ -218,9 +227,19 @@ class command_processor:
         elif re.match("^\s*import\s*.*", command):
             return self._process_import(command)
         elif re.match("^\s*[_a-zA-Z][_a-zA-z0-9]*\s*$", command):
-            return self._process_generation(command)
+            return self._process_generation_or_execution(command)
         elif not re.match("^\s*#.*", command):
             raise cannot_execute_command(command)
+    
+    def execute_script_from_file(self, script_file_name):
+        script = file_lines(script_file_name)
+        line_number = 1
+        for init_line in script:
+            try:
+                result = self.process_command(init_line)
+            except typo_error as err:
+                raise error_inside_script(err, script_file_name, line_number)
+            line_number = line_number + 1
     
     def _process_assignment(self, command):
         pos = command.find("=")
@@ -238,7 +257,13 @@ class command_processor:
         module_name = command[found_import.end():].strip()
         self.processor.import_module(module_name)
         
-    def _process_generation(self, command):
+    def _process_generation_or_execution(self, command):
+        if not (self.processor.context.get_value("script_path") is None):
+            path = self.processor.context_reader.get_path("script_path")
+            full_script_file_name = path + command + ".typo"
+            if os.path.isfile(full_script_file_name):
+                self.execute_script_from_file(full_script_file_name)
+                return
         self.processor.generate(command.strip())
     
     def _list_variables(self):

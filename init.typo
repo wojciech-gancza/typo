@@ -8,8 +8,14 @@
 # Path to directory with output files templates. This path is used when typo
 # is looking for template to generate file. This path can be changed at any time
 # but it is handy to initialize it with usually used location
-template_path = _dev/templates
+
+template_path = _dev/tests/templates
 
 # Path to output files. Also could be changed by the script, but by default 
 # output files will be placed here.
+
 path = _dev/tests/outputs
+
+# Path to scripts writen in typo. Such scripts can be run as a command
+
+script_path = _dev/tests/scripts
