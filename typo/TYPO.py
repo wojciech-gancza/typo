@@ -27,6 +27,8 @@ def typo_main(argv):
         while(True):
             command = raw_input("> ")
             try:
+                self.processor.context.set_value("source_script_file_name", "<console>")
+                self.processor.context.set_value("source_script_file_line", "<unknown>")
                 result = processor.process_command(command)
                 if not(result is None):
                     print(result)

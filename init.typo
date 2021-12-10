@@ -19,3 +19,19 @@ path = _dev/tests/outputs
 # Path to scripts writen in typo. Such scripts can be run as a command
 
 script_path = _dev/tests/scripts
+
+# now current dev tests
+copyright = WGan (c) 2021 - typo testing
+template_path = templates
+file_name = ${type_name.lowercase_with_underscores}.h
+type_name = mass
+base_type = double
+default_value = "0.0"
+simple_type_h
+type_name = name
+base_type = std::string
+default_value = std::string::empty
+#default_value = "\"\""
+simple_type_h
+
+exit

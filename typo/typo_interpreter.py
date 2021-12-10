@@ -205,9 +205,9 @@ class error_inside_script(typo_error):
 
     def __init__(self, original_error, file, line):
         self.original_error = original_error
-        typo_error.__init__(str(original_error))
+        typo_error.__init__(self, str(original_error))
         self.source = file
-        self.location = line
+        self.line = line
 
 """ transforms command lines into operations on typo_processor """
 class command_processor:
@@ -236,6 +236,8 @@ class command_processor:
         line_number = 1
         for init_line in script:
             try:
+                self.processor.context.set_value("source_script_file_name", script_file_name)
+                self.processor.context.set_value("source_script_file_line", str(line_number))
                 result = self.process_command(init_line)
             except typo_error as err:
                 raise error_inside_script(err, script_file_name, line_number)

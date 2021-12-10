@@ -26,8 +26,14 @@ class loop_error_when_resolving(typo_error):
 """ error - desired module was not loaded """
 class module_not_loaded(typo_error):
 
-    def __init__(self, module_name):
-        typo_error.__init__(self, "Module '" + module_name + "' cannot be loaded.")        
+    def __init__(self, module_name, reason = None):
+        if reason is None:
+            reason = ""
+        else:
+            reason = str(reason)
+        if reason != "":
+            reason = " Problem is: \n" + reason
+        typo_error.__init__(self, "Module '" + module_name + "' cannot be loaded." + reason)        
 
 """ context - all settings are defined here """
 class typo_context:
@@ -66,8 +72,8 @@ class typo_context:
     def import_module(self, module_name):
         try:
             self.modules.append(__import__(module_name))
-        except:
-            raise module_not_loaded(module_name)        
+        except Exception as err:
+            raise module_not_loaded(module_name, err)        
           
     def create_object(self, class_name):
         try:

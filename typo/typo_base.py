@@ -12,7 +12,7 @@ class typo_error(Exception):
     def __str__(self):
         text = self.text
         if self.source != "":
-            text += " Found in '" + self.source + "'"
+            text += "\nFound in '" + self.source + "'"
             if self.line != 0:
                 text += " in line " + str(self.line)
             text += "."

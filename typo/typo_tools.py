@@ -85,6 +85,19 @@ class malformed_file_name(typo_error):
     def __init__(self, variable_name, file_name):
         typo_error.__init__(self, "Value '" + file_name + "' in variable '" + variable_name + "' is wrong as a file name.")
 
+""" error - value is required byt not supported """
+class value_is_missing(typo_error):
+
+    def __init__(self, variable_name):
+        typo_error.__init__(self, "Variable '" + variable_name + "' is missing.")
+     
+""" error - value exists but it is not a good name for identifier """
+class value_is_not_good_identifier(typo_error):
+
+    def __init__(self, variable_name, value):
+        typo_error.__init__(self, "Variable '" + variable_name + "' caontain value '" + value + "' which cannot be used as identifier.")
+
+
 """ context reader contain few methods helping to read the context variables """
 class context_reader:
 
@@ -106,11 +119,23 @@ class context_reader:
         value = self.context.get_value(file_name_variable_name)
         if value is None:
             raise file_name_is_not_defined(file_name_variable_name)
-	value = str(value)
+        value = str(value)
         if not re.match("^[_a-zA-Z][0-9_a-zA-Z.]*$", value):
             raise malformed_file_name(file_name_variable_name, value)
-        return value    
-
+        return value   
+    
+    def get_value(self, value_name):
+        value = self.context.get_value(value_name)
+        if value is None:
+            raise value_is_missing(value_name)
+        return value
+        
+    def get_identifier(self, value_name, prefix = ""):
+        value = self.get_value(value_name)
+        if not re.match("[_a-zA-z][_a-zA-Z0-9]", value):
+            raise value_is_not_good_identifier(value_name, value)
+        return prefix + value
+        
 
 """ error when extracting user code """
 class user_code_placeholder_error(typo_error):
