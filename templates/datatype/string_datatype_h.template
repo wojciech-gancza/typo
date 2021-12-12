@@ -8,9 +8,9 @@
 #ifndef _${type_name.CAPITALIZE_ALL}_H_
 #define _${type_name.CAPITALIZE_ALL}_H_
 
-/* comment to the type (manually added by programmer)
+/* // comment to the type (manually added by programmer)
 ${user_code}
-*/ end of comment
+*/ // end of comment
 
 // additional includes (manually added by programmer)
 ${user_code}
@@ -20,22 +20,31 @@ $> import typo_cpp_generator
 class ${type_name.UppercaseCamel}
 {
 public:
-    ${simple_type_default_constructor}
+    ${string_type_default_constructor}
     
-    ${simple_type_constructor}
+    ${string_type_constructor}
+    
+    ${simple_type_copy_constructor}
     
     ${simple_type_assignment}
     
     ${simple_type_getter}
     
-    ${simple_type_setter}
+    ${string_type_setter}
     
     // additional methods (manually added by programmer)
     ${user_code}
     // end of additional methods
 
 private:
-    ${storage_item}
+    ${simple_storage_item}
+
+    void _check_value_aseert(const ${base_type} & p_${type_name.lowercaseCamel})
+    {
+	// check value assertions (manually added by programmer)
+	${user_code}
+	// end of check value assertions
+    }
 };
 
 // additional inline methods (manually added by programmer)

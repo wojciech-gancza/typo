@@ -21,17 +21,36 @@ path = _dev/tests/outputs
 script_path = _dev/tests/scripts
 
 # now current dev tests
+
 copyright = WGan (c) 2021 - typo testing
-template_path = templates
+template_path = templates/datatype
 file_name = ${type_name.lowercase_with_underscores}.h
+# allow_default_constructor = No
+# allow_copy_constructor = No
+# allow_assignment = No
+
 type_name = mass
 base_type = double
-default_value = "0.0"
-simple_type_h
+min_value = 0.0
+
+numeric_datatype_h
+
 type_name = name
 base_type = std::string
-default_value = std::string::empty
-#default_value = "\"\""
-simple_type_h
+min_value = None
+
+string_datatype_h
+
+type_name = card color
+base_type = byte
+enum_values = clubs, diamonds, hearts, spades, something else, high_trumphs
+
+enumerated_datatype_h
+
+type_name = access right
+base_type = byte
+enum_values = [ "Read", "wRiTe", "execute"]
+
+bitset_datatype_h 
 
 exit

@@ -1,0 +1,51 @@
+// WARNING: File generated automatically by 'typo'. 
+//   copyright:       ${copyright}
+//   generated from:  ${source_script_file_name} line ${source_script_file_line}
+//   generated at:    ${timestamp}
+// Do not modify manually outside spaces marked as manually added by programmer
+
+
+#ifndef _${type_name.CAPITALIZE_ALL}_H_
+#define _${type_name.CAPITALIZE_ALL}_H_
+
+/* comment to the type (manually added by programmer)
+${user_code}
+*/ end of comment
+
+// additional includes (manually added by programmer)
+${user_code}
+// end of additional includes
+
+$> import typo_cpp_generator
+class ${type_name.UppercaseCamel}
+{
+public:
+    enum bit_type {
+        ${bit_values}
+    };
+    
+    $ {bitset_type_default_constructor}
+    
+    $ {bitset_type_constructor}
+    
+    ${simple_type_copy_constructor}
+    
+    ${simple_type_assignment}
+    
+    $ {bitset_type_getter}
+    
+    $ {bitset_type_setter}
+    
+    // additional methods (manually added by programmer)
+    ${user_code}
+    // end of additional methods
+
+private:
+    $ {bitset_storage_item}
+};
+
+// additional inline methods (manually added by programmer)
+${user_code}
+// end of additional inline methods
+
+#endif
