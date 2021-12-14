@@ -8,9 +8,9 @@
 #ifndef _${type_name.CAPITALIZE_ALL}_H_
 #define _${type_name.CAPITALIZE_ALL}_H_
 
-/* comment to the type (manually added by programmer)
+/* // comment to the type (manually added by programmer)
 ${user_code}
-*/ end of comment
+*/ // end of comment
 
 // additional includes (manually added by programmer)
 ${user_code}
@@ -24,17 +24,17 @@ public:
         ${enumerated_values}
     };
     
-    $ {enumerated_type_default_constructor}
+    ${enumerated_type_default_constructor}
     
-    $ {enumerated_type_constructor}
+    ${enumerated_type_constructor}
     
     ${simple_type_copy_constructor}
     
     ${simple_type_assignment}
     
-    $ {enumerated_type_getter}
+    ${enumerated_type_getter}
     
-    $ {enumerated_type_setter}
+    ${enumerated_type_setter}
     
     // additional methods (manually added by programmer)
     ${user_code}

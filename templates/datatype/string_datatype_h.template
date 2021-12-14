@@ -39,7 +39,7 @@ public:
 private:
     ${simple_storage_item}
 
-    void _check_value_aseert(const ${base_type} & p_${type_name.lowercaseCamel})
+    void _check_value_assert(const ${base_type} & p_${type_name.lowercaseCamel})
     {
 	// check value assertions (manually added by programmer)
 	${user_code}

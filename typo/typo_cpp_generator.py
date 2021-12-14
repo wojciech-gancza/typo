@@ -72,11 +72,11 @@ class cpp_generator(typo_generator):
         if min is None and max is None:
             return None
         elif not (min is None) and not (max is None):
-            return "assert(" + str(min) + " <= " + value_name + " && " + value_name + " >= " + str(max) + ")\n"
+            return "assert(" + str(min) + " <= " + value_name + " && " + value_name + " >= " + str(max) + ");\n"
         elif not (min is None):
-            return "assert(" + str(min) + " <= " + value_name + ")\n"
+            return "assert(" + str(min) + " <= " + value_name + ");\n"
         else:
-            return "assert(" + value_name + " >= " + str(max) + ")\n"          
+            return "assert(" + value_name + " >= " + str(max) + ");\n"          
         
     def _get_switch(self, switch_name, default_value):
         value = self.reader.context.get_value(switch_name)
@@ -97,6 +97,59 @@ class cpp_generator(typo_generator):
             return value
         else:
             return [x.strip() for x in value.split(",")]
+        
+    def _get_enum_values(self):        
+        values = self._get_list("enum_values")
+        return [identifier_formatter(value).CAPITALIZE_ALL() for value in values]  
+        
+    def _get_bitset_base_type(self):
+        values = self._get_enum_values()
+        values_count = len(values)
+        if values_count <= 8:
+            return "uint8_t"
+        elif values_count <= 16:
+            return "uint16_t"
+        elif values_count <= 16:
+            return "uint16_t"
+        elif values_count <= 32:
+            return "uint32_t"
+        elif values_count <= 64:
+            return "uint64_t"
+        else:
+            return "uint128_t"
+    
+    def _get_max_bitset_value(self):
+        values = self._get_enum_values()
+        values_count = len(values)
+        return hex(2**values_count - 1)
+        
+
+class type_constructor(cpp_generator):
+    
+    def generate(self, context, output):
+        self._set_context(context)
+        if self._get_switch("allow_constructor", True):
+            self.generate_constructor(output)
+        else:
+            output.write("// allow_constructor = False\n")
+
+class type_getter(cpp_generator):
+
+    def generate(self, context, output):
+        self._set_context(context)
+        if self._get_switch("allow_getter", True):
+            self.generate_getter(output)
+        else:
+            output.write("// allow_getter = False\n")
+
+class type_setter(cpp_generator):
+
+    def generate(self, context, output):
+        self._set_context(context)
+        if self._get_switch("allow_setter", True):
+            self.generate_setter(output)
+        else:
+            output.write("// allow_setter = False\n")
 
 
 class gen_simple_type_copy_constructor(cpp_generator):
@@ -129,18 +182,14 @@ class gen_simple_type_assignment(cpp_generator):
         else:
             output.write(" delete; // allow_assignment = False\n")
 
-class gen_simple_type_getter(cpp_generator):
+class gen_simple_type_getter(type_getter):
     
-    def generate(self, context, output):
-        self._set_context(context)
-        if self._get_switch("allow_getter", True):
-            output.write(self._get_decorated_type() + " get" + self._get_class_name() + "() const\n{\n")
-            output.increase_indent()
-            output.write("return " + self._get_member_name() + ";\n")
-            output.decrease_indent()
-            output.write("}\n")
-        else:
-            output.write("// allow_getter = False\n")
+    def generate_getter(self, output):
+        output.write(self._get_decorated_type() + " get" + self._get_class_name() + "() const\n{\n")
+        output.increase_indent()
+        output.write("return " + self._get_member_name() + ";\n")
+        output.decrease_indent()
+        output.write("}\n")
 
 class gen_simple_storage_item(cpp_generator):
     
@@ -161,42 +210,34 @@ class gen_numeric_type_default_constructor(cpp_generator):
         else:
             output.write(" delete; // allow_default_constructor = False\n")
 
-class gen_numeric_type_constructor(cpp_generator):
+class gen_numeric_type_constructor(type_constructor):
     
-    def generate(self, context, output):
-        self._set_context(context)
-        if self._get_switch("allow_constructor", True):
-            parameter_name = self._get_parameter_name()
-            output.write("explicit " + self._get_class_name() + "(" + self._get_decorated_type() + " " + parameter_name + ")\n")
-            output.write(": " + self._get_member_name() + "(" + parameter_name + ")\n")
-            assertion = self._get_value_range_assertion(parameter_name)
-            if not (assertion is None):
-                output.write("{\n")
-                output.increase_indent()
-                output.write(assertion)
-                output.decrease_indent()
-                output.write("}\n")
-            else:
-                output.write("{  }\n")
-        else:
-            output.write("// allow_constructor = False\n")
-
-class gen_numeric_type_setter(cpp_generator):
-    
-    def generate(self, context, output):
-        self._set_context(context)
-        if self._get_switch("allow_setter", True):
-            output.write("void set" + self._get_class_name() + "(" + self._get_decorated_type() + " " + self._get_parameter_name() + ")\n{\n")
+    def generate_constructor(self, output):
+        parameter_name = self._get_parameter_name()
+        output.write("explicit " + self._get_class_name() + "(" + self._get_decorated_type() + " " + parameter_name + ")\n")
+        output.write(": " + self._get_member_name() + "(" + parameter_name + ")\n")
+        assertion = self._get_value_range_assertion(parameter_name)
+        if not (assertion is None):
+            output.write("{\n")
             output.increase_indent()
-            parameter_name = self._get_parameter_name()
-            assertion = self._get_value_range_assertion(parameter_name)
-            if not (assertion is None):
-                output.write(assertion)
-            output.write(self._get_member_name() + " = " + parameter_name + ";\n")
+            output.write(assertion)
             output.decrease_indent()
             output.write("}\n")
         else:
-            output.write("// allow_setter = False\n")
+            output.write("{  }\n")
+
+class gen_numeric_type_setter(type_setter):
+    
+    def generate_setter(self, output):
+        output.write("void set" + self._get_class_name() + "(" + self._get_decorated_type() + " " + self._get_parameter_name() + ")\n{\n")
+        output.increase_indent()
+        parameter_name = self._get_parameter_name()
+        assertion = self._get_value_range_assertion(parameter_name)
+        if not (assertion is None):
+            output.write(assertion)
+        output.write(self._get_member_name() + " = " + parameter_name + ";\n")
+        output.decrease_indent()
+        output.write("}\n")
 
 
 class gen_string_type_default_constructor(cpp_generator):
@@ -211,54 +252,45 @@ class gen_string_type_default_constructor(cpp_generator):
         else:
             output.write(" delete; // allow_default_constructor = False\n")
 
-class gen_string_type_constructor(cpp_generator):
+class gen_string_type_constructor(type_constructor):
     
-    def generate(self, context, output):
-        self._set_context(context)
-        if self._get_switch("allow_constructor", True):
-            parameter_name = self._get_parameter_name()
-            output.write("explicit " + self._get_class_name() + "(" + self._get_decorated_type() + " " + parameter_name + ")\n")
-            output.write(": " + self._get_member_name() + "(" + parameter_name + ")\n")
-            output.write("{\n")
-            output.increase_indent()
-            output.write("_check_value_assert(" + parameter_name + ");\n")
-            output.decrease_indent()
-            output.write("}\n")
-        else:
-            output.write("// allow_constructor = False\n")
+    def generate_constructor(self, output):
+        parameter_name = self._get_parameter_name()
+        output.write("explicit " + self._get_class_name() + "(" + self._get_decorated_type() + " " + parameter_name + ")\n")
+        output.write(": " + self._get_member_name() + "(" + parameter_name + ")\n")
+        output.write("{\n")
+        output.increase_indent()
+        output.write("_check_value_assert(" + parameter_name + ");\n")
+        output.decrease_indent()
+        output.write("}\n")
 
-class gen_string_type_setter(cpp_generator):
+class gen_string_type_setter(type_setter):
     
-    def generate(self, context, output):
-        self._set_context(context)
-        if self._get_switch("allow_setter", True):
-            output.write("void set" + self._get_class_name() + "(" + self._get_decorated_type() + " " + self._get_parameter_name() + ")\n{\n")
-            output.increase_indent()
-            parameter_name = self._get_parameter_name()
-            output.write("_check_value_assert(" + parameter_name + ");\n")
-            output.write(self._get_member_name() + " = " + parameter_name + ";\n")
-            output.decrease_indent()
-            output.write("}\n")
-        else:
-            output.write("// allow_setter = False\n")
+    def generate_setter(self, output):
+        output.write("void set" + self._get_class_name() + "(" + self._get_decorated_type() + " " + self._get_parameter_name() + ")\n{\n")
+        output.increase_indent()
+        parameter_name = self._get_parameter_name()
+        output.write("_check_value_assert(" + parameter_name + ");\n")
+        output.write(self._get_member_name() + " = " + parameter_name + ";\n")
+        output.decrease_indent()
+        output.write("}\n")
 
 
 class enumeration_values(cpp_generator):
     
     def generate(self, context, output):
         self._set_context(context)
-        values = self._get_list("enum_values")
-        values = [identifier_formatter(value).CAPITALIZE_ALL() for value in values]
+        values = self._get_enum_values()
         max_length = 0
         hex_values = []
-        enum_value = 1
+        enum_value = self.start_value
         for value in values:
             if len(value) > max_length:
                 max_length = len(value)
             hex_enum_value = hex(enum_value)
             hex_values.append(hex_enum_value)
-            enum_value = enum_value * self.multiply_by + self.increment_by
             max_hex_length = len(hex_enum_value)
+            enum_value = enum_value * self.multiply_by + self.increment_by
         lines = []
         for i in range(0, len(values)):
             value = values[i] + (" " * (max_length-len(values[i])))
@@ -277,12 +309,109 @@ class gen_enumerated_values(enumeration_values):
         self.start_value = 0
         self.increment_by = 1
         self.multiply_by = 1
+        
+class gen_enumerated_type_default_constructor(cpp_generator):
+
+    def generate(self, context, output):
+        self._set_context(context)
+        output.write(self._get_class_name() + "()")
+        if self._get_switch("allow_default_constructor", True):
+            output.write("\n")
+            values = self._get_list("enum_values")
+            first_value = identifier_formatter(values[0]).CAPITALIZE_ALL()
+            output.write(": " + self._get_member_name() + "(" + first_value + ")\n")
+            output.write("{  }\n")
+        else:
+            output.write(" delete; // allow_default_constructor = False\n")
+ 
+class gen_enumerated_type_constructor(type_constructor):
+
+    def generate_constructor(self, output):
+        class_name = self._get_class_name()
+        parameter_name = self._get_parameter_name()
+        output.write("explicit " + class_name + "(" + class_name + "::value_type " + parameter_name + ")\n")
+        output.write(": " + self._get_member_name() + "(" + parameter_name + ")\n")
+        output.write("{  }\n")
+
+class gen_enumerated_type_getter(type_getter):
+
+    def generate_getter(self, output):
+        class_name = self._get_class_name()
+        parameter_name = self._get_parameter_name()
+        output.write("void set" + class_name + "(" + class_name + "::value_type " + parameter_name + ")\n{\n")
+        output.increase_indent()
+        output.write(self._get_member_name() + " = " + parameter_name + ";\n")
+        output.decrease_indent()
+        output.write("}\n")
+
+class gen_enumerated_type_setter(type_setter):
+
+    def generate_setter(self, output):
+        class_name = self._get_class_name()
+        output.write(class_name + "::value_type get" + class_name + "()\n{\n")
+        output.increase_indent()
+        output.write("return " + self._get_member_name() + ";\n")
+        output.decrease_indent()
+        output.write("}\n")
+
                 
                 
 class gen_bit_values(enumeration_values):
 
     def __init__(self):
-        self.start_value = 0
+        self.start_value = 1
         self.increment_by = 0
         self.multiply_by = 2
-                
+ 
+class gen_bitset_type_default_constructor(cpp_generator):
+
+    def generate(self, context, output):
+        self._set_context(context)
+        output.write(self._get_class_name() + "()")
+        if self._get_switch("allow_constructor", True):
+            output.write("\n")
+            output.write(": " + self._get_member_name() + "(0)\n")
+            output.write("{  }\n")
+        else:
+            output.write(" delete; // allow_constructor = False\n")
+
+class gen_bitset_type_constructor(type_constructor):
+
+    def generate_constructor(self, output):
+        parameter_name = self._get_parameter_name()
+        output.write("explicit " + self._get_class_name() + "(" + self._get_bitset_base_type() + " " + parameter_name + ")\n")
+        output.write(": " + self._get_member_name() + "(" + parameter_name + ")\n")
+        output.write("{\n")
+        output.increase_indent()
+        output.write("assert(" + self._get_parameter_name() + " <= " + self._get_max_bitset_value() + ");\n")
+        output.write(self._get_member_name() + " = " + parameter_name + ";\n")
+        output.decrease_indent()
+        output.write("}\n")
+
+class gen_bitset_type_setter(type_getter):
+
+    def generate_getter(self, output):
+        class_name = self._get_class_name()
+        parameter_name = self._get_parameter_name()
+        output.write("void set" + class_name + "(" + self._get_bitset_base_type() + " " + parameter_name + ")\n{\n")
+        output.increase_indent()
+        output.write("assert(" + self._get_parameter_name() + " <= " + self._get_max_bitset_value() + ");\n")
+        output.write(self._get_member_name() + " = " + parameter_name + ";\n")
+        output.decrease_indent()
+        output.write("}\n")
+
+class gen_bitset_type_getter(type_setter):
+
+    def generate_setter(self, output):
+        output.write(self._get_bitset_base_type() + " get" + self._get_class_name() + "()\n{\n")
+        output.increase_indent()
+        output.write("return " + self._get_member_name() + ";\n")
+        output.decrease_indent()
+        output.write("}\n")
+
+class gen_bitset_storage_item(cpp_generator):
+    
+    def generate(self, context, output):
+        self._set_context(context)
+        output.write(self._get_bitset_base_type() + " " + self._get_member_name() + ";\n")
+

@@ -8,9 +8,9 @@
 #ifndef _${type_name.CAPITALIZE_ALL}_H_
 #define _${type_name.CAPITALIZE_ALL}_H_
 
-/* comment to the type (manually added by programmer)
+/* // comment to the type (manually added by programmer)
 ${user_code}
-*/ end of comment
+*/ // end of comment
 
 // additional includes (manually added by programmer)
 ${user_code}
@@ -24,24 +24,24 @@ public:
         ${bit_values}
     };
     
-    $ {bitset_type_default_constructor}
+    ${bitset_type_default_constructor}
     
-    $ {bitset_type_constructor}
+    ${bitset_type_constructor}
     
     ${simple_type_copy_constructor}
     
     ${simple_type_assignment}
     
-    $ {bitset_type_getter}
+    ${bitset_type_getter}
     
-    $ {bitset_type_setter}
+    ${bitset_type_setter}
     
     // additional methods (manually added by programmer)
     ${user_code}
     // end of additional methods
 
 private:
-    $ {bitset_storage_item}
+    ${bitset_storage_item}
 };
 
 // additional inline methods (manually added by programmer)

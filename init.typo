@@ -43,7 +43,7 @@ string_datatype_h
 
 type_name = card color
 base_type = byte
-enum_values = clubs, diamonds, hearts, spades, something else, high_trumphs
+enum_values = clubs, diamonds, hearts, spades
 
 enumerated_datatype_h
 
