@@ -124,6 +124,80 @@ class cpp_generator(typo_generator):
         return hex(2**values_count - 1)
         
 
+class cpp_enum_generator(cpp_generator):
+
+    def _generate_code(self, values, output):
+        min_length = self._get_minimum_length(values)
+        char_maps = [ ]
+        for char_position in range(0, min_length):
+            char_maps.append(self._generate_single_char_map(values, char_position))
+        switch_map_index = self._get_best_switch_map(char_maps)
+        switch_map = char_maps[switch_map_index]
+        if len(switch_map) == 1:
+            self._generate_if(min_length, switch_map.values()[0], output)
+        else:
+            self._generate_switch(switch_map_index, switch_map, output) 
+
+    def _generate_if(self, min_length, values, output):
+        output.write("if (" + self._get_parameter_name() + ".size() == " + str(min_length) + ")\n{\n")
+        values.sort()
+        output.increase_indent()
+        output.write("return " + self._get_class_name() + "(" + values[0] + ");\n")
+        output.decrease_indent()
+        output.write("}\nelse\n{\n")
+        output.increase_indent()
+        self._generate_code(values[1:], output)
+        output.decrease_indent()
+        output.write("}\n")
+
+    def _generate_switch(self, switch_map_index, switch_map, output):
+        class_name = self._get_class_name()
+        output.write("switch(" + self._get_parameter_name() + "[" + str(switch_map_index) + "])\n{\n")
+        keys = switch_map.keys()
+        for key in keys:
+            if key == keys[-1]:
+                output.write("default:\n")
+            else:
+                output.write("case '" + key + "':\n") 
+            case_values = switch_map[key]
+            output.increase_indent()
+            if len(case_values) == 1:
+                output.write("return " + class_name + "(" + case_values[0] + ");\n")
+            else:
+                self._generate_code(case_values, output)
+            output.decrease_indent()
+        output.write("}\n")
+    
+    def _get_minimum_length(self, values):
+        min_length = len(values[0])
+        for value in values[1:]:
+            value_length = len(value)
+            if value_length < min_length:
+                min_length = value_length
+        return min_length
+        
+    def _generate_single_char_map(self, values, char_position):
+        result_map = { }
+        for value in values:
+            char = value[char_position]
+            if char in result_map.keys():
+                result_map[char].append(value)
+            else:
+                result_map[char] = [ value ]
+        return result_map
+        
+    def _get_best_switch_map(self, char_maps):
+        longest_map_size = 0
+        longest_map_position = 0
+        for char_map_position in range(0, len(char_maps)):
+            char_map = char_maps[char_map_position]
+            char_map_size = len(char_map)
+            if char_map_size > longest_map_size:
+                longest_map_position = char_map_position
+                longest_map_size = char_map_size
+        return longest_map_position
+
+
 class type_constructor(cpp_generator):
     
     def generate(self, context, output):
@@ -317,8 +391,7 @@ class gen_enumerated_type_default_constructor(cpp_generator):
         output.write(self._get_class_name() + "()")
         if self._get_switch("allow_default_constructor", True):
             output.write("\n")
-            values = self._get_list("enum_values")
-            first_value = identifier_formatter(values[0]).CAPITALIZE_ALL()
+            first_value = self._get_enum_values()[0]
             output.write(": " + self._get_member_name() + "(" + first_value + ")\n")
             output.write("{  }\n")
         else:
@@ -354,8 +427,23 @@ class gen_enumerated_type_setter(type_setter):
         output.decrease_indent()
         output.write("}\n")
 
+class gen_enum_string_values(cpp_generator):
+
+    def generate(self, context, output):
+        self._set_context(context)
+        values = self._get_enum_values()
+        for value in values[0:-1]:
+            output.write("\"" + value + "\",\n")
+        output.write("\"" + values[-1] + "\"")
+                          
+        
+class gen_enum_from_string_converter_code(cpp_enum_generator):
                 
-                
+    def generate(self, context, output):
+        self._set_context(context)
+        values = self._get_enum_values()
+        self._generate_code(values, output)
+        
 class gen_bit_values(enumeration_values):
 
     def __init__(self):

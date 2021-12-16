@@ -180,11 +180,21 @@ class typo_processor:
     def import_module(self, generators_module_name):
         self.context.import_module(generators_module_name)
         
-    def generate(self, template):
+    def generate(self, template_name):
+        self.context.set_value("last_segment_of_template_name", self._extract_last_segment(template_name))
         template_path = self.context_reader.get_path("template_path")
         output_path = self.context_reader.get_path("path")
         file_name = self.context_reader.get_file_name("file_name")
-        self.generator.build_source_code(template_path + template + ".template", output_path + file_name)
+        self.generator.build_source_code(template_path + template_name + ".template", output_path + file_name)
+        
+    def _extract_last_segment(self, template_name):
+        position = len(template_name) - 1
+        while(position >= 0):
+            if not re.match("[0-9a-zA-Z]", template_name[position]):
+                return template_name[position+1:]
+            else:
+                position = position-1
+        return template_name
 
 
 """ exception thrown when program should exit - this exception should be thrown

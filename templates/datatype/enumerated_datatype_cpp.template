@@ -1,0 +1,22 @@
+// WARNING: File generated automatically by 'typo'. 
+//   copyright:       ${copyright}
+//   generated from:  ${source_script_file_name} line ${source_script_file_line}
+//   generated at:    ${timestamp}
+// Do not modify manually outside spaces marked as manually added by programmer
+
+
+#include "${type_name.lowercase_with_underscores}.h"
+
+// additional code (manually added by programmer)
+${user_code}
+// end of additional includes
+
+${type_name.UppercaseCamel} ${type_name.UppercaseCamel}::fromString(const std::string & p_${type_name.lowercaseCamel})
+{
+    ${enum_from_string_converter_code}
+}
+    
+const char* ${type_name.UppercaseCamel}::m_${type_name.lowercaseCamel}Names[] = {
+        ${enum_string_values}
+};
+

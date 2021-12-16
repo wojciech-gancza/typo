@@ -24,7 +24,7 @@ script_path = _dev/tests/scripts
 
 copyright = WGan (c) 2021 - typo testing
 template_path = templates/datatype
-file_name = ${type_name.lowercase_with_underscores}.h
+file_name = ${type_name.lowercase_with_underscores}.${last_segment_of_template_name}
 # allow_default_constructor = No
 # allow_copy_constructor = No
 # allow_assignment = No
@@ -43,9 +43,10 @@ string_datatype_h
 
 type_name = card color
 base_type = byte
-enum_values = clubs, diamonds, hearts, spades
+enum_values = clubs, diamonds, hearts, spades, mssql, oracle, adabas, teradata, file, something else, nothing special, something, bad, something strange
 
 enumerated_datatype_h
+enumerated_datatype_cpp
 
 type_name = access right
 base_type = byte

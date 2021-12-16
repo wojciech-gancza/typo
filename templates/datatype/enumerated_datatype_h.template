@@ -36,12 +36,24 @@ public:
     
     ${enumerated_type_setter}
     
+    // WARNING: this function is case sensitive and always return value, even
+    // if string do not match. To be sure check the result cut comparing
+    // its result of toString() method with the parameter value.
+    static ${type_name.UppercaseCamel} fromString(const std::string & p_${type_name.lowercaseCamel});
+    
+    const char * toString() const
+    {
+        return m_${type_name.lowercaseCamel}Names[m_${type_name.lowercaseCamel}];
+    }
+    
     // additional methods (manually added by programmer)
     ${user_code}
     // end of additional methods
 
 private:
     value_type m_${type_name.lowercaseCamel};
+    
+    static const char* m_${type_name.lowercaseCamel}Names[];
 };
 
 // additional inline methods (manually added by programmer)
