@@ -36,12 +36,24 @@ public:
     
     ${bitset_type_setter}
     
+    // WARNING: this function is case sensitive and always return value, even
+    // if string do not match. When error occurs - 0 is returned. 
+    static ${type_name.UppercaseCamel} from_string(const std::string & p_${type_name.lowercaseCamel}, char separator = '|');
+    
+    std::string to_string() const;
+    
     // additional methods (manually added by programmer)
     ${user_code}
     // end of additional methods
 
 private:
     ${bitset_storage_item}
+
+    static const char* m_${type_name.lowercaseCamel}Names[];
+
+    static ${type_name.UppercaseCamel}::bit_type string_to_bit(const std::string & bit_name);
+    static ${bitset_carrier_type} string_to_bit_with_check(std::string bit_name);
+    static const char * bit_to_string(${type_name.UppercaseCamel}::bit_type bit_value);
 };
 
 // additional inline methods (manually added by programmer)

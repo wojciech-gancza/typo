@@ -126,7 +126,10 @@ class cpp_generator(typo_generator):
 
 class cpp_enum_generator(cpp_generator):
 
-    def _generate_code(self, values, output):
+    def _generate_code(self, parameter_name, values, output):
+        if len(values) == 1:
+            output.write("return " + self._create_return_value(values[0]) + ";\n")
+            return
         min_length = self._get_minimum_length(values)
         char_maps = [ ]
         for char_position in range(0, min_length):
@@ -134,26 +137,27 @@ class cpp_enum_generator(cpp_generator):
         switch_map_index = self._get_best_switch_map(char_maps)
         switch_map = char_maps[switch_map_index]
         if len(switch_map) == 1:
-            self._generate_if(min_length, switch_map.values()[0], output)
+            self._generate_if(parameter_name, min_length, switch_map.values()[0], output)
         else:
-            self._generate_switch(switch_map_index, switch_map, output) 
+            self._generate_switch(parameter_name, switch_map_index, switch_map, output) 
 
-    def _generate_if(self, min_length, values, output):
-        output.write("if (" + self._get_parameter_name() + ".size() == " + str(min_length) + ")\n{\n")
+    def _generate_if(self, parameter_name, min_length, values, output):
+        output.write("if (" + parameter_name + ".size() == " + str(min_length) + ")\n{\n")
         values.sort()
         output.increase_indent()
-        output.write("return " + self._get_class_name() + "(" + values[0] + ");\n")
+        output.write("return " + self._create_return_value(values[0]) + ";\n")
         output.decrease_indent()
         output.write("}\nelse\n{\n")
         output.increase_indent()
-        self._generate_code(values[1:], output)
+        self._generate_code(parameter_name, values[1:], output)
         output.decrease_indent()
         output.write("}\n")
 
-    def _generate_switch(self, switch_map_index, switch_map, output):
+    def _generate_switch(self, parameter_name, switch_map_index, switch_map, output):
         class_name = self._get_class_name()
-        output.write("switch(" + self._get_parameter_name() + "[" + str(switch_map_index) + "])\n{\n")
+        output.write("switch(" + parameter_name + "[" + str(switch_map_index) + "])\n{\n")
         keys = switch_map.keys()
+        keys.sort()
         for key in keys:
             if key == keys[-1]:
                 output.write("default:\n")
@@ -162,9 +166,9 @@ class cpp_enum_generator(cpp_generator):
             case_values = switch_map[key]
             output.increase_indent()
             if len(case_values) == 1:
-                output.write("return " + class_name + "(" + case_values[0] + ");\n")
+                output.write("return " + self._create_return_value(case_values[0]) + ";\n")
             else:
-                self._generate_code(case_values, output)
+                self._generate_code(parameter_name, case_values, output)
             output.decrease_indent()
         output.write("}\n")
     
@@ -196,7 +200,9 @@ class cpp_enum_generator(cpp_generator):
                 longest_map_position = char_map_position
                 longest_map_size = char_map_size
         return longest_map_position
-
+        
+    def _create_return_value(self, text):
+        pass
 
 class type_constructor(cpp_generator):
     
@@ -435,14 +441,17 @@ class gen_enum_string_values(cpp_generator):
         for value in values[0:-1]:
             output.write("\"" + value + "\",\n")
         output.write("\"" + values[-1] + "\"")
-                          
-        
+                                 
 class gen_enum_from_string_converter_code(cpp_enum_generator):
                 
     def generate(self, context, output):
         self._set_context(context)
         values = self._get_enum_values()
-        self._generate_code(values, output)
+        self._generate_code(self._get_parameter_name(), values, output)
+
+    def _create_return_value(self, text):
+        return self._get_class_name() + "(" + text + ")"
+
         
 class gen_bit_values(enumeration_values):
 
@@ -502,4 +511,21 @@ class gen_bitset_storage_item(cpp_generator):
     def generate(self, context, output):
         self._set_context(context)
         output.write(self._get_bitset_base_type() + " " + self._get_member_name() + ";\n")
+
+class gen_bitset_carrier_type(cpp_generator):
+    
+    def generate(self, context, output):
+        self._set_context(context)
+        output.write(self._get_bitset_base_type())
+
+class gen_bit_from_string_converter_code(cpp_enum_generator):
+            
+    def generate(self, context, output):
+        self._set_context(context)
+        values = self._get_enum_values()
+        self._generate_code("bit_name", values, output)
+
+    def _create_return_value(self, text):
+        return text
+
 

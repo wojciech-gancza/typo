@@ -14,7 +14,7 @@ template_path = _dev/tests/templates
 # Path to output files. Also could be changed by the script, but by default 
 # output files will be placed here.
 
-path = _dev/tests/outputs
+path = _dev/tests/cpp
 
 # Path to scripts writen in typo. Such scripts can be run as a command
 
@@ -49,7 +49,7 @@ enumerated_datatype_cpp
 
 type_name = access right
 base_type = byte
-enum_values = [ "Read", "wRiTe", "execute"]
+enum_values = [ "Read", "wRiTe", "execute" ]
 
 bitset_datatype_h 
 bitset_datatype_cpp

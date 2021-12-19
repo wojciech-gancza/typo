@@ -39,9 +39,9 @@ public:
     // WARNING: this function is case sensitive and always return value, even
     // if string do not match. To be sure check the result cut comparing
     // its result of toString() method with the parameter value.
-    static ${type_name.UppercaseCamel} fromString(const std::string & p_${type_name.lowercaseCamel});
+    static ${type_name.UppercaseCamel} from_string(const std::string & p_${type_name.lowercaseCamel});
     
-    const char * toString() const
+    const char * to_string() const
     {
         return m_${type_name.lowercaseCamel}Names[m_${type_name.lowercaseCamel}];
     }

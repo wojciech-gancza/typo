@@ -1,10 +1,10 @@
 # (c) TYPO by WGan 2021
 
 echo "--- generating test classes" 
-python typo/TYPO.py
+python typo/TYPO.py _dev/tests/cpp/class_definitions.typo
 echo "--- Compiling test project" 
-g++ _dev/tests/outputs/test.cpp --output _dev/tests/outputs/test
+g++ _dev/tests/cpp/test.cpp --output _dev/tests/cpp/test
 echo "--- Running test project" 
-_dev/tests/outputs/test
+_dev/tests/cpp/test
 echo "Done." 
 

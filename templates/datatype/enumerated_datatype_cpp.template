@@ -11,7 +11,7 @@
 ${user_code}
 // end of additional includes
 
-${type_name.UppercaseCamel} ${type_name.UppercaseCamel}::fromString(const std::string & p_${type_name.lowercaseCamel})
+${type_name.UppercaseCamel} ${type_name.UppercaseCamel}::from_string(const std::string & p_${type_name.lowercaseCamel})
 {
     ${enum_from_string_converter_code}
 }
