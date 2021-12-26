@@ -5,8 +5,8 @@
 // Do not modify manually outside spaces marked as manually added by programmer
 
 
-#ifndef _${type_name.CAPITALIZE_ALL}_H_
-#define _${type_name.CAPITALIZE_ALL}_H_
+#ifndef ${header_guard}
+#define ${header_guard}
 
 /* // comment to the type (manually added by programmer)
 ${user_code}
@@ -16,8 +16,7 @@ ${user_code}
 ${user_code}
 // end of additional includes
 
-$> import typo_cpp_generator
-class ${type_name.UppercaseCamel}
+class ${class_name}
 {
 public:
     ${numeric_type_default_constructor}

@@ -77,7 +77,7 @@ class path_not_found(typo_error):
 class file_name_is_not_defined(typo_error):
 
     def __init__(self, variable_name):
-        typo_error.__init__(self, "Variable '" + variable_name + "' is not defined byt should contain valid file name.")
+        typo_error.__init__(self, "Variable '" + variable_name + "' is not defined but should contain valid file name.")
 
 """ error - file name is malformed """
 class malformed_file_name(typo_error):
@@ -85,7 +85,7 @@ class malformed_file_name(typo_error):
     def __init__(self, variable_name, file_name):
         typo_error.__init__(self, "Value '" + file_name + "' in variable '" + variable_name + "' is wrong as a file name.")
 
-""" error - value is required byt not supported """
+""" error - value is required but not supported """
 class value_is_missing(typo_error):
 
     def __init__(self, variable_name):

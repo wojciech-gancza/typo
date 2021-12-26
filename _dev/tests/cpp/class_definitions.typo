@@ -16,18 +16,15 @@ template_path = _dev/tests/templates
 
 path = _dev/tests/cpp
 
-# Path to scripts writen in typo. Such scripts can be run as a command
+# Path to scripts written in typo. Such scripts can be run as a command
 
-script_path = _dev/tests/scripts
+script_path = scripts
 
 # now current dev tests
 
+datatype_definitions
+
 copyright = WGan (c) 2021 - typo testing
-template_path = templates/datatype
-file_name = ${type_name.lowercase_with_underscores}.${last_segment_of_template_name}
-# allow_default_constructor = No
-# allow_copy_constructor = No
-# allow_assignment = No
 
 type_name = mass
 base_type = double
@@ -43,7 +40,7 @@ string_datatype_h
 
 type_name = card color
 base_type = byte
-enum_values = clubs, diamonds, hearts, spades, spades_other
+enum_values = clubs, diamonds, hearts, spades, high_trumphs
 enumerated_datatype_h
 enumerated_datatype_cpp
 

@@ -1,3 +1,10 @@
 **/.DS_store
 _dev/tests/outputs/*
 **/*.pyc
+_dev/tests/cpp/access_right.cpp
+_dev/tests/cpp/access_right.h
+_dev/tests/cpp/card_color.cpp
+_dev/tests/cpp/card_color.h
+_dev/tests/cpp/mass.h
+_dev/tests/cpp/name.h
+

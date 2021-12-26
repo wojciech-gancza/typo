@@ -5,18 +5,18 @@
 // Do not modify manually outside spaces marked as manually added by programmer
 
 
-#include "${type_name.lowercase_with_underscores}.h"
+#include "${header_file_name}"
 
 // additional code (manually added by programmer)
 ${user_code}
 // end of additional includes
 
-${type_name.UppercaseCamel} ${type_name.UppercaseCamel}::from_string(const std::string & p_${type_name.lowercaseCamel})
+${class_name} ${class_name}::from_string(const std::string & ${parameter_name})
 {
     ${enum_from_string_converter_code}
 }
     
-const char* ${type_name.UppercaseCamel}::m_${type_name.lowercaseCamel}Names[] = {
+const char* ${class_name}::${class_names_member_vector}[] = {
         ${enum_string_values}
 };
 

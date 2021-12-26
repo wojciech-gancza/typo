@@ -1,0 +1,22 @@
+# (c) TYPO by WGan 2021
+# First test of typo. Generate one output file containing user code.
+
+
+import typo_cpp_generator
+
+template_path = templates/datatype
+file_name = ${type_name.lowercase_with_underscores}.${last_segment_of_template_name}
+
+allow_default_constructor = Yes
+allow_copy_constructor = Yes
+allow_assignment = Yes
+allow_getter = Yes
+allow_setter = Yes
+
+header_file_name = ${type_name.lowercase_with_underscores}.h
+header_guard = _${type_name.CAPITALIZE_ALL}_H_
+class_name = ${type_name.UppercaseCamel}
+member_name = m_${type_name.lowercaseCamel}
+parameter_name = p_${type_name.lowercaseCamel}
+class_names_member_vector = m_${type_name.lowercaseCamel}Names
+class_bit_type = ${class_name}::bit_type

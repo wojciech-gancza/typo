@@ -45,13 +45,13 @@ class cpp_generator(typo_generator):
         self.reader = context_reader(context)
 
     def _get_class_name(self):
-        return self.reader.get_identifier("type_name.UppercaseCamel")
+        return self.reader.get_identifier("class_name")
 
     def _get_parameter_name(self):
-        return self.reader.get_identifier("type_name.lowercaseCamel", "p_")
+        return self.reader.get_identifier("parameter_name")
 
     def _get_member_name(self):
-        return self.reader.get_identifier("type_name.lowercaseCamel", "m_")
+        return self.reader.get_identifier("member_name")
 
     def _get_bare_type(self):
         return self.reader.get_value("base_type")

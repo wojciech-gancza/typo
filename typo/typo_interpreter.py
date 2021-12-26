@@ -244,11 +244,11 @@ class command_processor:
     def execute_script_from_file(self, script_file_name):
         script = file_lines(script_file_name)
         line_number = 1
-        for init_line in script:
+        for order_line in script:
             try:
                 self.processor.context.set_value("source_script_file_name", script_file_name)
                 self.processor.context.set_value("source_script_file_line", str(line_number))
-                result = self.process_command(init_line)
+                result = self.process_command(order_line.strip())
             except typo_error as err:
                 raise error_inside_script(err, script_file_name, line_number)
             line_number = line_number + 1

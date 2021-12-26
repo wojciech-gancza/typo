@@ -1,0 +1,28 @@
+ToDo list (current state)
+
+- Simple types (number, text, enum, bitset):
+  - operators |, |=, +, +=, -, -= for bitset
+  - function is(bit) - testing value of bit(s)
+  - static const values min and max for enumerated types
+  - order operators for numeric types
+  - order operators for text types 
+  - order operators for  types 
+  - order operators for numeric types
+  - serialization/deserialization of numeric types
+  - serialization/deserialization of text types
+  - serialization/deserialization of enum types
+  - serialization/deserialization of bitset types
+- serializators (typo_tools.h/.cpp):
+  - binary
+  - log
+  - xml
+- deserializator (typo_tools.h/.cpp):
+  - binary
+  - log
+  - xml
+- complex types:
+  - vector (of same datatype)
+  - list (of same or inherited datatypes)
+  - map (datatype to datatype)
+  - set (of same datatype)
+  - record (constant set of different datatypes)

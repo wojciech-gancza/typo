@@ -5,7 +5,7 @@
 // Do not modify manually outside spaces marked as manually added by programmer
 
 
-#include "${type_name.lowercase_with_underscores}.h"
+#include "${header_file_name}"
 
 #include <sstream>
 
@@ -13,36 +13,36 @@
 ${user_code}
 // end of additional includes
 
-${type_name.UppercaseCamel} ${type_name.UppercaseCamel}::from_string(const std::string & p_${type_name.lowercaseCamel}, char separator)
+${class_name} ${class_name}::from_string(const std::string & ${parameter_name}, char separator)
 {
     size_t start_of_string = 0;
     ${bitset_carrier_type} value = 0;
-    for (int position = p_${type_name.lowercaseCamel}.find(separator); position != std::string::npos; position = p_${type_name.lowercaseCamel}.find(separator, start_of_string))
+    for (int position = ${parameter_name}.find(separator); position != std::string::npos; position = ${parameter_name}.find(separator, start_of_string))
     {
-        std::string element = p_${type_name.lowercaseCamel}.substr(start_of_string, position-start_of_string);
+        std::string element = ${parameter_name}.substr(start_of_string, position-start_of_string);
         ${bitset_carrier_type} bit_value = string_to_bit_with_check(element);
         if (!bit_value)
-            return ${type_name.UppercaseCamel}(0);
+            return ${class_name}(0);
 	value |= bit_value;
         start_of_string = position+1;
     }
-    ${bitset_carrier_type} bit_value = string_to_bit_with_check(p_${type_name.lowercaseCamel}.substr(start_of_string));
+    ${bitset_carrier_type} bit_value = string_to_bit_with_check(${parameter_name}.substr(start_of_string));
     if (!bit_value)
-        return ${type_name.UppercaseCamel}(0);
+        return ${class_name}(0);
     value |= bit_value;
-    return ${type_name.UppercaseCamel}(value);
+    return ${class_name}(value);
 }
     
-std::string ${type_name.UppercaseCamel}::to_string() const
+std::string ${class_name}::to_string() const
 {
     std::stringstream buffer;
     unsigned bit_number = 0;
     const char * separator = "";
-    for (${bitset_carrier_type} tmp = m_${type_name.lowercaseCamel}; tmp; tmp >>= 1)
+    for (${bitset_carrier_type} tmp = ${member_name}; tmp; tmp >>= 1)
     {
         if (tmp & 1)
         {
-            buffer << separator << m_${type_name.lowercaseCamel}Names[bit_number];
+            buffer << separator << ${class_names_member_vector}[bit_number];
             separator = " | ";
         }
         ++ bit_number;
@@ -50,21 +50,21 @@ std::string ${type_name.UppercaseCamel}::to_string() const
     return buffer.str();
 }
 
-const char* ${type_name.UppercaseCamel}::m_${type_name.lowercaseCamel}Names[] = {
+const char* ${class_name}:: ${class_names_member_vector}[] = {
         ${enum_string_values}
 };
 
-${type_name.UppercaseCamel}::bit_type ${type_name.UppercaseCamel}::string_to_bit(const std::string & bit_name)
+${class_bit_type} ${class_name}::string_to_bit(const std::string & bit_name)
 {
     ${bit_from_string_converter_code}    
 }
 
-${bitset_carrier_type} ${type_name.UppercaseCamel}::string_to_bit_with_check(std::string bit_name)
+${bitset_carrier_type} ${class_name}::string_to_bit_with_check(std::string bit_name)
 {
     static const char* typeOfWhitespaces = " \t\n\r\f\v";
     bit_name.erase(bit_name.find_last_not_of(typeOfWhitespaces) + 1);
     bit_name.erase(0, bit_name.find_first_not_of(typeOfWhitespaces));
-    ${type_name.UppercaseCamel}::bit_type val = string_to_bit(bit_name);
+    ${class_bit_type} val = string_to_bit(bit_name);
     if (std::string(bit_to_string(val)) == bit_name)
     {
         return val;
@@ -75,14 +75,14 @@ ${bitset_carrier_type} ${type_name.UppercaseCamel}::string_to_bit_with_check(std
     }
 }
 
-const char * ${type_name.UppercaseCamel}::bit_to_string(${type_name.UppercaseCamel}::bit_type bit_value)
+const char * ${class_name}::bit_to_string(${class_bit_type} bit_value)
 {
     ${bitset_carrier_type} value = bit_value;
     for(unsigned bit_number = 0; value; ++bit_number, value >>= 1)
     {
         if (value & 1)
         {
-            return m_${type_name.lowercaseCamel}Names[bit_number];
+            return ${class_names_member_vector}[bit_number];
         }
     }
     return "";

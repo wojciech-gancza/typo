@@ -5,8 +5,8 @@
 // Do not modify manually outside spaces marked as manually added by programmer
 
 
-#ifndef _${type_name.CAPITALIZE_ALL}_H_
-#define _${type_name.CAPITALIZE_ALL}_H_
+#ifndef ${header_guard}
+#define ${header_guard}
 
 /* // comment to the type (manually added by programmer)
 ${user_code}
@@ -16,8 +16,7 @@ ${user_code}
 ${user_code}
 // end of additional includes
 
-$> import typo_cpp_generator
-class ${type_name.UppercaseCamel}
+class ${class_name}
 {
 public:
     enum value_type {
@@ -39,11 +38,11 @@ public:
     // WARNING: this function is case sensitive and always return value, even
     // if string do not match. To be sure check the result cut comparing
     // its result of toString() method with the parameter value.
-    static ${type_name.UppercaseCamel} from_string(const std::string & p_${type_name.lowercaseCamel});
+    static ${class_name} from_string(const std::string & ${parameter_name});
     
     const char * to_string() const
     {
-        return m_${type_name.lowercaseCamel}Names[m_${type_name.lowercaseCamel}];
+        return ${class_names_member_vector}[${member_name}];
     }
     
     // additional methods (manually added by programmer)
@@ -51,9 +50,9 @@ public:
     // end of additional methods
 
 private:
-    value_type m_${type_name.lowercaseCamel};
+    value_type ${member_name};
     
-    static const char* m_${type_name.lowercaseCamel}Names[];
+    static const char* ${class_names_member_vector}[];
 };
 
 // additional inline methods (manually added by programmer)

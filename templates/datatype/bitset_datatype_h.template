@@ -5,8 +5,8 @@
 // Do not modify manually outside spaces marked as manually added by programmer
 
 
-#ifndef _${type_name.CAPITALIZE_ALL}_H_
-#define _${type_name.CAPITALIZE_ALL}_H_
+#ifndef ${header_guard}
+#define ${header_guard}
 
 /* // comment to the type (manually added by programmer)
 ${user_code}
@@ -16,8 +16,7 @@ ${user_code}
 ${user_code}
 // end of additional includes
 
-$> import typo_cpp_generator
-class ${type_name.UppercaseCamel}
+class ${class_name}
 {
 public:
     enum bit_type {
@@ -38,7 +37,7 @@ public:
     
     // WARNING: this function is case sensitive and always return value, even
     // if string do not match. When error occurs - 0 is returned. 
-    static ${type_name.UppercaseCamel} from_string(const std::string & p_${type_name.lowercaseCamel}, char separator = '|');
+    static ${class_name} from_string(const std::string & ${parameter_name}, char separator = '|');
     
     std::string to_string() const;
     
@@ -49,11 +48,11 @@ public:
 private:
     ${bitset_storage_item}
 
-    static const char* m_${type_name.lowercaseCamel}Names[];
+    static const char* ${class_names_member_vector}[];
 
-    static ${type_name.UppercaseCamel}::bit_type string_to_bit(const std::string & bit_name);
+    static ${class_name}::bit_type string_to_bit(const std::string & bit_name);
     static ${bitset_carrier_type} string_to_bit_with_check(std::string bit_name);
-    static const char * bit_to_string(${type_name.UppercaseCamel}::bit_type bit_value);
+    static const char * bit_to_string(${class_bit_type} bit_value);
 };
 
 // additional inline methods (manually added by programmer)
