@@ -102,6 +102,10 @@ class cpp_generator(typo_generator):
         values = self._get_list("enum_values")
         return [identifier_formatter(value).CAPITALIZE_ALL() for value in values]  
         
+    def _get_base_types_identifiers_list(self):
+        values = self._get_list("base_type")
+        return [identifier_formatter(value) for value in values ]
+        
     def _get_bitset_base_type(self):
         values = self._get_enum_values()
         values_count = len(values)
@@ -231,36 +235,48 @@ class type_setter(cpp_generator):
         else:
             output.write("// allow_setter = False\n")
 
+class type_copy_constructor(cpp_generator):
 
-class gen_simple_type_copy_constructor(cpp_generator):
-    
-    def generate(self, context, output):
+     def generate(self, context, output):
         self._set_context(context)
         output.write(self._get_class_name() + "(const " + self._get_class_name() + " & " + self._get_parameter_name() + ")")
         if self._get_switch("allow_copy_constructor", True):
+            output.write(" : \n")
+            output.increase_indent()
+            self.generate_construction_list(output)     
             output.write("\n")
-            output.write(": " + self._get_member_name() + "(" + self._get_parameter_name() + "." + self._get_member_name() + ")\n")
+            output.decrease_indent()
             output.write("{  }\n")
         else:
             output.write(" delete; // allow_copy_constructor = False\n")
 
-class gen_simple_type_assignment(cpp_generator):
+class gen_simple_type_copy_constructor(type_copy_constructor):
     
+    def generate_construction_list(self, output):
+        output.write(self._get_member_name() + "(" + self._get_parameter_name() + "." + self._get_member_name() + ")")
+
+class type_assignment(cpp_generator):
+
     def generate(self, context, output):
         self._set_context(context)
         class_name = self._get_class_name()
         parameter_name = self._get_parameter_name()
         output.write("const " + class_name + " & operator=(const " + class_name + " & " + parameter_name + ")")
         if self._get_switch("allow_assignment", True):
-            member_name = self._get_member_name()
             output.write("\n{\n")
             output.increase_indent()
-            output.write(self._get_member_name() + " = " + parameter_name + "." + member_name + ";\n")
-            output.write("return *this;\n")
+            self.generate_assignment(output, parameter_name)
+            output.write("\nreturn *this;\n")
             output.decrease_indent()
             output.write("}\n")
         else:
             output.write(" delete; // allow_assignment = False\n")
+
+class gen_simple_type_assignment(type_assignment):
+    
+    def generate_assignment(self, output, parameter_name):
+        member_name = self._get_member_name()
+        output.write(self._get_member_name() + " = " + parameter_name + "." + member_name + ";")
 
 class gen_simple_type_getter(type_getter):
     
@@ -485,9 +501,9 @@ class gen_bitset_type_constructor(type_constructor):
         output.decrease_indent()
         output.write("}\n")
 
-class gen_bitset_type_setter(type_getter):
+class gen_bitset_type_setter(type_setter):
 
-    def generate_getter(self, output):
+    def generate_setter(self, output):
         class_name = self._get_class_name()
         parameter_name = self._get_parameter_name()
         output.write("void set" + class_name + "(" + self._get_bitset_base_type() + " " + parameter_name + ")\n{\n")
@@ -497,9 +513,9 @@ class gen_bitset_type_setter(type_getter):
         output.decrease_indent()
         output.write("}\n")
 
-class gen_bitset_type_getter(type_setter):
+class gen_bitset_type_getter(type_getter):
 
-    def generate_setter(self, output):
+    def generate_getter(self, output):
         output.write(self._get_bitset_base_type() + " get" + self._get_class_name() + "()\n{\n")
         output.increase_indent()
         output.write("return " + self._get_member_name() + ";\n")
@@ -529,3 +545,56 @@ class gen_bit_from_string_converter_code(cpp_enum_generator):
         return text
 
 
+class gen_type_includes(cpp_generator):
+    
+    def generate(self, context, output):
+        self._set_context(context)
+        identifiers = self._get_base_types_identifiers_list()
+        lines = ["#include \"" + id.lowercase_with_underscores() + ".h\"" for id in identifiers ]
+        output.write("\n".join(lines))
+        
+class gen_type_set(cpp_generator):
+    
+    def generate(self, context, output):
+        self._set_context(context)
+        identifiers = self._get_base_types_identifiers_list()
+        lines = ["public " + id.UppercaseCamel() for id in identifiers ]
+        output.write(",\n".join(lines))
+        
+class gen_record_type_default_constructor(type_constructor):
+    
+    def generate_constructor(self, output):
+        output.write(self._get_class_name() + "() : \n")
+        output.increase_indent()
+        identifiers = self._get_base_types_identifiers_list()
+        lines = [id.UppercaseCamel() + "()" for id in identifiers ]
+        output.write(",\n".join(lines) + "\n")
+        output.decrease_indent()
+        output.write("{  }\n")
+
+class gen_record_type_copy_constructor(type_copy_constructor):
+    
+    def generate_construction_list(self, output):
+        parameter = self._get_parameter_name()
+        identifiers = self._get_base_types_identifiers_list()
+        lines = [id.UppercaseCamel() + "(static_cast<const " + id.UppercaseCamel() + " &>(" + parameter + "))" for id in identifiers ]
+        output.write(",\n".join(lines))
+
+class gen_record_type_assignment(type_assignment):
+    
+    def generate_assignment(self, output, parameter_name):
+        member_name = self._get_member_name()
+        identifiers = self._get_base_types_identifiers_list()
+        lines = [id.UppercaseCamel() + "::operator=(static_cast<const " + id.UppercaseCamel() + " &>(" + parameter_name + "));" for id in identifiers ]
+        output.write("\n".join(lines))
+
+class gen_record_type_setter(type_setter):
+    
+    def generate_setter(self, output):
+        output.write("template <class T> void setFrom(const T & other)\n{\n")
+        output.increase_indent()
+        identifiers = self._get_base_types_identifiers_list()
+        for id in identifiers:
+            output.write("TypoTools::copyIfPossible<" + id.UppercaseCamel() + ", T>(*this, other);\n")
+        output.decrease_indent()
+        output.write("}\n")

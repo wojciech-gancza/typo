@@ -7,4 +7,10 @@ _dev/tests/cpp/card_color.cpp
 _dev/tests/cpp/card_color.h
 _dev/tests/cpp/mass.h
 _dev/tests/cpp/name.h
+_dev/tests/cpp/amount.h
+_dev/tests/cpp/order.h
+_dev/tests/cpp/price.h
+_dev/tests/cpp/side.cpp
+_dev/tests/cpp/side.h
+_dev/tests/cpp/stock_position.h
 

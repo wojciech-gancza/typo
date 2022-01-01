@@ -10,7 +10,31 @@
 #define _TYPO_TOOLS_H_
 
 #include <string>
+#include <type_traits>
 
+namespace TypoTools
+{
 
+    template <class TARGET, class SOURCE, bool CAN_COPY> struct Copier
+    {
+        static void copy(TARGET & target, const SOURCE & source)
+        { 
+        }
+    };
+
+    template <class TARGET, class SOURCE> struct Copier<TARGET, SOURCE, true>
+    {
+        static void copy(TARGET & target, const SOURCE & source)
+        {
+            static_cast<SOURCE &>(target) = source;
+        }
+    };
+
+    template <class TARGET, class SOURCE> void copyIfPossible(TARGET & target, const SOURCE & source)
+    {
+        Copier<TARGET, SOURCE, std::is_base_of<TARGET, SOURCE>::value>::copy(target, source);
+    }
+
+}
 
 #endif

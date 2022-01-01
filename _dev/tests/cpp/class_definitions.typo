@@ -21,6 +21,7 @@ path = _dev/tests/cpp
 script_path = scripts
 
 # now current dev tests
+# simple datatypes (all kinds)
 
 datatype_definitions
 
@@ -38,8 +39,7 @@ min_value = None
 
 string_datatype_h
 
-type_name = card color
-base_type = byte
+type_name = "card color"
 enum_values = clubs, diamonds, hearts, spades, high_trumphs
 enumerated_datatype_h
 enumerated_datatype_cpp
@@ -50,5 +50,30 @@ enum_values = [ "Read", "wRiTe", "execute" ]
 
 bitset_datatype_h 
 bitset_datatype_cpp
+
+# records - but first some prerequisites - necessary datatypes
+
+type_name = price
+base_type = "float"
+min_value = 0.0
+numeric_datatype_h
+
+type_name = amount
+base_type = unsigned
+min_value = None
+numeric_datatype_h
+
+type_name = side
+enum_values = buy, sel
+enumerated_datatype_h
+enumerated_datatype_cpp
+
+type_name = stock position
+base_type = price, amount
+record_datatype_h
+
+type_name = order
+base_type = stock position, side, name
+record_datatype_h
 
 exit

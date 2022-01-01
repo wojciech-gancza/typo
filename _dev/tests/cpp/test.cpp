@@ -9,6 +9,9 @@
 #include "name.h"
 #include "card_color.cpp"
 #include "access_right.cpp"
+#include "side.cpp"
+#include "order.h"
+#include "stock_position.h"
 
 size_t passed = 0;
 size_t failed = 0;
@@ -85,6 +88,27 @@ int main()
     a = AccessRight::from_string("READ | UNKNOWN");
     checkEqual(int(a.getAccessRight()), int(0), __LINE__);   
     
+    // test of record
+    Order ord;
+    checkEqual(ord.getAmount(), 0, __LINE__);
+    checkEqual(ord.getName(), std::string(""), __LINE__);
+    checkEqual(ord.getSide(), Side::BUY, __LINE__);
+    ord.setName("IDX");
+    ord.setSide(Side::SEL);
+    StockPosition stp;
+    stp.setAmount(1200);
+    stp.setPrice(415.90);
+    ord.setFrom(stp);
+    checkEqual(ord.getAmount(), 1200, __LINE__);
+    checkCloseEnough(ord.getPrice(), 415.9, __LINE__);
+    checkEqual(ord.getName(), std::string("IDX"), __LINE__);
+    checkEqual(ord.getSide(), Side::SEL, __LINE__);
+    ord.setAmount(630);
+    ord.setPrice(417.00);
+    stp.setFrom(ord);
+    checkEqual(stp.getAmount(), 630, __LINE__);
+    checkCloseEnough(stp.getPrice(), 417.0, __LINE__);
+      
     // desipay results
     std::cout << "--- PASSED: " << passed << "\n"
               << "--- FAILED: " << failed << "\n";

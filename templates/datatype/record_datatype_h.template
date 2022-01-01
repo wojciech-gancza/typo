@@ -1,0 +1,43 @@
+// WARNING: File generated automatically by 'typo'. 
+//   copyright:       ${copyright}
+//   generated from:  ${source_script_file_name} line ${source_script_file_line}
+//   generated at:    ${timestamp}
+// Do not modify manually outside spaces marked as manually added by programmer
+
+
+#ifndef ${header_guard}
+#define ${header_guard}
+
+#include "typo_tools.h"
+${type_includes}
+
+/* // comment to the type (manually added by programmer)
+${user_code}
+*/ // end of comment
+
+// additional includes (manually added by programmer)
+${user_code}
+// end of additional includes
+
+class ${class_name} :
+    ${type_set}
+{
+public:
+    ${record_type_default_constructor}
+    
+    ${record_type_copy_constructor}
+    
+    ${record_type_assignment}
+    
+    ${record_type_setter}
+    
+    // additional methods (manually added by programmer)
+    ${user_code}
+    // end of additional methods
+};
+
+// additional inline methods (manually added by programmer)
+${user_code}
+// end of additional inline methods
+
+#endif
