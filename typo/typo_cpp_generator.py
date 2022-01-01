@@ -106,6 +106,10 @@ class cpp_generator(typo_generator):
         values = self._get_list("base_type")
         return [identifier_formatter(value) for value in values ]
         
+    def _get_namespaces_identifiers_list(self):
+        values = self._get_list("namespace")
+        return [identifier_formatter(value).UppercaseCamel() for value in values ]
+        
     def _get_bitset_base_type(self):
         values = self._get_enum_values()
         values_count = len(values)
@@ -598,3 +602,20 @@ class gen_record_type_setter(type_setter):
             output.write("TypoTools::copyIfPossible<" + id.UppercaseCamel() + ", T>(*this, other);\n")
         output.decrease_indent()
         output.write("}\n")
+        
+class gen_namespace_begin(cpp_generator):
+    
+    def generate(self, context, output):
+        self._set_context(context)
+        namespaces = self._get_namespaces_identifiers_list()
+        for namespace in namespaces:
+            output.write("namespace " + namespace + " {\n")        
+        
+class gen_namespace_end(cpp_generator):
+    
+    def generate(self, context, output):
+        self._set_context(context)
+        namespaces = self._get_namespaces_identifiers_list()
+        for namespace in namespaces:
+            output.write("}\n")        
+    

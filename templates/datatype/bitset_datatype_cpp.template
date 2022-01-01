@@ -9,6 +9,8 @@
 
 #include <sstream>
 
+${namespace_begin}
+
 // additional code (manually added by programmer)
 ${user_code}
 // end of additional includes
@@ -86,6 +88,7 @@ const char * ${class_name}::bit_to_string(${class_bit_type} bit_value)
         }
     }
     return "";
-
 }
+
+${namespace_end}
 

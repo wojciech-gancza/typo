@@ -7,6 +7,8 @@
 
 #include "${header_file_name}"
 
+${namespace_begin}
+
 // additional code (manually added by programmer)
 ${user_code}
 // end of additional includes
@@ -20,3 +22,4 @@ const char* ${class_name}::${class_names_member_vector}[] = {
         ${enum_string_values}
 };
 
+${namespace_end}

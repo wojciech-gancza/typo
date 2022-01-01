@@ -8,6 +8,8 @@
 #ifndef ${header_guard}
 #define ${header_guard}
 
+${namespace_begin}
+
 /* // comment to the type (manually added by programmer)
 ${user_code}
 */ // end of comment
@@ -42,5 +44,7 @@ private:
 // additional inline methods (manually added by programmer)
 ${user_code}
 // end of additional inline methods
+
+${namespace_end}
 
 #endif

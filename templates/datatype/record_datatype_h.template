@@ -15,6 +15,8 @@ ${type_includes}
 ${user_code}
 */ // end of comment
 
+${namespace_begin}
+
 // additional includes (manually added by programmer)
 ${user_code}
 // end of additional includes
@@ -39,5 +41,7 @@ public:
 // additional inline methods (manually added by programmer)
 ${user_code}
 // end of additional inline methods
+
+${namespace_end}
 
 #endif

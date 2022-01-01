@@ -27,6 +27,8 @@ datatype_definitions
 
 copyright = WGan (c) 2021 - typo testing
 
+namespace = test
+
 type_name = mass
 base_type = double
 min_value = 0.0
